@@ -44,6 +44,7 @@ import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm
 import { HIDDEN, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
 import { HintTypes, RouterTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
+import LookupRouterForm from '../components/flow/routers/lookup/LookupRouterForm';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -220,6 +221,17 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: CallWebhookComp,
     aliases: [Types.split_by_webhook],
+    visibility: ONLINE
+  },
+  {
+    type: Types.call_lookup,
+    name: 'Call Lookup',
+    description: 'Call Lookup',
+    form: LookupRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: CallWebhookComp,
+    aliases: [Types.split_by_lookup],
     visibility: ONLINE
   },
   {

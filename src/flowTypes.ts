@@ -303,6 +303,10 @@ export interface Headers {
   [name: string]: string;
 }
 
+export interface Headers {
+  [name: string]: string;
+}
+
 export interface TransferAirtime extends Action {
   amounts: { [name: string]: number };
   result_name: string;
@@ -319,6 +323,12 @@ export interface CallWebhook extends Action {
   result_name: string;
   body?: string;
   headers?: Headers;
+}
+
+export interface CallLookup extends Action {
+  lookup_db: string;
+  lookup_queries: { [index: number]: { rule: LookupMap; field: LookupMap; value: string } };
+  result_name: string;
 }
 
 export interface StartFlow extends Action {
@@ -379,6 +389,7 @@ export type AnyAction =
   | SetPreferredChannel
   | SendEmail
   | CallWebhook
+  | CallLookup
   | StartFlow
   | StartSession;
 

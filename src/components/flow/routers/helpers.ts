@@ -5,6 +5,7 @@ import {
   Action,
   CallResthook,
   CallWebhook,
+  CallLookup,
   Case,
   Category,
   Exit,
@@ -318,7 +319,7 @@ export const resolveRoutes = (
 };
 
 export const createWebhookBasedNode = (
-  action: CallWebhook | CallResthook | TransferAirtime,
+  action: CallWebhook | CallResthook | TransferAirtime | CallLookup,
   originalNode: RenderNode
 ): RenderNode => {
   const exits: Exit[] = [];
@@ -384,6 +385,8 @@ export const createWebhookBasedNode = (
     splitType = Types.split_by_resthook;
   } else if (action.type === Types.transfer_airtime) {
     splitType = Types.split_by_airtime;
+  } else if (action.type === Types.call_lookup) {
+    splitType = Types.call_lookup;
   }
 
   return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);
