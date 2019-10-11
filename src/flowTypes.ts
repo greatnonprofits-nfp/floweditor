@@ -1,4 +1,5 @@
 import { Methods } from 'components/flow/routers/webhook/helpers';
+import { LookupQuery, LookupDB } from 'components/flow/routers/lookup/helpers';
 import { FlowTypes, Operators, Types } from 'config/interfaces';
 
 export interface Languages {
@@ -303,10 +304,6 @@ export interface Headers {
   [name: string]: string;
 }
 
-export interface Headers {
-  [name: string]: string;
-}
-
 export interface TransferAirtime extends Action {
   amounts: { [name: string]: number };
   result_name: string;
@@ -326,8 +323,8 @@ export interface CallWebhook extends Action {
 }
 
 export interface CallLookup extends Action {
-  lookup_db: string;
-  lookup_queries: { [index: number]: { rule: LookupMap; field: LookupMap; value: string } };
+  lookup_db: LookupDB;
+  lookup_queries: LookupQuery[];
   result_name: string;
 }
 

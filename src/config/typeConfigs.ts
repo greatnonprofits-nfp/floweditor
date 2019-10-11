@@ -4,6 +4,7 @@ import AddURNComp from 'components/flow/actions/addurn/AddURN';
 import AddURNForm from 'components/flow/actions/addurn/AddURNForm';
 import CallResthookComp from 'components/flow/actions/callresthook/CallResthook';
 import CallWebhookComp from 'components/flow/actions/callwebhook/CallWebhook';
+import CallLookupComp from 'components/flow/actions/calllookup/CallLookup';
 import AddGroupsForm from 'components/flow/actions/changegroups/addgroups/AddGroupsForm';
 import ChangeGroupsComp from 'components/flow/actions/changegroups/ChangeGroups';
 import RemoveGroupsForm from 'components/flow/actions/changegroups/removegroups/RemoveGroupsForm';
@@ -230,7 +231,7 @@ export const typeConfigList: Type[] = [
     form: LookupRouterForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
-    component: CallWebhookComp,
+    component: CallLookupComp,
     aliases: [Types.split_by_lookup],
     visibility: ONLINE
   },

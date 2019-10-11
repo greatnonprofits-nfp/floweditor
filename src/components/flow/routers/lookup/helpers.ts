@@ -1,18 +1,32 @@
 import { createWebhookBasedNode } from 'components/flow/routers/helpers';
-import { LookupRouterFormState } from 'components/flow/routers/lookup/LookupRouterForm';
-import { DEFAULT_BODY } from 'components/nodeeditor/constants';
+import {
+  LookupRouterFormState,
+  LookupDBEntry
+} from 'components/flow/routers/lookup/LookupRouterForm';
 import { Types } from 'config/interfaces';
 import { CallLookup } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import { createUUID } from 'utils';
 
-interface LookupMap {
-  [key: string]: string;
+export interface LookupDB {
+  id: string;
+  text: string;
+}
+
+export interface LookupRule {
+  type: string;
+  verbose_name: string;
+}
+
+export interface LookupField {
+  id: string;
+  text: string;
+  type: string;
 }
 
 export interface LookupQuery {
-  [index: number]: { rule: LookupMap; field: LookupMap; value: string };
+  [index: number]: { rule: LookupRule; field: LookupField; value: string };
 }
 
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
@@ -28,66 +42,32 @@ export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
 export const nodeToState = (settings: NodeEditorSettings): LookupRouterFormState => {
   // TODO: work out an incremental result name
   const resultName: StringEntry = { value: 'Result' };
+  const _lookupDb: LookupDBEntry = { value: { id: '', text: '' } };
 
   const state: LookupRouterFormState = {
-    lookupDb,
-    lookupQueries: [{ field: {}, rule: {}, value: '' }],
+    lookupDb: _lookupDb,
+    lookupQueries: [],
     resultName,
     valid: false
   };
 
-  if (settings.originalNode.ui.type === Types.split_by_lookup) {
-    const action = getOriginalAction(settings) as CallLookup;
+  const action = getOriginalAction(settings) as CallLookup;
 
-    // add in our headers
-    for (const name of Object.keys(action.headers || []).sort()) {
-      state.headers.push({
-        value: {
-          uuid: createUUID(),
-          value: action.headers[name],
-          name
-        }
-      });
-    }
+  // add in our headers
+  console.log(action);
 
-    state.resultName = { value: action.result_name };
-    state.url = { value: action.url };
-    state.method = { value: { label: action.method, value: action.method } };
-    state.postBody = { value: action.body };
-    state.valid = true;
-  } else {
-    state.headers.push({
-      value: {
-        uuid: createUUID(),
-        name: 'Content-Type',
-        value: 'application/json'
-      }
-    });
-  }
-
-  // one empty header
-  state.headers.push({
-    value: {
-      uuid: createUUID(),
-      name: '',
-      value: ''
-    }
-  });
+  state.resultName = { value: action.result_name };
+  state.lookupDb = { value: action.lookup_db };
+  // state.lookupQueries = { value: action.lookup_queries }
+  state.valid = true;
 
   return state;
 };
 
 export const stateToNode = (
   settings: NodeEditorSettings,
-  state: WebhookRouterFormState
+  state: LookupRouterFormState
 ): RenderNode => {
-  const headers: HeaderMap = {};
-
-  for (const entry of state.headers) {
-    if (entry.value.name.trim().length !== 0) {
-      headers[entry.value.name] = entry.value.value;
-    }
-  }
   let uuid = createUUID();
 
   const originalAction = getOriginalAction(settings);
@@ -95,19 +75,13 @@ export const stateToNode = (
     uuid = originalAction.uuid;
   }
 
-  const newAction: CallWebhook = {
+  const newAction: CallLookup = {
     uuid,
-    headers,
-    type: Types.call_webhook,
-    url: state.url.value,
-    method: state.method.value.value as Methods,
+    lookup_queries: [],
+    type: Types.call_lookup,
+    lookup_db: state.lookupDb.value,
     result_name: state.resultName.value
   };
-
-  // include the body if we aren't a get
-  if (newAction.method !== Methods.GET) {
-    newAction.body = state.postBody.value;
-  }
 
   return createWebhookBasedNode(newAction, settings.originalNode);
 };
