@@ -9,10 +9,11 @@ import {
   LookupQuery
 } from 'components/flow/routers/lookup/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
-import SelectElement from 'components/form/select/SelectElement';
+import AssetSelector from 'components/form/assetselector/AssetSelector';
 import TypeList from 'components/nodeeditor/TypeList';
 import * as React from 'react';
-import { FormEntry, FormState, mergeForm, StringEntry, ValidationFailure } from 'store/nodeEditor';
+import { Asset } from 'store/flowContext';
+import { FormEntry, FormState, mergeForm, StringEntry } from 'store/nodeEditor';
 import {
   Alphanumeric,
   Required,
@@ -42,31 +43,8 @@ export default class LookupRouterForm extends React.Component<
 
     this.state = nodeToState(this.props.nodeSettings);
     bindCallbacks(this, {
-      include: [/^handle/]
+      include: [/^on/, /^handle/]
     });
-  }
-
-  private handleUpdate(
-    keys: {
-      lookupDb?: LookupDB;
-      lookupQueries?: LookupQuery[];
-      validationFailures?: ValidationFailure[];
-      resultName?: string;
-    },
-    submitting = false
-  ): boolean {
-    const updates: Partial<LookupRouterFormState> = {};
-
-    updates.lookupDb = { value: keys.lookupDb };
-    updates.lookupQueries = keys.lookupQueries;
-
-    if (keys.hasOwnProperty('resultName')) {
-      updates.resultName = validate('Result Name', keys.resultName, [shouldRequireIf(submitting)]);
-    }
-
-    const updated = mergeForm(this.state, updates);
-    this.setState(updated);
-    return updated.valid;
   }
 
   private handleUpdateResultName(value: string): void {
@@ -77,8 +55,14 @@ export default class LookupRouterForm extends React.Component<
     });
   }
 
-  private handleDbUpdate(lookupDb: LookupDB, submitting = false): boolean {
-    return this.handleUpdate({ lookupDb }, submitting);
+  private handleDbUpdate(selected: Asset[], submitting = false): boolean {
+    const updates: Partial<LookupRouterFormState> = {
+      lookupDb: validate('LookupDb', selected[0], [shouldRequireIf(submitting)])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
+    return updated.valid;
   }
 
   private handleSave(): void {
@@ -106,24 +90,19 @@ export default class LookupRouterForm extends React.Component<
         tabs={tabs}
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
+        <div>Make some queries for lookup...</div>
         <div className={styles.db}>
-          <SelectElement
+          <AssetSelector
             name="LookupDb"
+            placeholder="Select the lookup collection"
+            assets={this.props.assetStore.lookups}
             entry={this.state.lookupDb}
+            searchable={true}
             onChange={this.handleDbUpdate}
-            options={[]}
           />
         </div>
-        <div className={styles.instructions}>
-          <p>If your server responds with JSON, each property will be added to the Flow.</p>
-          <pre className={styles.code}>
-            {'{ "product": "Solar Charging Kit", "stock level": 32 }'}
-          </pre>
-          <p>
-            This response would add <span className={styles.example}>@webhook.product</span> and{' '}
-            <span className={styles.example}>@webhook["stock level"]</span> for use in the flow.
-          </p>
-        </div>
+        <div>Lookup Parameters...</div>
+
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>
     );

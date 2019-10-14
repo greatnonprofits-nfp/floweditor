@@ -52,6 +52,7 @@ export enum AssetType {
   Result = 'result',
   Contact = 'contact',
   Resthook = 'resthook',
+  Lookup = 'lookup',
   URN = 'urn',
   Label = 'label',
   Language = 'language',
