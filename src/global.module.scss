@@ -40,6 +40,7 @@
       background: rgba(0, 0, 0, 0.15);
       &--after-open {
         opacity: 1;
+        overflow-y: auto;
       }
       &--before-close {
         opacity: 0;

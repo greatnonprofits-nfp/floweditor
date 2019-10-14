@@ -386,7 +386,7 @@ export const createWebhookBasedNode = (
   } else if (action.type === Types.transfer_airtime) {
     splitType = Types.split_by_airtime;
   } else if (action.type === Types.call_lookup) {
-    splitType = Types.call_lookup;
+    splitType = Types.split_by_lookup;
   }
 
   return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);

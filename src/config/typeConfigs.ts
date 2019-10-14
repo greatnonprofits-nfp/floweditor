@@ -42,10 +42,10 @@ import ResultRouterForm from 'components/flow/routers/result/ResultRouterForm';
 import SubflowRouterForm from 'components/flow/routers/subflow/SubflowRouterForm';
 import WaitRouterForm from 'components/flow/routers/wait/WaitRouterForm';
 import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm';
+import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
 import { HIDDEN, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
 import { HintTypes, RouterTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
-import LookupRouterForm from '../components/flow/routers/lookup/LookupRouterForm';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};

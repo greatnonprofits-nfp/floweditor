@@ -51,15 +51,14 @@ export const nodeToState = (settings: NodeEditorSettings): LookupRouterFormState
     valid: false
   };
 
-  const action = getOriginalAction(settings) as CallLookup;
+  if (settings.originalNode.ui.type === Types.split_by_lookup) {
+    const action = getOriginalAction(settings) as CallLookup;
 
-  // add in our headers
-  console.log(action);
-
-  state.resultName = { value: action.result_name };
-  state.lookupDb = { value: action.lookup_db };
-  // state.lookupQueries = { value: action.lookup_queries }
-  state.valid = true;
+    state.resultName = { value: action.result_name };
+    state.lookupDb = { value: action.lookup_db };
+    state.lookupQueries = action.lookup_queries;
+    state.valid = true;
+  }
 
   return state;
 };
@@ -77,7 +76,7 @@ export const stateToNode = (
 
   const newAction: CallLookup = {
     uuid,
-    lookup_queries: [],
+    lookup_queries: state.lookupQueries,
     type: Types.call_lookup,
     lookup_db: state.lookupDb.value,
     result_name: state.resultName.value

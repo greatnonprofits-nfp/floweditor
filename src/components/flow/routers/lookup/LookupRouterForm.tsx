@@ -39,6 +39,7 @@ export default class LookupRouterForm extends React.Component<
 > {
   constructor(props: RouterFormProps) {
     super(props);
+
     this.state = nodeToState(this.props.nodeSettings);
     bindCallbacks(this, {
       include: [/^handle/]
@@ -48,7 +49,7 @@ export default class LookupRouterForm extends React.Component<
   private handleUpdate(
     keys: {
       lookupDb?: LookupDB;
-      lookupQueries?: LookupQuery;
+      lookupQueries?: LookupQuery[];
       validationFailures?: ValidationFailure[];
       resultName?: string;
     },
@@ -56,13 +57,14 @@ export default class LookupRouterForm extends React.Component<
   ): boolean {
     const updates: Partial<LookupRouterFormState> = {};
 
+    updates.lookupDb = { value: keys.lookupDb };
+    updates.lookupQueries = keys.lookupQueries;
+
     if (keys.hasOwnProperty('resultName')) {
       updates.resultName = validate('Result Name', keys.resultName, [shouldRequireIf(submitting)]);
     }
 
     const updated = mergeForm(this.state, updates);
-
-    // update our form
     this.setState(updated);
     return updated.valid;
   }
@@ -104,7 +106,7 @@ export default class LookupRouterForm extends React.Component<
         tabs={tabs}
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
-        <div className={styles.method}>
+        <div className={styles.db}>
           <SelectElement
             name="LookupDb"
             entry={this.state.lookupDb}
