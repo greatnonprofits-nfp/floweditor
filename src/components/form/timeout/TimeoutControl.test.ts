@@ -20,7 +20,7 @@ describe(TimeoutControl.name, () => {
     instance.handleChecked();
     expect(props.onChanged).toMatchCallSnapshot('check');
 
-    instance.handleTimeoutChanged(TIMEOUT_OPTIONS[0]);
+    instance.handleTimeoutChanged(TIMEOUT_OPTIONS[4]);
     expect(props.onChanged).toMatchCallSnapshot('update');
   });
 
