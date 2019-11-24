@@ -1,4 +1,5 @@
 import { react as bindCallbacks } from 'auto-bind';
+import ReactToPrint from 'react-to-print';
 import Button, { ButtonTypes } from 'components/button/Button';
 import Dialog from 'components/dialog/Dialog';
 import { Fixy } from 'components/fixy/Fixy';
@@ -63,10 +64,20 @@ const hotStore = createStore();
 export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ config }) => {
   fetchFunctions(config.endpoints);
 
+  const componentRef = React.useRef();
+
   return (
     <ConfigProvider config={{ ...config }}>
       <ReduxProvider store={hotStore}>
-        <ConnectedFlowEditor />
+        <React.Fragment>
+          {/* Print the content */}
+          <ReactToPrint
+            trigger={() => <button className={styles.printButton}>Export to Pdf</button>}
+            content={() => componentRef.current}
+            copyStyles
+          />
+          <ConnectedFlowEditor ref={componentRef} />
+        </React.Fragment>
       </ReduxProvider>
     </ConfigProvider>
   );
