@@ -47,6 +47,7 @@ export enum AssetType {
   Template = 'template',
   Revision = 'revision',
   Flow = 'flow',
+  GiftCard = 'giftcard',
   Group = 'group',
   Field = 'field',
   Result = 'result',

@@ -236,6 +236,17 @@ export const typeConfigList: Type[] = [
     visibility: ONLINE
   },
   {
+    type: Types.call_giftcard,
+    name: 'Call Giftcard',
+    description: 'Call Giftcard',
+    form: LookupRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: MissingComp,
+    aliases: [Types.split_by_giftcard],
+    visibility: ONLINE
+  },
+  {
     type: Types.call_resthook,
     name: 'Call Zapier',
     description: 'Call Zapier',
