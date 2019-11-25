@@ -70,9 +70,15 @@ export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ confi
     <ConfigProvider config={{ ...config }}>
       <ReduxProvider store={hotStore}>
         <React.Fragment>
-          {/* Print the content */}
+          {/* For Print the content in PDF */}
+          <h1 className="flowName">{config.flowName}</h1>
           <ReactToPrint
-            trigger={() => <button className={styles.printButton}>Export to Pdf</button>}
+            trigger={() => (
+              <button className={styles.printButton}>
+                <i className="fe-download" />
+                <span>export to pdf</span>
+              </button>
+            )}
             content={() => componentRef.current}
             copyStyles
           />
