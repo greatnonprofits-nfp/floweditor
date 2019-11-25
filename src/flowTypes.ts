@@ -330,6 +330,16 @@ export interface CallLookup extends Action {
   result_name: string;
 }
 
+export interface GiftcardType {
+  id: string;
+  text: string;
+}
+
+export interface CallGiftcard extends Action {
+  giftcard_db: GiftcardType;
+  result_name: string;
+}
+
 export interface StartFlow extends Action {
   flow: Flow;
 }
@@ -389,6 +399,7 @@ export type AnyAction =
   | SendEmail
   | CallWebhook
   | CallLookup
+  | CallGiftcard
   | StartFlow
   | StartSession;
 
