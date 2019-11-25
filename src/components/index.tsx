@@ -76,7 +76,7 @@ export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ confi
             trigger={() => (
               <button className={styles.printButton}>
                 <i className="fe-download" />
-                <span>export to pdf</span>
+                <span>Export to Pdf</span>
               </button>
             )}
             content={() => componentRef.current}
