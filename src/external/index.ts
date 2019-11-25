@@ -266,7 +266,7 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
       lookups: {
         endpoint: getURL(endpoints.lookups),
         type: AssetType.Lookup,
-        id: 'lookup',
+        id: 'id',
         items: {}
       },
       templates: {
