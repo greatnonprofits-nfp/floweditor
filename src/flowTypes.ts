@@ -24,6 +24,7 @@ export interface Endpoints {
   lookups: string;
   recents: string;
   fields: string;
+  giftcard: string;
   groups: string;
   recipients: string;
   flows: string;
