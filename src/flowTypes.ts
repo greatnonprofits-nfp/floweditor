@@ -336,6 +336,7 @@ export interface GiftcardType {
 }
 
 export interface CallGiftcard extends Action {
+  type: Types.call_giftcard;
   giftcard_db: GiftcardType;
   result_name: string;
 }
@@ -444,6 +445,11 @@ export enum StartFlowArgs {
 export enum StartFlowExitNames {
   Complete = 'Complete',
   Expired = 'Expired'
+}
+
+export enum GiftcardExitNames {
+  Success = 'Success',
+  Failure = 'Failure'
 }
 
 export enum WebhookExitNames {
