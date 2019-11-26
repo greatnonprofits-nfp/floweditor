@@ -9,6 +9,7 @@ import { validate, Alphanumeric, StartIsNonNumeric, shouldRequireIf } from 'stor
 import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
+import SelectElement from 'components/form/select/SelectElement';
 
 export interface GiftCardRouterFormState extends FormState {
   giftcardDb: AssetEntry;
@@ -57,6 +58,16 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
     return (
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
+        <SelectElement
+          name="assign"
+          options={[
+            { value: '1', label: 'Assign Gift Card' },
+            { value: '2', label: 'Check Status' }
+          ]}
+          onChange={console.log}
+          entry={{ value: '' }}
+        />
+        <p>Select which collection would you like to query the Gift Card</p>
         <AssetSelector
           assets={this.props.assetStore.giftcard}
           entry={this.state.giftcardDb}
