@@ -200,6 +200,24 @@ Array [
   },
   Object {
     "aliases": Array [
+      "split_by_giftcard",
+    ],
+    "component": [Function],
+    "description": "Call Giftcard",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Giftcard",
+    "type": "call_giftcard",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
+  Object {
+    "aliases": Array [
       "split_by_resthook",
     ],
     "component": [Function],
@@ -392,6 +410,24 @@ Object {
     "form": [Function],
     "name": "Add Labels",
     "type": "add_input_labels",
+  },
+  "call_giftcard": Object {
+    "aliases": Array [
+      "split_by_giftcard",
+    ],
+    "component": [Function],
+    "description": "Call Giftcard",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Giftcard",
+    "type": "call_giftcard",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
   },
   "call_lookup": Object {
     "aliases": Array [
@@ -626,6 +662,24 @@ Object {
     ],
     "name": "Split by Expression",
     "type": "split_by_expression",
+  },
+  "split_by_giftcard": Object {
+    "aliases": Array [
+      "split_by_giftcard",
+    ],
+    "component": [Function],
+    "description": "Call Giftcard",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Giftcard",
+    "type": "call_giftcard",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
   },
   "split_by_groups": Object {
     "description": "Split by group membership",

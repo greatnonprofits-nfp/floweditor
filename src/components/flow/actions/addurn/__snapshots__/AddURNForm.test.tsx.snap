@@ -96,6 +96,11 @@ exports[`AddURNForm renders 1`] = `
                 Call Lookup
               </option>
               <option
+                value="call_giftcard"
+              >
+                Call Giftcard
+              </option>
+              <option
                 value="call_resthook"
               >
                 Call Zapier
