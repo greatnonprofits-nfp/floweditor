@@ -46,6 +46,8 @@ import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
 import { HIDDEN, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
 import { HintTypes, RouterTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
+import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
+import { GiftcardComp } from 'components/flow/actions/giftcard';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -239,10 +241,10 @@ export const typeConfigList: Type[] = [
     type: Types.call_giftcard,
     name: 'Call Giftcard',
     description: 'Call Giftcard',
-    form: LookupRouterForm,
+    form: GiftCardRouterForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
-    component: MissingComp,
+    component: GiftcardComp,
     aliases: [Types.split_by_giftcard],
     visibility: ONLINE
   },
