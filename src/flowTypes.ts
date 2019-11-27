@@ -338,6 +338,7 @@ export interface GiftcardType {
 export interface CallGiftcard extends Action {
   type: Types.call_giftcard;
   giftcard_db: GiftcardType;
+  giftcard_type: string;
   result_name: string;
 }
 
