@@ -5,7 +5,7 @@
     "type": "git",
     "url": "git://github.com/greatnonprofits-nfp/floweditor.git"
   },
-  "version": "1.6.2.2",
+  "version": "1.6.3",
   "description": "'Standalone flow editing tool designed for use within the RapidPro suite of messaging tools but can be adopted for use outside of that ecosystem.'",
   "browser": "umd/flow-editor.min.js",
   "unpkg": "umd/flow-editor.min.js",
