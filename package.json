@@ -1,13 +1,16 @@
 {
   "name": "@greatnonprofits-nfp/flow-editor",
   "license": "AGPL-3.0",
-  "repository": "git://github.com/greatnonprofits-nfp/floweditor.git",
-  "version": "1.6.2",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/greatnonprofits-nfp/floweditor.git"
+  },
+  "version": "1.6.2.2",
   "description": "'Standalone flow editing tool designed for use within the RapidPro suite of messaging tools but can be adopted for use outside of that ecosystem.'",
   "browser": "umd/flow-editor.min.js",
   "unpkg": "umd/flow-editor.min.js",
   "author": "GreatNonprofits <support@greatnonprofits.org>",
-  "homepage": "./",
+  "homepage": "http://./",
   "files": [
     "build"
   ],
@@ -148,5 +151,9 @@
     "typescript": "3.4.5",
     "uniqid": "5.0.3",
     "uuid": "3.3.2"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/greatnonprofits-nfp/floweditor/issues"
+  },
+  "main": "jest.config.js"
 }
