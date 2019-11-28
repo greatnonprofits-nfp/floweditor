@@ -4,9 +4,9 @@ const lookups = [
 ];
 
 const lookupParameters = [
-  { text: 'id', type: 'String', id: 'id' },
-  { text: 'objectId', type: 'String', id: 'objectId' },
-  { text: 'phone', type: 'String', id: 'phone' }
+  { text: 'String', type: 'String', id: 'id' },
+  { text: 'Date', type: 'Date', id: 'objectId' },
+  { text: 'Number', type: 'Number', id: 'phone' }
 ];
 
 const { getOpts } = require('./utils');

@@ -39,6 +39,17 @@ export const LookupParameterField = ({ fields, ...props }: LookupParameterFieldP
     value: ''
   });
 
+  const ruleOperators = React.useMemo(() => OPERATORS[param.field.type.toLowerCase()], [
+    param.field.type
+  ]);
+
+  // Reset rule value when selecting a different field type
+  React.useEffect(() => {
+    if (!ruleOperators.find(rule => rule.value === param.rule.value)) {
+      setParam({ ...param, rule: { value: '', label: '' } });
+    }
+  }, [param.field.type, ruleOperators]);
+
   return (
     <div className={styles.lookup_row}>
       <SelectElement
@@ -52,7 +63,7 @@ export const LookupParameterField = ({ fields, ...props }: LookupParameterFieldP
       <SelectElement
         entry={{ value: param.rule }}
         name="rule"
-        options={OPERATORS[param.field.type.toLowerCase()]}
+        options={ruleOperators}
         onChange={option => setParam({ ...param, rule: option })}
       />
       <TextInputElement
