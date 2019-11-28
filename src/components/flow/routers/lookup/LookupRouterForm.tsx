@@ -3,12 +3,7 @@ import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import { hasErrors } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
-import {
-  nodeToState,
-  stateToNode,
-  LookupDB,
-  LookupQuery
-} from 'components/flow/routers/lookup/helpers';
+import { nodeToState, stateToNode } from 'components/flow/routers/lookup/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import TypeList from 'components/nodeeditor/TypeList';
@@ -22,6 +17,7 @@ import {
   validate
 } from 'store/validators';
 import { LookupParametersForm } from './LookupParametersForm';
+import { LookupDB, LookupQuery } from 'flowTypes';
 
 export interface LookupDBEntry extends FormEntry {
   value: LookupDB;
@@ -94,6 +90,8 @@ export default class LookupRouterForm extends React.Component<
         />
         {this.state.lookupDb.value.id && (
           <LookupParametersForm
+            parameters={[]}
+            onPressAdd={console.log}
             lookup={this.state.lookupDb.value}
             assetStore={this.props.assetStore}
           />

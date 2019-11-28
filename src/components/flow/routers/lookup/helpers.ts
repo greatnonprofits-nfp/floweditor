@@ -9,26 +9,6 @@ import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import { createUUID } from 'utils';
 
-export interface LookupDB {
-  id: string;
-  text: string;
-}
-
-export interface LookupRule {
-  type: string;
-  verbose_name: string;
-}
-
-export interface LookupField {
-  id: string;
-  text: string;
-  type: string;
-}
-
-export interface LookupQuery {
-  [index: number]: { rule: LookupRule; field: LookupField; value: string };
-}
-
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
   const action =
     settings.originalAction ||

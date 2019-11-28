@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './LookupParametersForm.module.scss';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
 import TextInputElement from 'components/form/textinput/TextInputElement';
+import { LookupField, LookupQuery } from 'flowTypes';
 
 const OPERATORS: { [type: string]: SelectOption[] } = {
   date: [{ label: 'has a date equal to', value: 'date_equal' }],
@@ -17,25 +18,14 @@ const OPERATORS: { [type: string]: SelectOption[] } = {
   ]
 };
 
-export interface LookupParameterFieldType {
-  id: string;
-  text: string;
-  type: 'String' | 'Number' | 'Date';
-}
-
-export interface LookupParameter {
-  field: LookupParameterFieldType;
-  rule: SelectOption;
-  value: string;
-}
 export interface LookupParameterFieldProps {
-  fields: LookupParameterFieldType[];
+  fields: LookupField[];
 }
 
 export const LookupParameterField = ({ fields, ...props }: LookupParameterFieldProps) => {
-  const [param, setParam] = React.useState<LookupParameter>({
+  const [param, setParam] = React.useState<LookupQuery>({
     field: { id: '', text: '', type: 'String' },
-    rule: { value: '', label: '' },
+    rule: { type: '', verbose_name: '' },
     value: ''
   });
 
@@ -45,8 +35,8 @@ export const LookupParameterField = ({ fields, ...props }: LookupParameterFieldP
 
   // Reset rule value when selecting a different field type
   React.useEffect(() => {
-    if (!ruleOperators.find(rule => rule.value === param.rule.value)) {
-      setParam({ ...param, rule: { value: '', label: '' } });
+    if (!ruleOperators.find(rule => rule.value === param.rule.type)) {
+      setParam({ ...param, rule: { type: '', verbose_name: '' } });
     }
   }, [param.field.type, ruleOperators]);
 

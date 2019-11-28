@@ -1,22 +1,25 @@
 import React from 'react';
-import { LookupDB } from './helpers';
 import styles from './LookupParametersForm.module.scss';
 import { AssetStore } from 'store/flowContext';
 import axios from 'axios';
-import { LookupParameterFieldType, LookupParameterField } from './LookupParamaterField';
+import { LookupParameterField } from './LookupParamaterField';
+import { LookupField, LookupDB, LookupQuery } from 'flowTypes';
 
 export interface LookupParametersFormProps {
   lookup: LookupDB;
+  parameters: LookupQuery[];
   assetStore: AssetStore;
+  onPressAdd: () => void;
   onChange?: () => void;
 }
 
 export const LookupParametersForm = ({
   lookup,
   assetStore,
+  onPressAdd,
   ...props
 }: LookupParametersFormProps): JSX.Element => {
-  const [fields, setFields] = React.useState<LookupParameterFieldType[]>([]);
+  const [fields, setFields] = React.useState<LookupField[]>([]);
 
   React.useEffect(() => {
     axios
@@ -33,9 +36,10 @@ export const LookupParametersForm = ({
         <div>Rule</div>
         <div>Value</div>
       </div>
+
       <LookupParameterField fields={fields} />
 
-      <div className={styles.footer}>
+      <div className={styles.footer} onClick={onPressAdd}>
         <span className="fe-add" />
       </div>
     </section>
