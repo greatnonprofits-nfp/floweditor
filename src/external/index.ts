@@ -231,6 +231,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         id: 'key',
         items: {}
       },
+      giftcard: {
+        endpoint: getURL(endpoints.giftcard),
+        type: AssetType.GiftCard,
+        id: 'id',
+        items: {}
+      },
       groups: {
         endpoint: getURL(endpoints.groups),
         type: AssetType.Group,

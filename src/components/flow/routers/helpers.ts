@@ -15,7 +15,8 @@ import {
   SwitchRouter,
   TransferAirtime,
   UIConfig,
-  WebhookExitNames
+  WebhookExitNames,
+  CallGiftcard
 } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { createUUID, snakify } from 'utils';
@@ -319,7 +320,7 @@ export const resolveRoutes = (
 };
 
 export const createWebhookBasedNode = (
-  action: CallWebhook | CallResthook | TransferAirtime | CallLookup,
+  action: CallWebhook | CallResthook | TransferAirtime | CallLookup | CallGiftcard,
   originalNode: RenderNode
 ): RenderNode => {
   const exits: Exit[] = [];
@@ -387,6 +388,8 @@ export const createWebhookBasedNode = (
     splitType = Types.split_by_airtime;
   } else if (action.type === Types.call_lookup) {
     splitType = Types.split_by_lookup;
+  } else if (action.type === Types.call_giftcard) {
+    splitType = Types.split_by_giftcard;
   }
 
   return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);

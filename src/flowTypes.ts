@@ -24,6 +24,7 @@ export interface Endpoints {
   lookups: string;
   recents: string;
   fields: string;
+  giftcard: string;
   groups: string;
   recipients: string;
   flows: string;
@@ -329,6 +330,18 @@ export interface CallLookup extends Action {
   result_name: string;
 }
 
+export interface GiftcardType {
+  id: string;
+  text: string;
+}
+
+export interface CallGiftcard extends Action {
+  type: Types.call_giftcard;
+  giftcard_db: GiftcardType;
+  giftcard_type: string;
+  result_name: string;
+}
+
 export interface StartFlow extends Action {
   flow: Flow;
 }
@@ -388,6 +401,7 @@ export type AnyAction =
   | SendEmail
   | CallWebhook
   | CallLookup
+  | CallGiftcard
   | StartFlow
   | StartSession;
 
@@ -432,6 +446,11 @@ export enum StartFlowArgs {
 export enum StartFlowExitNames {
   Complete = 'Complete',
   Expired = 'Expired'
+}
+
+export enum GiftcardExitNames {
+  Success = 'Success',
+  Failure = 'Failure'
 }
 
 export enum WebhookExitNames {
