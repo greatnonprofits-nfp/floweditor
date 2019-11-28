@@ -93,7 +93,10 @@ export default class LookupRouterForm extends React.Component<
           onChange={this.handleDbUpdate}
         />
         {this.state.lookupDb.value.id && (
-          <LookupParametersForm lookup={this.state.lookupDb.value} />
+          <LookupParametersForm
+            lookup={this.state.lookupDb.value}
+            assetStore={this.props.assetStore}
+          />
         )}
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>
