@@ -4,22 +4,24 @@ import { AssetStore } from 'store/flowContext';
 import axios from 'axios';
 import { LookupParameterField } from './LookupParamaterField';
 import { LookupField, LookupDB, LookupQuery } from 'flowTypes';
+import { LookQueryContext } from './Context';
 
 export interface LookupParametersFormProps {
   lookup: LookupDB;
-  parameters: LookupQuery[];
+  queries: LookupQuery[];
   assetStore: AssetStore;
   onPressAdd: () => void;
-  onChange?: () => void;
 }
 
 export const LookupParametersForm = ({
   lookup,
   assetStore,
   onPressAdd,
+  queries,
   ...props
 }: LookupParametersFormProps): JSX.Element => {
   const [fields, setFields] = React.useState<LookupField[]>([]);
+  const lookQueryContext = React.useContext(LookQueryContext);
 
   React.useEffect(() => {
     axios
@@ -36,8 +38,15 @@ export const LookupParametersForm = ({
         <div>Rule</div>
         <div>Value</div>
       </div>
-
-      <LookupParameterField fields={fields} />
+      {queries.map((query, index) => (
+        <LookupParameterField
+          key={`${index}`}
+          fields={fields}
+          query={query}
+          onDelete={() => lookQueryContext.deleteQuery(index)}
+          updateQuery={newQuery => lookQueryContext.updateQuery(newQuery, index)}
+        />
+      ))}
 
       <div className={styles.footer} onClick={onPressAdd}>
         <span className="fe-add" />

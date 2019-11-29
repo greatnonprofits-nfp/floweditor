@@ -18,6 +18,7 @@ import {
 } from 'store/validators';
 import { LookupParametersForm } from './LookupParametersForm';
 import { LookupDB, LookupQuery } from 'flowTypes';
+import { LookQueryContext } from './Context';
 
 export interface LookupDBEntry extends FormEntry {
   value: LookupDB;
@@ -41,6 +42,43 @@ export default class LookupRouterForm extends React.Component<
       include: [/^on/, /^handle/]
     });
   }
+
+  componentDidUpdate() {
+    if (this.state.lookupQueries.length === 0) {
+      this.setState({
+        lookupQueries: [
+          {
+            field: { id: '', text: '', type: 'String' },
+            rule: { type: '', verbose_name: '' },
+            value: ''
+          }
+        ]
+      });
+    }
+  }
+
+  private addLookupQuery = () => {
+    this.setState({
+      lookupQueries: [
+        ...this.state.lookupQueries,
+        {
+          field: { id: '', text: '', type: 'String' },
+          rule: { type: '', verbose_name: '' },
+          value: ''
+        }
+      ]
+    });
+  };
+  private removeLookupQueries = (index: number) => {
+    var lookupQueries = [...this.state.lookupQueries];
+    lookupQueries.splice(index, 1);
+    this.setState({ lookupQueries });
+  };
+  private handleLookupQueries = (newQuery: LookupQuery, index: number) => {
+    var lookupQueries = [...this.state.lookupQueries];
+    lookupQueries[index] = newQuery;
+    this.setState({ lookupQueries });
+  };
 
   private handleUpdateResultName(value: string): void {
     const resultName = validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric]);
@@ -89,12 +127,16 @@ export default class LookupRouterForm extends React.Component<
           onChange={this.handleDbUpdate}
         />
         {this.state.lookupDb.value.id && (
-          <LookupParametersForm
-            parameters={[]}
-            onPressAdd={console.log}
-            lookup={this.state.lookupDb.value}
-            assetStore={this.props.assetStore}
-          />
+          <LookQueryContext.Provider
+            value={{ deleteQuery: this.removeLookupQueries, updateQuery: this.handleLookupQueries }}
+          >
+            <LookupParametersForm
+              queries={this.state.lookupQueries}
+              onPressAdd={this.addLookupQuery}
+              lookup={this.state.lookupDb.value}
+              assetStore={this.props.assetStore}
+            />
+          </LookQueryContext.Provider>
         )}
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>
