@@ -1,5 +1,4 @@
 import { Methods } from 'components/flow/routers/webhook/helpers';
-import { LookupQuery, LookupDB } from 'components/flow/routers/lookup/helpers';
 import { FlowTypes, Operators, Types } from 'config/interfaces';
 
 export interface Languages {
@@ -322,6 +321,28 @@ export interface CallWebhook extends Action {
   result_name: string;
   body?: string;
   headers?: Headers;
+}
+
+export interface LookupDB {
+  id: string;
+  text: string;
+}
+
+export interface LookupRule {
+  type: string;
+  verbose_name: string;
+}
+
+export interface LookupField {
+  id: string;
+  text: string;
+  type: 'String' | 'Number' | 'Date';
+}
+
+export interface LookupQuery {
+  rule: LookupRule;
+  field: LookupField;
+  value: string;
 }
 
 export interface CallLookup extends Action {

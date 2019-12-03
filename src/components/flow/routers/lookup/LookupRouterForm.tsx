@@ -1,17 +1,12 @@
+import * as React from 'react';
 import { react as bindCallbacks } from 'auto-bind';
-import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
+import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import { hasErrors } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
-import {
-  nodeToState,
-  stateToNode,
-  LookupDB,
-  LookupQuery
-} from 'components/flow/routers/lookup/helpers';
+import { nodeToState, stateToNode } from 'components/flow/routers/lookup/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import TypeList from 'components/nodeeditor/TypeList';
-import * as React from 'react';
 import { Asset } from 'store/flowContext';
 import { FormEntry, FormState, mergeForm, StringEntry } from 'store/nodeEditor';
 import {
@@ -21,8 +16,9 @@ import {
   StartIsNonNumeric,
   validate
 } from 'store/validators';
-
-import styles from './LookupRouterForm.module.scss';
+import { LookupParametersForm } from './LookupParametersForm';
+import { LookupDB, LookupQuery } from 'flowTypes';
+import { LookQueryContext } from './Context';
 
 export interface LookupDBEntry extends FormEntry {
   value: LookupDB;
@@ -46,6 +42,43 @@ export default class LookupRouterForm extends React.Component<
       include: [/^on/, /^handle/]
     });
   }
+
+  componentDidUpdate() {
+    if (this.state.lookupQueries.length === 0) {
+      this.setState({
+        lookupQueries: [
+          {
+            field: { id: '', text: '', type: 'String' },
+            rule: { type: '', verbose_name: '' },
+            value: ''
+          }
+        ]
+      });
+    }
+  }
+
+  private addLookupQuery = () => {
+    this.setState({
+      lookupQueries: [
+        ...this.state.lookupQueries,
+        {
+          field: { id: '', text: '', type: 'String' },
+          rule: { type: '', verbose_name: '' },
+          value: ''
+        }
+      ]
+    });
+  };
+  private removeLookupQueries = (index: number) => {
+    var lookupQueries = [...this.state.lookupQueries];
+    lookupQueries.splice(index, 1);
+    this.setState({ lookupQueries });
+  };
+  private handleLookupQueries = (newQuery: LookupQuery, index: number) => {
+    var lookupQueries = [...this.state.lookupQueries];
+    lookupQueries[index] = newQuery;
+    this.setState({ lookupQueries });
+  };
 
   private handleUpdateResultName(value: string): void {
     const resultName = validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric]);
@@ -77,38 +110,36 @@ export default class LookupRouterForm extends React.Component<
     };
   }
 
-  private renderEdit(): JSX.Element {
+  public render(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
-    const tabs: Tab[] = [];
-
     return (
-      <Dialog
-        title={typeConfig.name}
-        headerClass={typeConfig.type}
-        buttons={this.getButtons()}
-        tabs={tabs}
-      >
+      <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <div>Make some queries for lookup...</div>
-        <div className={styles.db}>
-          <AssetSelector
-            name="LookupDb"
-            placeholder="Select the lookup collection"
-            assets={this.props.assetStore.lookups}
-            entry={this.state.lookupDb}
-            searchable={true}
-            onChange={this.handleDbUpdate}
-          />
-        </div>
-        <div>Lookup Parameters...</div>
 
+        <AssetSelector
+          name="LookupDb"
+          placeholder="Select the lookup collection"
+          assets={this.props.assetStore.lookups}
+          entry={this.state.lookupDb}
+          searchable={true}
+          onChange={this.handleDbUpdate}
+        />
+        {this.state.lookupDb.value.id && (
+          <LookQueryContext.Provider
+            value={{ deleteQuery: this.removeLookupQueries, updateQuery: this.handleLookupQueries }}
+          >
+            <LookupParametersForm
+              queries={this.state.lookupQueries}
+              onPressAdd={this.addLookupQuery}
+              lookup={this.state.lookupDb.value}
+              assetStore={this.props.assetStore}
+            />
+          </LookQueryContext.Provider>
+        )}
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>
     );
-  }
-
-  public render(): JSX.Element {
-    return this.renderEdit();
   }
 }
