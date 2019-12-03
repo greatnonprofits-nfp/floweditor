@@ -370,6 +370,7 @@ export interface TrackableLinkType {
 }
 
 export interface TrackableLinkAction extends Action {
+  type: Types.shorten_url;
   shorten_url: TrackableLinkType;
   result_name: string;
 }
