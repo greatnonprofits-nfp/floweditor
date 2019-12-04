@@ -218,6 +218,24 @@ Array [
   },
   Object {
     "aliases": Array [
+      "shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "shorten_url",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
+  Object {
+    "aliases": Array [
       "split_by_resthook",
     ],
     "component": [Function],
@@ -626,6 +644,24 @@ Object {
     "form": [Function],
     "name": "Save Flow Result",
     "type": "set_run_result",
+  },
+  "shorten_url": Object {
+    "aliases": Array [
+      "shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "shorten_url",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
   },
   "split_by_airtime": Object {
     "aliases": Array [

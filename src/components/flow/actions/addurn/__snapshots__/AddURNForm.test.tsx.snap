@@ -101,6 +101,11 @@ exports[`AddURNForm renders 1`] = `
                 Call Giftcard
               </option>
               <option
+                value="shorten_url"
+              >
+                Shorten Trackable Link
+              </option>
+              <option
                 value="call_resthook"
               >
                 Call Zapier

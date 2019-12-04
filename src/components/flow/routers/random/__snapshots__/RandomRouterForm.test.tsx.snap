@@ -318,6 +318,11 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 Call Giftcard
               </option>
               <option
+                value="shorten_url"
+              >
+                Shorten Trackable Link
+              </option>
+              <option
                 value="call_resthook"
               >
                 Call Zapier
@@ -750,6 +755,11 @@ exports[`RandomRouterForm should remove exits when shrinking 1`] = `
                 value="call_giftcard"
               >
                 Call Giftcard
+              </option>
+              <option
+                value="shorten_url"
+              >
+                Shorten Trackable Link
               </option>
               <option
                 value="call_resthook"
