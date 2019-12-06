@@ -172,6 +172,22 @@
 
   // remove language buttons and poptab when we print the flow
   @media print {
+
+    @page {
+      size: landscape
+    }
+    
+    body {
+      -webkit-transform: scale(0.7);
+      -moz-transform: scale(0.7);
+      transform: scale(0.7);
+      -webkit-transform-origin: 0 0;
+      -moz-transform-origin: 0 0;
+      transform-origin: 0 0;
+      margin: 0; 
+      padding: 0;
+    }
+
     .language-selector {
       display: none !important;
     }
