@@ -79,6 +79,14 @@ export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ confi
                 <span>Export to Pdf</span>
               </button>
             )}
+            onBeforePrint={() => {
+              if (
+                window.confirm(
+                  'Please note that if your flow is very large, this might cause some problems in generating the PDF. Do you want to continue?'
+                )
+              )
+                return null;
+            }}
             content={() => componentRef.current}
             copyStyles
           />
