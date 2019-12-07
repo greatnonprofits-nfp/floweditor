@@ -73,20 +73,19 @@ export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ confi
           {/* For Print the content in PDF */}
           <h1 className="flowName">{config.flowName}</h1>
           <ReactToPrint
+            onBeforePrint={() =>
+              window.confirm(
+                'Please note that if your flow is very large, this might cause some problems in generating the PDF. Do you want to continue?'
+              )
+                ? Promise.resolve(true)
+                : Promise.reject(false)
+            }
             trigger={() => (
               <button className={styles.printButton}>
                 <i className="fe-download" />
-                <span>Export to Pdf</span>
+                <span>Export to PDF</span>
               </button>
             )}
-            onBeforePrint={() => {
-              if (
-                window.confirm(
-                  'Please note that if your flow is very large, this might cause some problems in generating the PDF. Do you want to continue?'
-                )
-              )
-                return null;
-            }}
             content={() => componentRef.current}
             copyStyles
           />
