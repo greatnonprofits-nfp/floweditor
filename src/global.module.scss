@@ -174,7 +174,7 @@
   @media print {
 
     @page {
-      size: landscape
+      size: auto;
     }
     
     body {
@@ -194,6 +194,16 @@
 
     .PopTab_tab__2Rm5M {
       display: none;
+    }
+
+    .canvas_container {
+      background-color: white;
+      background-image: none;
+    }
+
+    .Canvas_canvas_container__oR3SR {
+      background-color: white;
+      background-image: none;
     }
 
     .flowName {
