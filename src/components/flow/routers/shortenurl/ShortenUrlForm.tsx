@@ -38,7 +38,7 @@ export default class ShortenUrlForm extends React.Component<RouterFormProps, Sho
 
   private handleShortenUrlUpdate(selected: Asset[], submitting = false): boolean {
     const updates: Partial<ShortenUrlFormState> = {
-      shortenUrl: validate('shortenUrl', selected[0], [shouldRequireIf(submitting)])
+      shortenUrl: validate('shortenUrl', selected[0], [Required, shouldRequireIf(submitting)])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -47,14 +47,19 @@ export default class ShortenUrlForm extends React.Component<RouterFormProps, Sho
   }
 
   private handleSave(): void {
-    this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
-    this.props.onClose(false);
+    if (this.state.valid) {
+      this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
+      this.props.onClose(false);
+    }
   }
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: 'Ok', onClick: this.handleSave, disabled: !this.state.valid },
+      secondary: {
+        name: 'Cancel',
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
