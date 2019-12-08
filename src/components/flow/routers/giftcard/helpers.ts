@@ -8,7 +8,7 @@ import { createWebhookBasedNode } from '../helpers';
 
 export const nodeToState = (settings: NodeEditorSettings): GiftCardRouterFormState => {
   const nodeFirstAction = settings.originalAction || settings.originalNode.node.actions[0];
-  if (nodeFirstAction.type === Types.call_giftcard) {
+  if (nodeFirstAction && nodeFirstAction.type === Types.call_giftcard) {
     const action = nodeFirstAction as CallGiftcard;
     return {
       resultName: { value: action.result_name },
@@ -28,7 +28,7 @@ export const nodeToState = (settings: NodeEditorSettings): GiftCardRouterFormSta
     giftcardDb: {
       value: { id: '', name: '', type: AssetType.GiftCard }
     },
-    giftcardType: { value: '' },
+    giftcardType: { value: 'GIFTCARD_ASSIGNING' },
     valid: false
   };
 };
