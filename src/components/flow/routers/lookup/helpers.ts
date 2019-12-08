@@ -9,7 +9,7 @@ import { createUUID } from 'utils';
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
   const action = settings.originalAction || settings.originalNode.node.actions[0];
 
-  if (action.type === Types.call_lookup) {
+  if (action && action.type === Types.call_lookup) {
     return action as CallLookup;
   }
 };

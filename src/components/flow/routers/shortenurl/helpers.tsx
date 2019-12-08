@@ -22,7 +22,7 @@ export interface ShortenUrlFormState extends FormState {
 
 export const nodeToState = (settings: NodeEditorSettings): ShortenUrlFormState => {
   const nodeFirstAction = settings.originalAction || settings.originalNode.node.actions[0];
-  if (nodeFirstAction.type === Types.shorten_url) {
+  if (nodeFirstAction && nodeFirstAction.type === Types.shorten_url) {
     const action = nodeFirstAction as TrackableLinkAction;
 
     return {
