@@ -10,9 +10,7 @@ import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import { createUUID } from 'utils';
 
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
-  const action =
-    settings.originalAction ||
-    (settings.originalNode.node.actions.length > 0 && settings.originalNode.node.actions[0]);
+  const action = settings.originalAction || settings.originalNode.node.actions[0];
 
   if (action.type === Types.call_lookup) {
     return action as CallLookup;
@@ -20,7 +18,6 @@ export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
 };
 
 export const nodeToState = (settings: NodeEditorSettings): LookupRouterFormState => {
-  // TODO: work out an incremental result name
   const resultName: StringEntry = { value: 'Result' };
   const _lookupDb: LookupDBEntry = { value: { id: '', text: '' } };
 

@@ -7,8 +7,9 @@ import { AssetType, RenderNode } from 'store/flowContext';
 import { createWebhookBasedNode } from '../helpers';
 
 export const nodeToState = (settings: NodeEditorSettings): GiftCardRouterFormState => {
-  if (settings.originalAction && settings.originalAction.type === Types.call_giftcard) {
-    const action = settings.originalAction as CallGiftcard;
+  const nodeFirstAction = settings.originalAction || settings.originalNode.node.actions[0];
+  if (nodeFirstAction.type === Types.call_giftcard) {
+    const action = nodeFirstAction as CallGiftcard;
     return {
       resultName: { value: action.result_name },
       giftcardDb: {
