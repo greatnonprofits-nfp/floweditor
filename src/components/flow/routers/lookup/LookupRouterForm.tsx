@@ -8,7 +8,7 @@ import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import TypeList from 'components/nodeeditor/TypeList';
 import { Asset } from 'store/flowContext';
-import { FormEntry, FormState, mergeForm, StringEntry } from 'store/nodeEditor';
+import { FormEntry, FormState, mergeForm, StringEntry, AssetEntry } from 'store/nodeEditor';
 import {
   Alphanumeric,
   Required,
@@ -25,7 +25,7 @@ export interface LookupDBEntry extends FormEntry {
 }
 
 export interface LookupRouterFormState extends FormState {
-  lookupDb: LookupDBEntry;
+  lookupDb: AssetEntry;
   lookupQueries: LookupQuery[];
   resultName: StringEntry;
 }
@@ -133,7 +133,7 @@ export default class LookupRouterForm extends React.Component<
             <LookupParametersForm
               queries={this.state.lookupQueries}
               onPressAdd={this.addLookupQuery}
-              lookup={this.state.lookupDb.value}
+              lookup={this.state.lookupDb}
               assetStore={this.props.assetStore}
             />
           </LookQueryContext.Provider>
