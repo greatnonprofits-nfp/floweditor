@@ -101,7 +101,7 @@ exports[`AddURNForm renders 1`] = `
                 Call Giftcard
               </option>
               <option
-                value="shorten_url"
+                value="call_shorten_url"
               >
                 Shorten Trackable Link
               </option>

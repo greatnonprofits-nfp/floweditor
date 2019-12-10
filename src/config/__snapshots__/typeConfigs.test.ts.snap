@@ -218,7 +218,7 @@ Array [
   },
   Object {
     "aliases": Array [
-      "shorten_url",
+      "split_by_shorten_url",
     ],
     "component": [Function],
     "description": "Shorten Trackable Link",
@@ -228,7 +228,7 @@ Array [
       "exits",
     ],
     "name": "Shorten Trackable Link",
-    "type": "shorten_url",
+    "type": "call_shorten_url",
     "visibility": Array [
       "message",
       "voice",
@@ -647,7 +647,7 @@ Object {
   },
   "shorten_url": Object {
     "aliases": Array [
-      "shorten_url",
+      "split_by_shorten_url",
     ],
     "component": [Function],
     "description": "Shorten Trackable Link",
@@ -657,7 +657,7 @@ Object {
       "exits",
     ],
     "name": "Shorten Trackable Link",
-    "type": "shorten_url",
+    "type": "call_shorten_url",
     "visibility": Array [
       "message",
       "voice",
