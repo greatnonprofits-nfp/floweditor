@@ -8,6 +8,8 @@ interface SelectElementProps extends FormElementProps {
   options: any;
   placeholder?: string;
   styles?: StylesConfig;
+  getOptionLabel?: (item: any) => string;
+  getOptionValue?: (item: any) => string;
 }
 
 export interface SelectOption {
@@ -29,6 +31,8 @@ export default class SelectElement extends React.Component<SelectElementProps> {
           isSearchable={false}
           isClearable={false}
           options={this.props.options}
+          getOptionLabel={this.props.getOptionLabel}
+          getOptionValue={this.props.getOptionValue}
         />
       </FormElement>
     );

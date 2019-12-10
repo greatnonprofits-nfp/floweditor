@@ -1,4 +1,4 @@
-@import "variables.module.scss";
+@import 'variables.module.scss';
 
 .random {
   background: $light_gray;
@@ -78,7 +78,10 @@
 }
 
 .call_resthook,
-.call_webhook {
+.call_webhook,
+.call_giftcard,
+.shorten_url,
+.call_lookup {
   background: $orange;
 }
 

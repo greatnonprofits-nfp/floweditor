@@ -20,8 +20,11 @@ export interface Environment {
 export interface Endpoints {
   attachments: string;
   resthooks: string;
+  lookups: string;
   recents: string;
   fields: string;
+  giftcard: string;
+  link: string;
   groups: string;
   recipients: string;
   flows: string;
@@ -321,6 +324,57 @@ export interface CallWebhook extends Action {
   headers?: Headers;
 }
 
+export interface LookupDB {
+  id: string;
+  text: string;
+}
+
+export interface LookupRule {
+  type: string;
+  verbose_name: string;
+}
+
+export interface LookupField {
+  id: string;
+  text: string;
+  type: 'String' | 'Number' | 'Date';
+}
+
+export interface LookupQuery {
+  rule: LookupRule;
+  field: LookupField;
+  value: string;
+}
+
+export interface CallLookup extends Action {
+  lookup_db: LookupDB;
+  lookup_queries: LookupQuery[];
+  result_name: string;
+}
+
+export interface GiftcardType {
+  id: string;
+  text: string;
+}
+
+export interface CallGiftcard extends Action {
+  type: Types.call_giftcard;
+  giftcard_db: GiftcardType;
+  giftcard_type: string;
+  result_name: string;
+}
+
+export interface TrackableLinkType {
+  id: string;
+  text: string;
+}
+
+export interface TrackableLinkAction extends Action {
+  type: Types.shorten_url;
+  shorten_url: TrackableLinkType;
+  result_name: string;
+}
+
 export interface StartFlow extends Action {
   flow: Flow;
 }
@@ -379,8 +433,11 @@ export type AnyAction =
   | SetPreferredChannel
   | SendEmail
   | CallWebhook
+  | CallLookup
+  | CallGiftcard
   | StartFlow
-  | StartSession;
+  | StartSession
+  | TrackableLinkAction;
 
 export enum ContactProperties {
   UUID = 'uuid',
@@ -423,6 +480,11 @@ export enum StartFlowArgs {
 export enum StartFlowExitNames {
   Complete = 'Complete',
   Expired = 'Expired'
+}
+
+export enum GiftcardExitNames {
+  Success = 'Success',
+  Failure = 'Failure'
 }
 
 export enum WebhookExitNames {

@@ -37,8 +37,8 @@
   </body>
 
   <script>
-      var base = '/.netlify/functions/';
-      var config = {
+    var base = '/.netlify/functions/';
+    var config = {
       flow: 'a4f64f1b-85bc-477e-b706-de313a022979',
       flowType: 'message',
       localStorage: true,
@@ -50,6 +50,9 @@
         labels: base + 'labels',
         channels: base + 'channels',
         resthooks: base + 'resthooks',
+        link: base + 'link',
+        lookups: base + 'lookups',
+        giftcard: base + 'giftcards',
         templates: base + 'templates',
         flows: base + 'flows',
         revisions: base + 'revisions',
@@ -64,11 +67,10 @@
         editor: '/',
 
         simulateStart: null,
-        simulateResume:  null
+        simulateResume: null
       }
     };
 
     showFlowEditor(document.getElementById('floweditor'), config);
-   
-    </script>
+  </script>
 </html>
