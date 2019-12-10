@@ -397,8 +397,8 @@ export const createWebhookBasedNode = (
     splitType = Types.split_by_lookup;
   } else if (action.type === Types.call_giftcard) {
     splitType = Types.split_by_giftcard;
-  } else if (action.type === Types.shorten_url) {
-    splitType = Types.shorten_url;
+  } else if (action.type === Types.call_shorten_url) {
+    splitType = Types.split_by_shorten_url;
   }
 
   return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);

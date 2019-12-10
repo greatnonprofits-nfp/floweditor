@@ -251,14 +251,14 @@ export const typeConfigList: Type[] = [
     visibility: ONLINE
   },
   {
-    type: Types.shorten_url,
+    type: Types.call_shorten_url,
     name: 'Shorten Trackable Link',
     description: 'Shorten Trackable Link',
     form: ShortenUrlForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
     component: ShortenUrlComp,
-    aliases: [Types.shorten_url],
+    aliases: [Types.split_by_shorten_url],
     visibility: ONLINE
   },
   {
