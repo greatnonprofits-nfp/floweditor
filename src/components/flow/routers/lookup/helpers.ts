@@ -1,31 +1,26 @@
 import { createWebhookBasedNode } from 'components/flow/routers/helpers';
-import {
-  LookupRouterFormState,
-  LookupDBEntry
-} from 'components/flow/routers/lookup/LookupRouterForm';
+import { LookupRouterFormState } from 'components/flow/routers/lookup/LookupRouterForm';
 import { Types } from 'config/interfaces';
 import { CallLookup } from 'flowTypes';
-import { RenderNode } from 'store/flowContext';
+import { RenderNode, AssetType } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import { createUUID } from 'utils';
 
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
-  const action =
-    settings.originalAction ||
-    (settings.originalNode.node.actions.length > 0 && settings.originalNode.node.actions[0]);
+  const action = settings.originalAction || settings.originalNode.node.actions[0];
 
-  if (action.type === Types.call_lookup) {
+  if (action && action.type === Types.call_lookup) {
     return action as CallLookup;
   }
 };
 
 export const nodeToState = (settings: NodeEditorSettings): LookupRouterFormState => {
-  // TODO: work out an incremental result name
   const resultName: StringEntry = { value: 'Result' };
-  const _lookupDb: LookupDBEntry = { value: { id: '', text: '' } };
 
   const state: LookupRouterFormState = {
-    lookupDb: _lookupDb,
+    lookupDb: {
+      value: { id: '', name: '', type: AssetType.Lookup }
+    },
     lookupQueries: [],
     resultName,
     valid: false
@@ -35,7 +30,13 @@ export const nodeToState = (settings: NodeEditorSettings): LookupRouterFormState
     const action = getOriginalAction(settings) as CallLookup;
 
     state.resultName = { value: action.result_name };
-    state.lookupDb = { value: action.lookup_db };
+    state.lookupDb = {
+      value: {
+        id: action.lookup_db.id,
+        name: action.lookup_db.text,
+        type: AssetType.Lookup
+      }
+    };
     state.lookupQueries = action.lookup_queries;
     state.valid = true;
   }
@@ -58,9 +59,12 @@ export const stateToNode = (
     uuid,
     lookup_queries: state.lookupQueries,
     type: Types.call_lookup,
-    lookup_db: state.lookupDb.value,
+    lookup_db: {
+      id: state.lookupDb.value.id,
+      text: state.lookupDb.value.name
+    },
     result_name: state.resultName.value
   };
-
+  console.log(newAction);
   return createWebhookBasedNode(newAction, settings.originalNode);
 };

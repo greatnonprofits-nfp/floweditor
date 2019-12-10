@@ -61,7 +61,8 @@ export enum AssetType {
   Remove = 'remove',
   ContactProperty = 'property',
   Scheme = 'scheme',
-  Expression = 'expression'
+  Expression = 'expression',
+  TrackableLink = 'shorten_url'
 }
 
 export interface Reference {

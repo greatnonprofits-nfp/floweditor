@@ -220,6 +220,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         items: {},
         id: 'iso'
       },
+      shorten_url: {
+        endpoint: getURL(endpoints.link),
+        type: AssetType.TrackableLink,
+        id: 'id',
+        items: {}
+      },
       flows: {
         endpoint: getURL(endpoints.flows),
         type: AssetType.Flow,

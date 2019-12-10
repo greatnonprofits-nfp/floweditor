@@ -38,6 +38,7 @@ export enum Types {
   split_by_webhook = 'split_by_webhook',
   split_by_giftcard = 'split_by_giftcard',
   split_by_lookup = 'split_by_lookup',
+  shorten_url = 'shorten_url',
   wait_for_response = 'wait_for_response',
   wait_for_menu = 'wait_for_menu',
   wait_for_digits = 'wait_for_digits',

@@ -48,6 +48,8 @@ import { HintTypes, RouterTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
 import { GiftcardComp } from 'components/flow/actions/giftcard';
+import ShortenUrlComp from 'components/flow/actions/shortenurl/ShortenUrl';
+import ShortenUrlForm from 'components/flow/routers/shortenurl/ShortenUrlForm';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -246,6 +248,17 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: GiftcardComp,
     aliases: [Types.split_by_giftcard],
+    visibility: ONLINE
+  },
+  {
+    type: Types.shorten_url,
+    name: 'Shorten Trackable Link',
+    description: 'Shorten Trackable Link',
+    form: ShortenUrlForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: ShortenUrlComp,
+    aliases: [Types.shorten_url],
     visibility: ONLINE
   },
   {

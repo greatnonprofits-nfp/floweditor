@@ -24,6 +24,7 @@ export interface Endpoints {
   recents: string;
   fields: string;
   giftcard: string;
+  link: string;
   groups: string;
   recipients: string;
   flows: string;
@@ -363,6 +364,17 @@ export interface CallGiftcard extends Action {
   result_name: string;
 }
 
+export interface TrackableLinkType {
+  id: string;
+  text: string;
+}
+
+export interface TrackableLinkAction extends Action {
+  type: Types.shorten_url;
+  shorten_url: TrackableLinkType;
+  result_name: string;
+}
+
 export interface StartFlow extends Action {
   flow: Flow;
 }
@@ -424,7 +436,8 @@ export type AnyAction =
   | CallLookup
   | CallGiftcard
   | StartFlow
-  | StartSession;
+  | StartSession
+  | TrackableLinkAction;
 
 export enum ContactProperties {
   UUID = 'uuid',

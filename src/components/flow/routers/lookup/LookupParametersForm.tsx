@@ -3,11 +3,12 @@ import styles from './LookupParametersForm.module.scss';
 import { AssetStore } from 'store/flowContext';
 import axios from 'axios';
 import { LookupParameterField } from './LookupParamaterField';
-import { LookupField, LookupDB, LookupQuery } from 'flowTypes';
+import { LookupField, LookupQuery } from 'flowTypes';
 import { LookQueryContext } from './Context';
+import { AssetEntry } from 'store/nodeEditor';
 
 export interface LookupParametersFormProps {
-  lookup: LookupDB;
+  lookup: AssetEntry;
   queries: LookupQuery[];
   assetStore: AssetStore;
   onPressAdd: () => void;
@@ -25,10 +26,10 @@ export const LookupParametersForm = ({
 
   React.useEffect(() => {
     axios
-      .get(assetStore.lookups.endpoint, { params: { db: lookup.id } })
+      .get(assetStore.lookups.endpoint, { params: { db: lookup.value.id } })
       .then(response => response.data.results)
       .then(setFields);
-  }, [lookup.id, assetStore.lookups.endpoint]);
+  }, [lookup.value.id, assetStore.lookups.endpoint]);
 
   return (
     <section className={styles.lookup_parameters}>

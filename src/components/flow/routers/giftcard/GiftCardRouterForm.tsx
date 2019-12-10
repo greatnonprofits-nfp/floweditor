@@ -5,7 +5,13 @@ import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import TypeList from 'components/nodeeditor/TypeList';
 import { createResultNameInput } from '../widgets';
 import { nodeToState, stateToNode } from './helpers';
-import { validate, Alphanumeric, StartIsNonNumeric, shouldRequireIf } from 'store/validators';
+import {
+  validate,
+  Alphanumeric,
+  StartIsNonNumeric,
+  shouldRequireIf,
+  Required
+} from 'store/validators';
 import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
@@ -43,7 +49,7 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
   };
 
   private handleUpdateResultName = (value: string): void => {
-    const resultName = validate('resultName', value, [Alphanumeric, StartIsNonNumeric]);
+    const resultName = validate('resultName', value, [Alphanumeric, StartIsNonNumeric, Required]);
 
     this.setState({
       resultName,
@@ -53,7 +59,7 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
 
   public handleGiftcardChanged = (selected: Asset[], submitting = false): boolean => {
     const updates: Partial<GiftCardRouterFormState> = {
-      giftcardDb: validate('giftcardDb', selected[0], [shouldRequireIf(submitting)])
+      giftcardDb: validate('giftcardDb', selected[0], [Required, shouldRequireIf(submitting)])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -63,7 +69,7 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
 
   private getButtons = (): ButtonSet => {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
+      primary: { name: 'Ok', onClick: this.handleSave, disabled: !this.state.valid },
       secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
     };
   };
