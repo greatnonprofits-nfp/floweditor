@@ -1,10 +1,24 @@
 import { createWebhookBasedNode } from 'components/flow/routers/helpers';
 import { LookupRouterFormState } from 'components/flow/routers/lookup/LookupRouterForm';
 import { Types } from 'config/interfaces';
-import { CallLookup } from 'flowTypes';
+import { CallLookup, LookupField, LookupRule } from 'flowTypes';
 import { RenderNode, AssetType } from 'store/flowContext';
-import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
+import { NodeEditorSettings, StringEntry, FormEntry } from 'store/nodeEditor';
 import { createUUID } from 'utils';
+
+export interface LookupQueryFieldEntry extends FormEntry {
+  value: LookupField;
+}
+
+export interface LookupQueryRuleEntry extends FormEntry {
+  value: LookupRule;
+}
+
+export interface LookupQueryEntry extends FormEntry {
+  field: LookupQueryFieldEntry;
+  rule: LookupQueryRuleEntry;
+  value: StringEntry;
+}
 
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
   const action = settings.originalAction || settings.originalNode.node.actions[0];
@@ -37,7 +51,11 @@ export const nodeToState = (settings: NodeEditorSettings): LookupRouterFormState
         type: AssetType.Lookup
       }
     };
-    state.lookupQueries = action.lookup_queries;
+    state.lookupQueries = action.lookup_queries.map(query => ({
+      field: { value: query.field },
+      rule: { value: query.rule },
+      value: { value: query.value }
+    }));
     state.valid = true;
   }
 
@@ -57,7 +75,11 @@ export const stateToNode = (
 
   const newAction: CallLookup = {
     uuid,
-    lookup_queries: state.lookupQueries,
+    lookup_queries: state.lookupQueries.map(query => ({
+      field: query.field.value,
+      rule: query.rule.value,
+      value: query.value.value
+    })),
     type: Types.call_lookup,
     lookup_db: {
       id: state.lookupDb.value.id,
@@ -65,6 +87,6 @@ export const stateToNode = (
     },
     result_name: state.resultName.value
   };
-  console.log(newAction);
+
   return createWebhookBasedNode(newAction, settings.originalNode);
 };

@@ -6,10 +6,12 @@ import { LookupParameterField } from './LookupParamaterField';
 import { LookupField, LookupQuery } from 'flowTypes';
 import { LookQueryContext } from './Context';
 import { AssetEntry } from 'store/nodeEditor';
+import { LookupQueryEntry } from './helpers';
 
 export interface LookupParametersFormProps {
   lookup: AssetEntry;
-  queries: LookupQuery[];
+  valid: boolean;
+  queries: LookupQueryEntry[];
   assetStore: AssetStore;
   onPressAdd: () => void;
 }
@@ -49,9 +51,11 @@ export const LookupParametersForm = ({
         />
       ))}
 
-      <div className={styles.footer} onClick={onPressAdd}>
-        <span className="fe-add" />
-      </div>
+      {props.valid && (
+        <div className={styles.footer} onClick={onPressAdd}>
+          <span className="fe-add" />
+        </div>
+      )}
     </section>
   );
 };
