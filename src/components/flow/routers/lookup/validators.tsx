@@ -1,12 +1,35 @@
-import { LookupQuery } from 'flowTypes';
 import { validate, Required } from 'store/validators';
-import { LookupQueryEntry } from './helpers';
+import { LookupQueryEntry, LookupQueryFieldEntry, LookupQueryRuleEntry } from './helpers';
+import { LookupField, LookupRule } from 'flowTypes';
 
-export const validateLookupQuery = (query: LookupQuery) => {
+const validateLookupField = (field: LookupField): LookupQueryFieldEntry => {
+  return {
+    value: field,
+    validationFailures: Required('field', field.id).failures
+  };
+};
+
+const validateLookupRule = (rule: LookupRule): LookupQueryRuleEntry => {
+  return {
+    value: rule,
+    validationFailures: Required('rule', rule.type).failures
+  };
+};
+
+export const validateLookupQuery = (query: LookupQueryEntry) => {
+  const field = validateLookupField(query.field.value);
+  const rule = validateLookupRule(query.rule.value);
+  const value = validate('value', query.value.value, [Required]);
+
   const updates: LookupQueryEntry = {
-    field: validate('field', query.field && query.field.id, [Required]),
-    rule: validate('rule', query.rule && query.rule.type, [Required]),
-    value: validate('value', query.value, [Required])
+    field,
+    rule,
+    value,
+    validationFailures: [].concat(
+      ...field.validationFailures,
+      ...rule.validationFailures,
+      ...value.validationFailures
+    )
   };
   return updates;
 };

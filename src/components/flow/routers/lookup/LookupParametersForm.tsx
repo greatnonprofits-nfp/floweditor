@@ -6,11 +6,12 @@ import { LookupParameterField } from './LookupParamaterField';
 import { LookupField, LookupQuery } from 'flowTypes';
 import { LookQueryContext } from './Context';
 import { AssetEntry } from 'store/nodeEditor';
+import { LookupQueryEntry } from './helpers';
 
 export interface LookupParametersFormProps {
   lookup: AssetEntry;
   valid: boolean;
-  queries: LookupQuery[];
+  queries: LookupQueryEntry[];
   assetStore: AssetStore;
   onPressAdd: () => void;
 }

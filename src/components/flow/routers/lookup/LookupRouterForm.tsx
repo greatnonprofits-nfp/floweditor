@@ -3,7 +3,7 @@ import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import { hasErrors } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
-import { nodeToState, stateToNode } from 'components/flow/routers/lookup/helpers';
+import { nodeToState, stateToNode, LookupQueryEntry } from 'components/flow/routers/lookup/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import TypeList from 'components/nodeeditor/TypeList';
@@ -17,13 +17,12 @@ import {
   validate
 } from 'store/validators';
 import { LookupParametersForm } from './LookupParametersForm';
-import { LookupQuery } from 'flowTypes';
 import { LookQueryContext } from './Context';
 import { validateLookupQuery } from './validators';
 
 export interface LookupRouterFormState extends FormState {
   lookupDb: AssetEntry;
-  lookupQueries: LookupQuery[];
+  lookupQueries: LookupQueryEntry[];
   resultName: StringEntry;
 }
 
@@ -45,9 +44,9 @@ export default class LookupRouterForm extends React.Component<
       this.setState({
         lookupQueries: [
           {
-            field: { id: '', text: '', type: 'String' },
-            rule: { type: '', verbose_name: '' },
-            value: ''
+            field: { value: { id: '', text: '', type: 'String' } },
+            rule: { value: { type: '', verbose_name: '' } },
+            value: { value: '' }
           }
         ]
       });
@@ -59,11 +58,17 @@ export default class LookupRouterForm extends React.Component<
       lookupQueries: [
         ...this.state.lookupQueries,
         {
-          field: { id: '', text: '', type: 'String' },
-          rule: { type: '', verbose_name: '' },
-          value: ''
+          field: { value: { id: '', text: '', type: 'String' } },
+          rule: { value: { type: '', verbose_name: '' } },
+          value: { value: '' }
         }
       ]
+    });
+  };
+
+  private validateLookupQueries = (queries: LookupQueryEntry[]) => {
+    return !queries.map(validateLookupQuery).find(query => {
+      return hasErrors(query);
     });
   };
 
@@ -71,20 +76,20 @@ export default class LookupRouterForm extends React.Component<
     var lookupQueries = [...this.state.lookupQueries];
     lookupQueries.splice(index, 1);
 
-    const valid = !lookupQueries.map(validateLookupQuery).find(query => {
-      return hasErrors(query.rule) || hasErrors(query.value) || hasErrors(query.field);
+    this.setState({
+      lookupQueries,
+      valid: this.validateLookupQueries(lookupQueries)
     });
-    this.setState({ lookupQueries, valid });
   };
 
-  private handleLookupQueries = (newQuery: LookupQuery, index: number) => {
+  private handleLookupQueries = (newQuery: LookupQueryEntry, index: number) => {
     var lookupQueries = [...this.state.lookupQueries];
-    lookupQueries[index] = newQuery;
+    lookupQueries[index] = validateLookupQuery(newQuery);
 
-    const valid = !lookupQueries.map(validateLookupQuery).find(query => {
-      return hasErrors(query.rule) || hasErrors(query.value) || hasErrors(query.field);
+    this.setState({
+      lookupQueries,
+      valid: this.validateLookupQueries(lookupQueries)
     });
-    this.setState({ lookupQueries, valid });
   };
 
   private handleUpdateResultName(value: string): void {
@@ -141,7 +146,7 @@ export default class LookupRouterForm extends React.Component<
               queries={this.state.lookupQueries}
               onPressAdd={this.addLookupQuery}
               lookup={this.state.lookupDb}
-              valid={this.state.valid}
+              valid={this.validateLookupQueries(this.state.lookupQueries)}
               assetStore={this.props.assetStore}
             />
           </LookQueryContext.Provider>

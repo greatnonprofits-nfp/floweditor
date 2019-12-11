@@ -1,8 +1,8 @@
 import React from 'react';
-import { LookupQuery } from 'flowTypes';
+import { LookupQueryEntry } from './helpers';
 
 export interface LookQueryContextType {
-  updateQuery: (query: LookupQuery, atIndex: number) => void;
+  updateQuery: (query: LookupQueryEntry, atIndex: number) => void;
   deleteQuery: (atIndex: number) => void;
 }
 
