@@ -141,6 +141,7 @@ export default class LookupRouterForm extends React.Component<
               queries={this.state.lookupQueries}
               onPressAdd={this.addLookupQuery}
               lookup={this.state.lookupDb}
+              valid={this.state.valid}
               assetStore={this.props.assetStore}
             />
           </LookQueryContext.Provider>

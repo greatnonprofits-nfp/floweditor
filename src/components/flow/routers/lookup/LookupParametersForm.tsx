@@ -9,6 +9,7 @@ import { AssetEntry } from 'store/nodeEditor';
 
 export interface LookupParametersFormProps {
   lookup: AssetEntry;
+  valid: boolean;
   queries: LookupQuery[];
   assetStore: AssetStore;
   onPressAdd: () => void;
@@ -49,9 +50,11 @@ export const LookupParametersForm = ({
         />
       ))}
 
-      <div className={styles.footer} onClick={onPressAdd}>
-        <span className="fe-add" />
-      </div>
+      {props.valid && (
+        <div className={styles.footer} onClick={onPressAdd}>
+          <span className="fe-add" />
+        </div>
+      )}
     </section>
   );
 };
