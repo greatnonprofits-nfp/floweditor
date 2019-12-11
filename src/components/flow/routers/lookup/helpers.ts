@@ -1,10 +1,16 @@
 import { createWebhookBasedNode } from 'components/flow/routers/helpers';
 import { LookupRouterFormState } from 'components/flow/routers/lookup/LookupRouterForm';
 import { Types } from 'config/interfaces';
-import { CallLookup } from 'flowTypes';
+import { CallLookup, LookupField } from 'flowTypes';
 import { RenderNode, AssetType } from 'store/flowContext';
-import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
+import { NodeEditorSettings, StringEntry, FormEntry } from 'store/nodeEditor';
 import { createUUID } from 'utils';
+
+export interface LookupQueryEntry extends FormEntry {
+  field: StringEntry;
+  rule: StringEntry;
+  value: StringEntry;
+}
 
 export const getOriginalAction = (settings: NodeEditorSettings): CallLookup => {
   const action = settings.originalAction || settings.originalNode.node.actions[0];

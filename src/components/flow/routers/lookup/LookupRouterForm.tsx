@@ -8,7 +8,7 @@ import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import TypeList from 'components/nodeeditor/TypeList';
 import { Asset } from 'store/flowContext';
-import { FormEntry, FormState, mergeForm, StringEntry, AssetEntry } from 'store/nodeEditor';
+import { FormState, mergeForm, StringEntry, AssetEntry } from 'store/nodeEditor';
 import {
   Alphanumeric,
   Required,
@@ -17,12 +17,9 @@ import {
   validate
 } from 'store/validators';
 import { LookupParametersForm } from './LookupParametersForm';
-import { LookupDB, LookupQuery } from 'flowTypes';
+import { LookupQuery } from 'flowTypes';
 import { LookQueryContext } from './Context';
-
-export interface LookupDBEntry extends FormEntry {
-  value: LookupDB;
-}
+import { validateLookupQuery } from './validators';
 
 export interface LookupRouterFormState extends FormState {
   lookupDb: AssetEntry;
@@ -69,15 +66,25 @@ export default class LookupRouterForm extends React.Component<
       ]
     });
   };
+
   private removeLookupQueries = (index: number) => {
     var lookupQueries = [...this.state.lookupQueries];
     lookupQueries.splice(index, 1);
-    this.setState({ lookupQueries });
+
+    const valid = !lookupQueries.map(validateLookupQuery).find(query => {
+      return hasErrors(query.rule) || hasErrors(query.value) || hasErrors(query.field);
+    });
+    this.setState({ lookupQueries, valid });
   };
+
   private handleLookupQueries = (newQuery: LookupQuery, index: number) => {
     var lookupQueries = [...this.state.lookupQueries];
     lookupQueries[index] = newQuery;
-    this.setState({ lookupQueries });
+
+    const valid = !lookupQueries.map(validateLookupQuery).find(query => {
+      return hasErrors(query.rule) || hasErrors(query.value) || hasErrors(query.field);
+    });
+    this.setState({ lookupQueries, valid });
   };
 
   private handleUpdateResultName(value: string): void {
@@ -105,7 +112,7 @@ export default class LookupRouterForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
+      primary: { name: 'Ok', onClick: this.handleSave, disabled: !this.state.valid },
       secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
     };
   }
