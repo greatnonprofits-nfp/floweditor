@@ -4,6 +4,7 @@ import AddURNComp from 'components/flow/actions/addurn/AddURN';
 import AddURNForm from 'components/flow/actions/addurn/AddURNForm';
 import CallResthookComp from 'components/flow/actions/callresthook/CallResthook';
 import CallWebhookComp from 'components/flow/actions/callwebhook/CallWebhook';
+import CallLookupComp from 'components/flow/actions/calllookup/CallLookup';
 import AddGroupsForm from 'components/flow/actions/changegroups/addgroups/AddGroupsForm';
 import ChangeGroupsComp from 'components/flow/actions/changegroups/ChangeGroups';
 import RemoveGroupsForm from 'components/flow/actions/changegroups/removegroups/RemoveGroupsForm';
@@ -41,9 +42,14 @@ import ResultRouterForm from 'components/flow/routers/result/ResultRouterForm';
 import SubflowRouterForm from 'components/flow/routers/subflow/SubflowRouterForm';
 import WaitRouterForm from 'components/flow/routers/wait/WaitRouterForm';
 import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm';
+import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
 import { HIDDEN, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
 import { HintTypes, RouterTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
+import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
+import { GiftcardComp } from 'components/flow/actions/giftcard';
+import ShortenUrlComp from 'components/flow/actions/shortenurl/ShortenUrl';
+import ShortenUrlForm from 'components/flow/routers/shortenurl/ShortenUrlForm';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -220,6 +226,39 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: CallWebhookComp,
     aliases: [Types.split_by_webhook],
+    visibility: ONLINE
+  },
+  {
+    type: Types.call_lookup,
+    name: 'Call Lookup',
+    description: 'Call Lookup',
+    form: LookupRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: CallLookupComp,
+    aliases: [Types.split_by_lookup],
+    visibility: ONLINE
+  },
+  {
+    type: Types.call_giftcard,
+    name: 'Call Giftcard',
+    description: 'Call Giftcard',
+    form: GiftCardRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: GiftcardComp,
+    aliases: [Types.split_by_giftcard],
+    visibility: ONLINE
+  },
+  {
+    type: Types.call_shorten_url,
+    name: 'Shorten Trackable Link',
+    description: 'Shorten Trackable Link',
+    form: ShortenUrlForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: ShortenUrlComp,
+    aliases: [Types.split_by_shorten_url],
     visibility: ONLINE
   },
   {

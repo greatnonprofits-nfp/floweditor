@@ -47,11 +47,13 @@ export enum AssetType {
   Template = 'template',
   Revision = 'revision',
   Flow = 'flow',
+  GiftCard = 'giftcard',
   Group = 'group',
   Field = 'field',
   Result = 'result',
   Contact = 'contact',
   Resthook = 'resthook',
+  Lookup = 'lookup',
   URN = 'urn',
   Label = 'label',
   Language = 'language',
@@ -59,7 +61,8 @@ export enum AssetType {
   Remove = 'remove',
   ContactProperty = 'property',
   Scheme = 'scheme',
-  Expression = 'expression'
+  Expression = 'expression',
+  TrackableLink = 'shorten_url'
 }
 
 export interface Reference {
