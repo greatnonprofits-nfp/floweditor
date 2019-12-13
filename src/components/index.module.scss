@@ -70,3 +70,45 @@
   right: 110px;
   z-index: $z_saving;
 }
+
+.printButton {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  right: -62px;
+  top: 240px;
+  z-index: 1000;
+  padding: 5px 8px;
+  width: 100px;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  color: white;
+  background-color: $button_light;
+  border-radius: 6px 0 0 6px;
+  transition: right 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  line-height: 20px;
+  i {
+    display: inline-block;
+    font-size: 25px;
+    width: 25px;
+  }
+
+  span {
+    text-align: left;
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.8s;
+  }
+
+  &:hover {
+    background-color: $button_hover;
+    right: -5px;
+
+    span {
+      opacity: 1;
+    }
+  }
+}
