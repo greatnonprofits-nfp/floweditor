@@ -1,5 +1,4 @@
 import { react as bindCallbacks } from 'auto-bind';
-import ReactToPrint from 'react-to-print';
 import Button, { ButtonTypes } from 'components/button/Button';
 import Dialog from 'components/dialog/Dialog';
 import { Fixy } from 'components/fixy/Fixy';
@@ -64,33 +63,10 @@ const hotStore = createStore();
 export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ config }) => {
   fetchFunctions(config.endpoints);
 
-  const componentRef = React.useRef();
-
   return (
     <ConfigProvider config={{ ...config }}>
       <ReduxProvider store={hotStore}>
-        <React.Fragment>
-          {/* For Print the content in PDF */}
-          <h1 className="flowName">{config.flowName}</h1>
-          <ReactToPrint
-            onBeforePrint={() =>
-              window.confirm(
-                'Please note that if your flow is very large, this might cause some problems in generating the PDF. Do you want to continue?'
-              )
-                ? Promise.resolve(true)
-                : Promise.reject(false)
-            }
-            trigger={() => (
-              <button className={styles.printButton}>
-                <i className="fe-download" />
-                <span>Export to PDF</span>
-              </button>
-            )}
-            content={() => componentRef.current}
-            copyStyles
-          />
-          <ConnectedFlowEditor ref={componentRef} />
-        </React.Fragment>
+        <ConnectedFlowEditor />
       </ReduxProvider>
     </ConfigProvider>
   );

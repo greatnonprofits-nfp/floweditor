@@ -46,7 +46,6 @@ export interface FlowEditorConfig {
   endpoints: Endpoints;
   flow: string;
   flowType: FlowTypes;
-  flowName: string;
   showTemplates?: boolean;
   showDownload?: boolean;
   debug?: boolean;

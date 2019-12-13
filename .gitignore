@@ -14,4 +14,3 @@ lambda-build
 lib
 build
 *.sublime-*
-yarn-error.log
