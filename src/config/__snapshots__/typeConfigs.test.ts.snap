@@ -483,6 +483,24 @@ Object {
       "voice",
     ],
   },
+  "call_shorten_url": Object {
+    "aliases": Array [
+      "split_by_shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "call_shorten_url",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
   "call_webhook": Object {
     "aliases": Array [
       "split_by_webhook",
@@ -645,24 +663,6 @@ Object {
     "name": "Save Flow Result",
     "type": "set_run_result",
   },
-  "shorten_url": Object {
-    "aliases": Array [
-      "split_by_shorten_url",
-    ],
-    "component": [Function],
-    "description": "Shorten Trackable Link",
-    "form": [Function],
-    "localization": [Function],
-    "localizeableKeys": Array [
-      "exits",
-    ],
-    "name": "Shorten Trackable Link",
-    "type": "call_shorten_url",
-    "visibility": Array [
-      "message",
-      "voice",
-    ],
-  },
   "split_by_airtime": Object {
     "aliases": Array [
       "split_by_airtime",
@@ -800,6 +800,24 @@ Object {
     ],
     "name": "Split by Flow Result",
     "type": "split_by_run_result",
+  },
+  "split_by_shorten_url": Object {
+    "aliases": Array [
+      "split_by_shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "call_shorten_url",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
   },
   "split_by_subflow": Object {
     "aliases": Array [
