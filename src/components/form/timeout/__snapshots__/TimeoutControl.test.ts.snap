@@ -71,6 +71,10 @@ exports[`TimeoutControl handles initial values 1`] = `
             "value": 900,
           },
           Object {
+            "label": "30 minutes",
+            "value": 1800,
+          },
+          Object {
             "label": "1 hours",
             "value": 3600,
           },
