@@ -43,7 +43,7 @@ import SubflowRouterForm from 'components/flow/routers/subflow/SubflowRouterForm
 import WaitRouterForm from 'components/flow/routers/wait/WaitRouterForm';
 import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm';
 import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
-import { HIDDEN, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
+import { HIDDEN, MESSAGE, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
 import { HintTypes, RouterTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
@@ -237,7 +237,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: CallLookupComp,
     aliases: [Types.split_by_lookup],
-    visibility: ONLINE
+    visibility: MESSAGE
   },
   {
     type: Types.call_giftcard,
@@ -248,7 +248,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: GiftcardComp,
     aliases: [Types.split_by_giftcard],
-    visibility: ONLINE
+    visibility: MESSAGE
   },
   {
     type: Types.call_shorten_url,
@@ -259,7 +259,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: ShortenUrlComp,
     aliases: [Types.split_by_shorten_url],
-    visibility: ONLINE
+    visibility: MESSAGE
   },
   {
     type: Types.call_resthook,
