@@ -115,3 +115,4 @@ export const VOICE = [FlowTypes.VOICE];
 export const SURVEY = [FlowTypes.SURVEY];
 export const TEXT_TYPES = [FlowTypes.MESSAGE, FlowTypes.SURVEY];
 export const ONLINE = [FlowTypes.MESSAGE, FlowTypes.VOICE];
+export const MESSAGE = [FlowTypes.MESSAGE];

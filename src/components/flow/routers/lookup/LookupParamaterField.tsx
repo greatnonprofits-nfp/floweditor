@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './LookupParametersForm.module.scss';
 import SelectElement from 'components/form/select/SelectElement';
 import TextInputElement from 'components/form/textinput/TextInputElement';
-import { LookupField, LookupQuery, LookupRule } from 'flowTypes';
+import { LookupField, LookupRule } from 'flowTypes';
 import { LookupQueryEntry } from './helpers';
 
 const OPERATORS: { [type: string]: LookupRule[] } = {
@@ -41,6 +41,7 @@ export const LookupParameterField = ({
     if (!ruleOperators.find(rule => rule.type === query.rule.value.type)) {
       updateQuery({ ...query, rule: { value: { type: '', verbose_name: '' } } });
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ruleOperators, query.rule.value.type]);
 
   return (

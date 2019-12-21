@@ -3,7 +3,7 @@ import styles from './LookupParametersForm.module.scss';
 import { AssetStore } from 'store/flowContext';
 import axios from 'axios';
 import { LookupParameterField } from './LookupParamaterField';
-import { LookupField, LookupQuery } from 'flowTypes';
+import { LookupField } from 'flowTypes';
 import { LookQueryContext } from './Context';
 import { AssetEntry } from 'store/nodeEditor';
 import { LookupQueryEntry } from './helpers';

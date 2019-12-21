@@ -111,8 +111,10 @@ export default class LookupRouterForm extends React.Component<
   }
 
   private handleSave(): void {
-    this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
-    this.props.onClose(false);
+    if (this.state.valid) {
+      this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
+      this.props.onClose(false);
+    }
   }
 
   private getButtons(): ButtonSet {
