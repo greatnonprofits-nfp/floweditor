@@ -195,7 +195,6 @@ Array [
     "type": "call_lookup",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   Object {
@@ -213,7 +212,6 @@ Array [
     "type": "call_giftcard",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   Object {
@@ -231,7 +229,6 @@ Array [
     "type": "call_shorten_url",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   Object {
@@ -444,7 +441,6 @@ Object {
     "type": "call_giftcard",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   "call_lookup": Object {
@@ -462,7 +458,6 @@ Object {
     "type": "call_lookup",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   "call_resthook": Object {
@@ -498,7 +493,6 @@ Object {
     "type": "call_shorten_url",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   "call_webhook": Object {
@@ -714,7 +708,6 @@ Object {
     "type": "call_giftcard",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   "split_by_groups": Object {
@@ -742,7 +735,6 @@ Object {
     "type": "call_lookup",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   "split_by_random": Object {
@@ -816,7 +808,6 @@ Object {
     "type": "call_shorten_url",
     "visibility": Array [
       "message",
-      "voice",
     ],
   },
   "split_by_subflow": Object {
