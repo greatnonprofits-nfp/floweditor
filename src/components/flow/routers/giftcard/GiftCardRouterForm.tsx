@@ -100,7 +100,13 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           name="giftcardDb"
           onChange={this.handleGiftcardChanged}
         />
-        {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {createResultNameInput(
+          this.state.resultName,
+          this.handleUpdateResultName,
+          `On the Call Giftcard modal, we should probably display similar note shown on the legacy flow editor (but indicate @webhook.result):
+          
+          The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.`
+        )}
       </Dialog>
     );
   }

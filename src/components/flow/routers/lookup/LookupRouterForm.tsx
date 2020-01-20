@@ -153,7 +153,11 @@ export default class LookupRouterForm extends React.Component<
             />
           </LookQueryContext.Provider>
         )}
-        {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {createResultNameInput(
+          this.state.resultName,
+          this.handleUpdateResultName,
+          'By naming the result, you can reference it later using @webhook.result_field_name. Where field name means the name of the column that you want collect the information.'
+        )}
       </Dialog>
     );
   }

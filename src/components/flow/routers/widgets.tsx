@@ -6,9 +6,12 @@ import { snakify } from 'utils';
 
 export const createResultNameInput = (
   value: StringEntry,
-  onChange: (value: string) => void
+  onChange: (value: string) => void,
+  helpText?: string
 ): JSX.Element => {
   const snaked = !hasErrors(value) && value.value ? '.' + snakify(value.value) : '';
+  const defaultHelpText =
+    helpText || `By naming the result, you can reference it later using @results${snaked}`;
 
   return (
     <OptionalTextInput
@@ -17,7 +20,7 @@ export const createResultNameInput = (
       value={value}
       onChange={onChange}
       toggleText="Save as.."
-      helpText={`By naming the result, you can reference it later using @results${snaked}`}
+      helpText={defaultHelpText}
     />
   );
 };
