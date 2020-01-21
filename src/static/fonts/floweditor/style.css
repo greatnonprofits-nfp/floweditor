@@ -410,3 +410,6 @@
 .fe-ellipsis:before {
   content: '\e9e9';
 }
+.fe-help:before {
+  content: '\e90f';
+}
