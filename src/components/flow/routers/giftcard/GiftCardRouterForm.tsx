@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import { FormState, StringEntry, AssetEntry, mergeForm } from 'store/nodeEditor';
 import { RouterFormProps } from 'components/flow/props';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
@@ -16,6 +17,7 @@ import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
+import styles from './GiftCardRouterForm.module.scss';
 
 export interface GiftCardRouterFormState extends FormState {
   giftcardDb: AssetEntry;
@@ -85,14 +87,6 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
     return (
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
-        <SelectElement
-          name="giftcardType"
-          options={Object.values(GIFTCARD_OPTIONS)}
-          onChange={this.handleUpdateAssignChange}
-          entry={{
-            value: entry
-          }}
-        />
         <p>Select which collection would you like to query the Gift Card</p>
         <AssetSelector
           assets={this.props.assetStore.giftcard}
@@ -100,6 +94,29 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           name="giftcardDb"
           onChange={this.handleGiftcardChanged}
         />
+        <SelectElement
+          name="giftcardType"
+          options={Object.values(GIFTCARD_OPTIONS)}
+          onChange={this.handleUpdateAssignChange}
+          entry={{
+            value: entry
+          }}
+          className="giftcard-type"
+        />
+        <div className={styles.icon} data-tip data-for="giftcardType">
+          <span className="fe-help" />
+        </div>
+        <ReactTooltip id="giftcardType" effect="solid" multiline={true} className={styles.tooltip}>
+          <p>
+            Assign Gift Card: This option will reserve a gift card for the contact, saving their
+            phone number and returning information needed to redeem the gift card electronically.
+          </p>
+          <p>
+            Check Gift Card Status: This option will return the number of Gift Cards that are
+            unassigned in your database.
+          </p>
+        </ReactTooltip>
+
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>
     );

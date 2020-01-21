@@ -2,6 +2,7 @@ import FormElement, { FormElementProps } from 'components/form/FormElement';
 import * as React from 'react';
 import Select from 'react-select';
 import { StylesConfig } from 'react-select/lib/styles';
+import styles from '../FormElement.module.scss';
 
 interface SelectElementProps extends FormElementProps {
   onChange?(value: any): void;
@@ -10,6 +11,7 @@ interface SelectElementProps extends FormElementProps {
   styles?: StylesConfig;
   getOptionLabel?: (item: any) => string;
   getOptionValue?: (item: any) => string;
+  className?: string;
 }
 
 export interface SelectOption {
@@ -20,7 +22,11 @@ export interface SelectOption {
 export default class SelectElement extends React.Component<SelectElementProps> {
   public render(): JSX.Element {
     return (
-      <FormElement name={this.props.name} entry={this.props.entry}>
+      <FormElement
+        name={this.props.name}
+        entry={this.props.entry}
+        __className={this.props.className && styles[this.props.className]}
+      >
         <Select
           isDisabled={this.props.onChange === undefined}
           placeholder={this.props.placeholder}
