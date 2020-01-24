@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HelpIcon component should render helper icon with tooltip 1`] = `
+<Fragment>
+  <div
+    className="icon"
+    data-for="testNode"
+    data-tip=""
+    style={
+      Object {
+        "color": "#000",
+        "fontSize": "15px",
+      }
+    }
+  >
+    <span
+      className="fe-help"
+    />
+  </div>
+  <ReactTooltip
+    className="tooltip"
+    clickable={false}
+    effect="solid"
+    id="testNode"
+    insecure={true}
+    multiline={true}
+    resizeHide={true}
+    wrapper="div"
+  />
+</Fragment>
+`;

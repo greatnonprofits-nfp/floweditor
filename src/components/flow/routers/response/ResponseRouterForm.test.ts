@@ -94,6 +94,15 @@ describe(ResponseRouterForm.name, () => {
       expect(props.updateRouter).toMatchCallSnapshot();
     });
 
+    it('should save save config for spell checker', () => {
+      const { instance } = setup(true);
+
+      instance.onEnabledChange();
+      instance.onSensitivityChange({ currentTarget: { value: '60' } });
+
+      expect(instance.state).toMatchSnapshot();
+    });
+
     it('should save save config for relative dates', () => {
       const { instance, props } = setup(true, {
         $merge: { onClose: jest.fn(), updateRouter: jest.fn() }

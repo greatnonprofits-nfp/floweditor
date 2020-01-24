@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SpellChecker component should render checkbox and ranger 1`] = `
+<div
+  className="spellcheckerWrap"
+>
+  <div>
+    <CheckboxElement
+      checked={true}
+      description="Enable spelling correction"
+      name="Enable Spell Checker"
+      onChange={[MockFunction]}
+    />
+    <HelpIcon
+      dataFor="enableSpell"
+      iconColor="dark_blue"
+      iconSize="15px"
+    >
+      <p>
+        Enable spell check for fixing possible misstyping
+      </p>
+    </HelpIcon>
+  </div>
+  <div
+    className="rangerContainer"
+  >
+    <div>
+      <span>
+        Correction Sensitivity
+      </span>
+      <HelpIcon
+        dataFor="spellSensitivity"
+        iconColor="dark_blue"
+        iconSize="15px"
+      >
+        <p>
+          Enable spell check for fixing possible misstyping
+        </p>
+      </HelpIcon>
+    </div>
+    <div
+      className="inputWrap"
+    >
+      <div>
+        High
+      </div>
+      <input
+        className="rangerInput"
+        max="99"
+        min="70"
+        onChange={[MockFunction]}
+        type="range"
+        value="80"
+      />
+      <div>
+        Low
+      </div>
+    </div>
+    <div
+      className="sensitivity"
+    >
+      80% confidence in corrections
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SpellChecker component should render only checkbox 1`] = `
+<SpellChecker
+  enabledSpell={false}
+  onEnabledChange={[MockFunction]}
+  onSensitivityChange={[MockFunction]}
+  spellSensitivity="80"
+>
+  <div
+    className="spellcheckerWrap"
+  >
+    <div>
+      <CheckboxElement
+        checked={false}
+        description="Enable spelling correction"
+        name="Enable Spell Checker"
+        onChange={[MockFunction]}
+      >
+        <label
+          className="label"
+          onClick={[Function]}
+        >
+          <span
+            className="fe-square"
+            data-spec="checkbox"
+          />
+          <div
+            className="description_solo"
+            data-spec="description"
+          >
+            Enable spelling correction
+          </div>
+        </label>
+      </CheckboxElement>
+      <HelpIcon
+        dataFor="enableSpell"
+        iconColor="dark_blue"
+        iconSize="15px"
+      >
+        <div
+          className="icon"
+          data-for="enableSpell"
+          data-tip=""
+          style={
+            Object {
+              "color": "dark_blue",
+              "fontSize": "15px",
+            }
+          }
+        >
+          <span
+            className="fe-help"
+          />
+        </div>
+        <ReactTooltip
+          className="tooltip"
+          clickable={false}
+          effect="solid"
+          id="enableSpell"
+          insecure={true}
+          multiline={true}
+          resizeHide={true}
+          wrapper="div"
+        >
+          <div
+            className="__react_component_tooltip place-top type-dark"
+            data-id="tooltip"
+            id="enableSpell"
+          >
+            <p>
+              Enable spell check for fixing possible misstyping
+            </p>
+          </div>
+        </ReactTooltip>
+      </HelpIcon>
+    </div>
+  </div>
+</SpellChecker>
+`;
