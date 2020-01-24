@@ -1,12 +1,10 @@
 import { RouterFormProps } from 'components/flow/props';
 import { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import ResponseRouterForm from 'components/flow/routers/response/ResponseRouterForm';
-import { DEFAULT_OPERAND } from 'components/nodeeditor/constants';
 import { Operators } from 'config/interfaces';
 import { Types } from 'config/interfaces';
-import { RouterTypes, SwitchRouter, WaitTypes } from 'flowTypes';
 import { composeComponentTestUtils, mock } from 'testUtils';
-import { createRenderNode, getRouterFormProps, createMatchRouter } from 'testUtils/assetCreators';
+import { getRouterFormProps, createMatchRouter } from 'testUtils/assetCreators';
 import * as utils from 'utils';
 import { createUUID } from 'utils';
 import { getSwitchRouter } from 'components/flow/routers/helpers';
