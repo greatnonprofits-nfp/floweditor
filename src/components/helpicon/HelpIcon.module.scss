@@ -10,4 +10,17 @@
   width: 250px;
   text-align: center;
   opacity: 1 !important;
+  pointer-events: auto !important;
+
+  &.bigTooltip {
+    width: 450px;
+  }
+
+  &:hover {
+    visibility: visible !important;
+  }
+
+  a {
+    color: #fff;
+  }
 }

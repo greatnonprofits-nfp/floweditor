@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames/bind';
 import ReactTooltip from 'react-tooltip';
 import styles from './HelpIcon.module.scss';
 
@@ -7,6 +8,7 @@ export interface HelpIconProps {
   iconSize: string;
   dataFor: string;
   children: JSX.Element[] | JSX.Element;
+  bigTooltip?: boolean;
 }
 
 const HelpIcon = (props: HelpIconProps): JSX.Element => (
@@ -19,7 +21,13 @@ const HelpIcon = (props: HelpIconProps): JSX.Element => (
     >
       <span className="fe-help" />
     </div>
-    <ReactTooltip id={props.dataFor} effect="solid" multiline={true} className={styles.tooltip}>
+    <ReactTooltip
+      id={props.dataFor}
+      effect="solid"
+      multiline={true}
+      delayHide={300}
+      className={classNames(styles.tooltip, { [styles.bigTooltip]: props.bigTooltip })}
+    >
       {props.children}
     </ReactTooltip>
   </>

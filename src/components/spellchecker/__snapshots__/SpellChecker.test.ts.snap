@@ -12,12 +12,25 @@ exports[`SpellChecker component should render checkbox and ranger 1`] = `
       onChange={[MockFunction]}
     />
     <HelpIcon
+      bigTooltip={true}
       dataFor="enableSpell"
       iconColor="dark_blue"
       iconSize="15px"
     >
       <p>
-        Enable spell check for fixing possible misstyping
+        This feature will automatically correct typos and misspellings by users in multiple languages. The language for the spell checker is based on the language set for the user. Corrections occur before the categorization rules. For example, if user types “thankks” it would be corrected to “thanks.” The word “thanks” would then be used for the categorization. The corrected text is available as a flow variable with @flow.variable.corrected
+      </p>
+      <p>
+        We encourage you to test misspellings in order to tune the sensitivity for your use case. For more information and a list of languages, see our
+         
+        <a
+          href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          help page
+        </a>
+        .
       </p>
     </HelpIcon>
   </div>
@@ -29,12 +42,25 @@ exports[`SpellChecker component should render checkbox and ranger 1`] = `
         Correction Sensitivity
       </span>
       <HelpIcon
+        bigTooltip={true}
         dataFor="spellSensitivity"
         iconColor="dark_blue"
         iconSize="15px"
       >
         <p>
-          Enable spell check for fixing possible misstyping
+          This slider bar enables you to control the sensitivity of the correction. Like all spell checkers, it does not always make the correction you would want it to make. The higher the sensitivity, the more corrections will be made. Lower sensitivity will only make more obvious corrections.
+        </p>
+        <p>
+          We encourage you to test misspellings in order to tune the sensitivity for your use case. For more information and a list of languages, see our
+           
+          <a
+            href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            help page
+          </a>
+          .
         </p>
       </HelpIcon>
     </div>
@@ -99,6 +125,7 @@ exports[`SpellChecker component should render only checkbox 1`] = `
         </label>
       </CheckboxElement>
       <HelpIcon
+        bigTooltip={true}
         dataFor="enableSpell"
         iconColor="dark_blue"
         iconSize="15px"
@@ -119,8 +146,9 @@ exports[`SpellChecker component should render only checkbox 1`] = `
           />
         </div>
         <ReactTooltip
-          className="tooltip"
+          className="tooltip bigTooltip"
           clickable={false}
+          delayHide={300}
           effect="solid"
           id="enableSpell"
           insecure={true}
@@ -134,7 +162,19 @@ exports[`SpellChecker component should render only checkbox 1`] = `
             id="enableSpell"
           >
             <p>
-              Enable spell check for fixing possible misstyping
+              This feature will automatically correct typos and misspellings by users in multiple languages. The language for the spell checker is based on the language set for the user. Corrections occur before the categorization rules. For example, if user types “thankks” it would be corrected to “thanks.” The word “thanks” would then be used for the categorization. The corrected text is available as a flow variable with @flow.variable.corrected
+            </p>
+            <p>
+              We encourage you to test misspellings in order to tune the sensitivity for your use case. For more information and a list of languages, see our
+               
+              <a
+                href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                help page
+              </a>
+              .
             </p>
           </div>
         </ReactTooltip>

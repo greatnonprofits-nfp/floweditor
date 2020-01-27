@@ -20,8 +20,27 @@ export const SpellChecker = (props: SpellCheckerProps) => (
         description="Enable spelling correction"
         onChange={props.onEnabledChange}
       />
-      <HelpIcon iconColor={variables.dark_blue} iconSize="15px" dataFor="enableSpell">
-        <p>Enable spell check for fixing possible misstyping</p>
+      <HelpIcon iconColor={variables.dark_blue} iconSize="15px" dataFor="enableSpell" bigTooltip>
+        <p>
+          This feature will automatically correct typos and misspellings by users in multiple
+          languages. The language for the spell checker is based on the language set for the user.
+          Corrections occur before the categorization rules. For example, if user types “thankks” it
+          would be corrected to “thanks.” The word “thanks” would then be used for the
+          categorization. The corrected text is available as a flow variable with
+          @flow.variable.corrected
+        </p>
+        <p>
+          We encourage you to test misspellings in order to tune the sensitivity for your use case.
+          For more information and a list of languages, see our{' '}
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
+          >
+            help page
+          </a>
+          .
+        </p>
       </HelpIcon>
     </div>
 
@@ -29,8 +48,30 @@ export const SpellChecker = (props: SpellCheckerProps) => (
       <div className={styles.rangerContainer}>
         <div>
           <span>Correction Sensitivity</span>
-          <HelpIcon iconColor={variables.dark_blue} iconSize="15px" dataFor="spellSensitivity">
-            <p>Enable spell check for fixing possible misstyping</p>
+          <HelpIcon
+            iconColor={variables.dark_blue}
+            iconSize="15px"
+            dataFor="spellSensitivity"
+            bigTooltip
+          >
+            <p>
+              This slider bar enables you to control the sensitivity of the correction. Like all
+              spell checkers, it does not always make the correction you would want it to make. The
+              higher the sensitivity, the more corrections will be made. Lower sensitivity will only
+              make more obvious corrections.
+            </p>
+            <p>
+              We encourage you to test misspellings in order to tune the sensitivity for your use
+              case. For more information and a list of languages, see our{' '}
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
+              >
+                help page
+              </a>
+              .
+            </p>
           </HelpIcon>
         </div>
         <div className={styles.inputWrap}>

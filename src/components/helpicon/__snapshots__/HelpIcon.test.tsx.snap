@@ -20,6 +20,7 @@ exports[`HelpIcon component should render helper icon with tooltip 1`] = `
   <ReactTooltip
     className="tooltip"
     clickable={false}
+    delayHide={300}
     effect="solid"
     id="testNode"
     insecure={true}
