@@ -13,6 +13,8 @@ import { snakify } from 'utils';
 
 import { initializeForm, stateToAction } from './helpers';
 import styles from './SetRunResultForm.module.scss';
+import i18n from 'config/i18n';
+import { Trans } from 'react-i18next';
 
 export interface SetRunResultFormState extends FormState {
   name: AssetEntry;
@@ -35,7 +37,11 @@ export default class SetRunResultForm extends React.PureComponent<
   }
 
   private handleNameUpdate(selected: Asset[]): void {
-    this.handleUpdate({ name: selected[0] });
+    if (selected) {
+      this.handleUpdate({ name: selected[0] });
+    } else {
+      this.handleUpdate({ name: null });
+    }
   }
 
   public handleValueUpdate(value: string): boolean {
@@ -87,8 +93,11 @@ export default class SetRunResultForm extends React.PureComponent<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
@@ -116,12 +125,19 @@ export default class SetRunResultForm extends React.PureComponent<
             assets={this.props.assetStore.results}
             entry={this.state.name}
             searchable={true}
-            createPrefix="New: "
+            createPrefix={i18n.t('forms.set_run_result.create_prefix', 'New: ')}
             onChange={this.handleNameUpdate}
             createAssetFromInput={this.handleCreateAssetFromInput}
             formClearable={true}
             showLabel={true}
-            helpText={`The name of the result, used to reference later as @results${snaked}`}
+            helpText={
+              <Trans
+                i18nKey="forms.result_name_help"
+                values={{ resultFormat: `@results${snaked}` }}
+              >
+                By naming the result, you can reference it later using [[resultFormat]]
+              </Trans>
+            }
           />
 
           <TextInputElement

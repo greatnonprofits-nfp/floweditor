@@ -33,7 +33,11 @@ exports[`AddGroupsForm render should render self, children with base props 1`] =
   <p
     data-spec="label"
   >
-    Select the group(s) to add the contact to.
+    <Trans
+      i18nKey="forms.add_groups.summary"
+    >
+      Select the groups to add the contact to.
+    </Trans>
   </p>
   <AssetSelector
     createAssetFromInput={[Function]}
@@ -64,6 +68,11 @@ exports[`AddGroupsForm render should render self, children with base props 1`] =
           Object {
             "id": "33b28bac-b588-43e4-90de-fda77aeaf7c0",
             "name": "Subscribers",
+            "type": "group",
+          },
+          Object {
+            "id": "e0cccbcf-49be-4eef-88a7-ce2150a6d902",
+            "name": "Champions",
             "type": "group",
           },
         ],

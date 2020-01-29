@@ -1,6 +1,9 @@
 import { Methods } from 'components/flow/routers/webhook/helpers';
 import { FlowTypes, Operators, Types } from 'config/interfaces';
 
+// we don't concern ourselves with patch versions
+export const SPEC_VERSION = '13.1';
+
 export interface Languages {
   [iso: string]: string;
 }
@@ -22,6 +25,7 @@ export interface Endpoints {
   resthooks: string;
   recents: string;
   fields: string;
+  globals: string;
   groups: string;
   recipients: string;
   flows: string;
@@ -29,6 +33,7 @@ export interface Endpoints {
   activity: string;
   labels: string;
   channels: string;
+  classifiers: string;
   environment: string;
   languages: string;
   templates: string;
@@ -46,6 +51,7 @@ export interface FlowEditorConfig {
   flowType: FlowTypes;
   showTemplates?: boolean;
   showDownload?: boolean;
+  mutable?: boolean;
   debug?: boolean;
   path?: string;
   headers?: any;
@@ -54,6 +60,8 @@ export interface FlowEditorConfig {
 
   // whether to force a save on load
   forceSaveOnLoad?: boolean;
+
+  filters?: string[];
 }
 
 export interface LocalizationMap {
@@ -69,6 +77,7 @@ export interface FlowDefinition {
   nodes: FlowNode[];
   uuid: string;
   revision: number;
+  spec_version: string;
   _ui: UIMetaData;
 }
 
@@ -250,6 +259,7 @@ export interface MsgTemplate {
 }
 
 export interface MsgTemplating {
+  uuid: string;
   template: MsgTemplate;
   variables: string[];
 }
@@ -259,6 +269,7 @@ export interface SendMsg extends Action {
   all_urns?: boolean;
   quick_replies?: string[];
   attachments?: string[];
+  topic?: string;
   templating?: MsgTemplating;
 }
 
@@ -304,8 +315,19 @@ export interface Headers {
   [name: string]: string;
 }
 
+export interface Classifier {
+  uuid: string;
+  name: string;
+}
+
 export interface TransferAirtime extends Action {
   amounts: { [name: string]: number };
+  result_name: string;
+}
+
+export interface CallClassifier extends Action {
+  classifier: Classifier;
+  input: string;
   result_name: string;
 }
 
@@ -329,11 +351,12 @@ export interface StartFlow extends Action {
 export interface StartSession extends RecipientsAction {
   flow: Flow;
   create_contact?: boolean;
+  contact_query?: string;
 }
 
 export interface UIMetaData {
   nodes: { [key: string]: UINode };
-  languages: Array<{ [iso: string]: string }>;
+  languages: { [iso: string]: string }[];
 }
 
 export interface FlowPosition {
@@ -380,6 +403,7 @@ export type AnyAction =
   | SendMsg
   | SetPreferredChannel
   | SendEmail
+  | CallClassifier
   | CallWebhook
   | StartFlow
   | StartSession;

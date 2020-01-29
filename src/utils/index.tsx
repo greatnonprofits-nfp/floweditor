@@ -9,7 +9,7 @@ import {
 import { Query } from 'immutability-helper';
 import * as React from 'react';
 import Localization, { LocalizedObject } from 'services/Localization';
-import { Asset } from 'store/flowContext';
+import { Asset, Assets } from 'store/flowContext';
 import { FormEntry } from 'store/nodeEditor';
 import { v4 as generateUUID } from 'uuid';
 import variables from 'variables.module.scss';
@@ -366,6 +366,12 @@ export const downloadJSON = (obj: any, name: string): void => {
   downloadAnchorNode.remove();
 };
 
+export const fetchAsset = (asset: Asset) => (assets: Assets, id: string): Promise<Asset> => {
+  return new Promise<Asset>((resolve, reject) => {
+    resolve(asset);
+  });
+};
+
 export let createUUID = (): string => {
   return generateUUID();
 };
@@ -398,3 +404,14 @@ export const pluralize = (count: number, noun: string, suffix: string = 's'): st
 
 export const hasString = (names: string[], key: string): boolean =>
   !!names.find((item: string) => item === key);
+
+export const scalarArrayEquals = (a: any[], b: any[]) =>
+  a.every((value, index) => value === b[index]);
+
+export const getURNPath = (urn: string) => {
+  return urn.split(':')[1];
+};
+
+export const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+};

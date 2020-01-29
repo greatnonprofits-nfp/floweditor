@@ -1,5 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ResultRouterForm should a fielded operand if configured 1`] = `
+Array [
+  Object {
+    "inboundConnections": Object {},
+    "node": Object {
+      "actions": Array [],
+      "exits": Array [
+        Object {
+          "uuid": "b1f332f3-bdd3-4891-aec5-1843a712dbf1",
+        },
+      ],
+      "router": Object {
+        "cases": Array [],
+        "categories": Array [
+          Object {
+            "exit_uuid": "b1f332f3-bdd3-4891-aec5-1843a712dbf1",
+            "name": "All Responses",
+            "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+          },
+        ],
+        "default_category_uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+        "operand": "@(field(results.my_test_result, 0, \\"+\\"))",
+        "type": "switch",
+      },
+      "uuid": "1dce2b34-9aab-4e20-81c4-3f0408dcb671",
+    },
+    "ui": Object {
+      "config": Object {
+        "cases": Object {},
+        "delimiter": "+",
+        "index": 0,
+        "operand": Object {
+          "id": "my_test_result",
+          "name": "My Test Result",
+          "type": "result",
+        },
+      },
+      "position": null,
+      "type": "split_by_run_result_delimited",
+    },
+  },
+]
+`;
+
 exports[`ResultRouterForm should create the right operand on save 1`] = `
 Array [
   Object {
@@ -21,7 +65,7 @@ Array [
           },
         ],
         "default_category_uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
-        "operand": "@(field(results.my_test_result, 1, \\"+\\"))",
+        "operand": "@results.my_test_result",
         "type": "switch",
       },
       "uuid": "1dce2b34-9aab-4e20-81c4-3f0408dcb671",
@@ -29,8 +73,6 @@ Array [
     "ui": Object {
       "config": Object {
         "cases": Object {},
-        "delimiter": "+",
-        "index": 1,
         "operand": Object {
           "id": "my_test_result",
           "name": "My Test Result",
@@ -38,7 +80,7 @@ Array [
         },
       },
       "position": null,
-      "type": "split_by_run_result_delimited",
+      "type": "split_by_run_result",
     },
   },
 ]
@@ -165,6 +207,11 @@ exports[`ResultRouterForm should render 1`] = `
                 Send the contact airtime
               </option>
               <option
+                value="split_by_intent"
+              >
+                Split by intent
+              </option>
+              <option
                 value="split_by_expression"
               >
                 Split by a custom expression
@@ -207,21 +254,21 @@ exports[`ResultRouterForm should render 1`] = `
               class="ele"
             >
               <div
-                class="css-1pcexqc-container react-select selection"
+                class="react-select selection css-2b097c-container"
               >
                 <div
-                  class="css-q1jqhh-control"
+                  class=" css-zx7s85-control"
                 >
                   <div
-                    class="css-c2yhe2"
+                    class=" css-c2yhe2"
                   >
                     <div
-                      class="css-151xaom-placeholder"
+                      class=" css-1wa3eu0-placeholder"
                     >
-                      Select...
+                      Select Result
                     </div>
                     <input
-                      class="css-gj7qu5-dummyInput"
+                      class="css-62g3xt-dummyInput"
                       id="react-select-2-input"
                       readonly=""
                       tabindex="0"
@@ -229,18 +276,18 @@ exports[`ResultRouterForm should render 1`] = `
                     />
                   </div>
                   <div
-                    class="css-1l76mts"
+                    class=" css-1ywtfjx-IndicatorsContainer"
                   >
                     <span
-                      class="css-bgvzuu-indicatorSeparator"
+                      class=" css-1okebmr-indicatorSeparator"
                     />
                     <div
                       aria-hidden="true"
-                      class="css-16pqwjk-indicatorContainer"
+                      class=" css-tlfecz-indicatorContainer"
                     >
                       <svg
                         aria-hidden="true"
-                        class="css-19bqh2r"
+                        class="css-6q0nyr-Svg"
                         focusable="false"
                         height="20"
                         viewBox="0 0 20 20"
@@ -267,7 +314,7 @@ exports[`ResultRouterForm should render 1`] = `
               class="ele group"
             >
               <div
-                class="kase"
+                class="kase has_any_word"
                 data-draggable="true"
               >
                 <span
@@ -381,6 +428,21 @@ exports[`ResultRouterForm should render 1`] = `
                       has an email
                     </option>
                     <option
+                      value="has_state"
+                    >
+                      has state
+                    </option>
+                    <option
+                      value="has_district"
+                    >
+                      has district
+                    </option>
+                    <option
+                      value="has_ward"
+                    >
+                      has ward
+                    </option>
+                    <option
                       value="has_value"
                     >
                       is not empty
@@ -406,6 +468,8 @@ exports[`ResultRouterForm should render 1`] = `
                         data-spec="input"
                         data-testid="input"
                         maxlength="-1"
+                        name="arguments"
+                        placeholder=""
                         type="text"
                         value=""
                       />
@@ -452,6 +516,7 @@ exports[`ResultRouterForm should render 1`] = `
                         data-spec="input"
                         data-testid="input"
                         maxlength="36"
+                        name="exitName"
                         type="text"
                         value=""
                       />
@@ -650,6 +715,11 @@ exports[`ResultRouterForm should show delimit options 1`] = `
                 Send the contact airtime
               </option>
               <option
+                value="split_by_intent"
+              >
+                Split by intent
+              </option>
+              <option
                 value="split_by_expression"
               >
                 Split by a custom expression
@@ -695,102 +765,102 @@ exports[`ResultRouterForm should show delimit options 1`] = `
                 data-testid="select"
               >
                 <option
-                  value="1"
+                  value="0"
                 >
                   first
                 </option>
                 <option
-                  value="2"
+                  value="1"
                 >
                   second
                 </option>
                 <option
-                  value="3"
+                  value="2"
                 >
                   third
                 </option>
                 <option
-                  value="4"
+                  value="3"
                 >
                   fourth
                 </option>
                 <option
-                  value="5"
+                  value="4"
                 >
                   fifth
                 </option>
                 <option
-                  value="6"
+                  value="5"
                 >
                   sixth
                 </option>
                 <option
-                  value="7"
+                  value="6"
                 >
                   seventh
                 </option>
                 <option
-                  value="8"
+                  value="7"
                 >
                   eighth
                 </option>
                 <option
-                  value="9"
+                  value="8"
                 >
                   ninth
                 </option>
                 <option
-                  value="10"
+                  value="9"
                 >
                   tenth
                 </option>
                 <option
-                  value="11"
+                  value="10"
                 >
                   11th
                 </option>
                 <option
-                  value="12"
+                  value="11"
                 >
                   12th
                 </option>
                 <option
-                  value="13"
+                  value="12"
                 >
                   13th
                 </option>
                 <option
-                  value="14"
+                  value="13"
                 >
                   14th
                 </option>
                 <option
-                  value="15"
+                  value="14"
                 >
                   15th
                 </option>
                 <option
-                  value="16"
+                  value="15"
                 >
                   16th
                 </option>
                 <option
-                  value="17"
+                  value="16"
                 >
                   17th
                 </option>
                 <option
-                  value="18"
+                  value="17"
                 >
                   18th
                 </option>
                 <option
-                  value="19"
+                  value="18"
                 >
                   19th
                 </option>
                 <option
-                  value="20"
+                  value="19"
                 >
                   20th
                 </option>
@@ -809,21 +879,21 @@ exports[`ResultRouterForm should show delimit options 1`] = `
               class="ele"
             >
               <div
-                class="css-1pcexqc-container react-select selection"
+                class="react-select selection css-2b097c-container"
               >
                 <div
-                  class="css-q1jqhh-control"
+                  class=" css-zx7s85-control"
                 >
                   <div
-                    class="css-c2yhe2"
+                    class=" css-c2yhe2"
                   >
                     <div
-                      class="css-151xaom-placeholder"
+                      class=" css-1wa3eu0-placeholder"
                     >
-                      Select...
+                      Select Result
                     </div>
                     <input
-                      class="css-gj7qu5-dummyInput"
+                      class="css-62g3xt-dummyInput"
                       id="react-select-4-input"
                       readonly=""
                       tabindex="0"
@@ -831,18 +901,18 @@ exports[`ResultRouterForm should show delimit options 1`] = `
                     />
                   </div>
                   <div
-                    class="css-1l76mts"
+                    class=" css-1ywtfjx-IndicatorsContainer"
                   >
                     <span
-                      class="css-bgvzuu-indicatorSeparator"
+                      class=" css-1okebmr-indicatorSeparator"
                     />
                     <div
                       aria-hidden="true"
-                      class="css-16pqwjk-indicatorContainer"
+                      class=" css-tlfecz-indicatorContainer"
                     >
                       <svg
                         aria-hidden="true"
-                        class="css-19bqh2r"
+                        class="css-6q0nyr-Svg"
                         focusable="false"
                         height="20"
                         viewBox="0 0 20 20"
@@ -901,7 +971,7 @@ exports[`ResultRouterForm should show delimit options 1`] = `
               class="ele group"
             >
               <div
-                class="kase"
+                class="kase has_any_word"
                 data-draggable="true"
               >
                 <span
@@ -1015,6 +1085,21 @@ exports[`ResultRouterForm should show delimit options 1`] = `
                       has an email
                     </option>
                     <option
+                      value="has_state"
+                    >
+                      has state
+                    </option>
+                    <option
+                      value="has_district"
+                    >
+                      has district
+                    </option>
+                    <option
+                      value="has_ward"
+                    >
+                      has ward
+                    </option>
+                    <option
                       value="has_value"
                     >
                       is not empty
@@ -1040,6 +1125,8 @@ exports[`ResultRouterForm should show delimit options 1`] = `
                         data-spec="input"
                         data-testid="input"
                         maxlength="-1"
+                        name="arguments"
+                        placeholder=""
                         type="text"
                         value=""
                       />
@@ -1086,6 +1173,7 @@ exports[`ResultRouterForm should show delimit options 1`] = `
                         data-spec="input"
                         data-testid="input"
                         maxlength="36"
+                        name="exitName"
                         type="text"
                         value=""
                       />

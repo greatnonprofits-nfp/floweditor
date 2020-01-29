@@ -61,6 +61,7 @@ import {
 } from 'store/nodeEditor';
 import AppState from 'store/state';
 import { createUUID, hasString, NODE_SPACING, timeEnd, timeStart } from 'utils';
+import { AxiosError } from 'axios';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -68,7 +69,7 @@ export type DispatchWithState = Dispatch<AppState>;
 
 export type GetState = () => AppState;
 
-export type Thunk<T> = (dispatch: DispatchWithState, getState?: GetState) => T;
+export type Thunk<T> = (dispatch: Dispatch<AppState>, getState?: GetState) => T;
 
 export type AsyncThunk = Thunk<Promise<void>>;
 
@@ -97,8 +98,9 @@ export type FetchFlow = (
 
 export type LoadFlowDefinition = (
   definition: FlowDefinition,
-  assetStore: AssetStore
-) => Thunk<Promise<void>>;
+  assetStore: AssetStore,
+  onLoad?: () => void
+) => Thunk<void>;
 
 export type CreateNewRevision = () => Thunk<void>;
 
@@ -205,7 +207,7 @@ export const createDirty = (
         );
         postingRevision = false;
       },
-      (error: any) => {
+      (error: AxiosError) => {
         const errorMessage = error.response.data as ErrorMessage;
 
         const body =
@@ -343,16 +345,25 @@ export const fetchFlow = (
 
   const completionSchema = await getCompletionSchema(endpoints.completion);
   const functions = await getFunctions(endpoints.functions);
-  const definition = await getFlowDefinition(assetStore.revisions);
 
-  dispatch(loadFlowDefinition(definition, assetStore, onLoad));
-  dispatch(mergeEditorState({ currentRevision: definition.revision, completionSchema, functions }));
+  getFlowDefinition(assetStore.revisions)
+    .then((definition: FlowDefinition) => {
+      dispatch(loadFlowDefinition(definition, assetStore, onLoad));
+      dispatch(
+        mergeEditorState({ currentRevision: definition.revision, completionSchema, functions })
+      );
 
-  markDirty = createDirty(assetStore.revisions.endpoint, dispatch, getState);
-
-  if (forceSave) {
-    markDirty(0);
-  }
+      markDirty = createDirty(assetStore.revisions.endpoint, dispatch, getState);
+      if (forceSave) {
+        markDirty(0);
+      }
+    })
+    .catch(error => {
+      // not much we can do without our flow definition
+      // log it to the console, this should really only happen if
+      // misconfigured or the endpoint is unavailable
+      console.error(error);
+    });
 };
 
 export const addAsset: AddAsset = (assetType: string, asset: Asset) => (
@@ -885,6 +896,7 @@ export const onUpdateRouter = (renderNode: RenderNode) => (
   if (originalNode) {
     const previousPosition = originalNode.ui.position;
     renderNode.ui.position = previousPosition;
+    renderNode.inboundConnections = originalNode.inboundConnections;
   }
 
   if (originalNode.ghost) {

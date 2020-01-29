@@ -3,7 +3,11 @@ import classNames from 'classnames/bind';
 import Counter from 'components/counter/Counter';
 import ActionWrapper from 'components/flow/actions/action/Action';
 import ExitComp from 'components/flow/exit/Exit';
-import { getCategoriesForExit, getResultName } from 'components/flow/node/helpers';
+import {
+  getCategoriesForExit,
+  getResultName,
+  getVisibleActions
+} from 'components/flow/node/helpers';
 import { getSwitchRouter } from 'components/flow/routers/helpers';
 import shared from 'components/shared.module.scss';
 import TitleBar from 'components/titlebar/TitleBar';
@@ -87,14 +91,16 @@ export class NodeComp extends React.Component<NodeProps> {
     config: fakePropType
   };
 
-  constructor(props: NodeProps) {
+  constructor(props: NodeProps, context: any) {
     super(props);
 
     bindCallbacks(this, {
       include: [/Ref$/, /^on/, /^get/, /^handle/]
     });
 
-    this.events = createClickHandler(this.onClick, this.handleShouldCancelClick);
+    this.events = context.config.mutable
+      ? createClickHandler(this.onClick, this.handleShouldCancelClick)
+      : {};
   }
 
   private handleShouldCancelClick(): boolean {
@@ -257,7 +263,7 @@ export class NodeComp extends React.Component<NodeProps> {
         ref: (ref: any) => (this.firstAction = ref)
       };
 
-      this.props.renderNode.node.actions.forEach((action: AnyAction, idx: number) => {
+      getVisibleActions(this.props.renderNode).forEach((action: AnyAction, idx: number) => {
         const actionConfig = getTypeConfig(action.type);
 
         if (actionConfig.hasOwnProperty('component') && actionConfig.component) {
@@ -350,7 +356,7 @@ export class NodeComp extends React.Component<NodeProps> {
       }
     } else {
       // Don't show add actions option if we are translating
-      if (!this.props.translating) {
+      if (!this.props.translating && this.context.config.mutable) {
         addActions = (
           <div
             className={styles.add}
@@ -368,7 +374,8 @@ export class NodeComp extends React.Component<NodeProps> {
       'plumb-drag': true,
       [styles.ghost]: this.props.ghost,
       [styles.flow_start]: this.isStartNodeVisible(),
-      [styles.selected]: this.isSelected()
+      [styles.selected]: this.isSelected(),
+      [styles.immutable]: !this.context.config.mutable
     });
 
     const uuid: JSX.Element = this.renderDebug();
@@ -476,5 +483,5 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(NodeComp);

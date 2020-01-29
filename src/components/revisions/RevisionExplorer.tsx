@@ -3,12 +3,13 @@ import classNames from 'classnames/bind';
 import { PopTab } from 'components/poptab/PopTab';
 import dateFormat from 'dateformat';
 import { getAssets, getFlowDefinition } from 'external';
-import { FlowDefinition } from 'flowTypes';
+import { FlowDefinition, SPEC_VERSION } from 'flowTypes';
 import React from 'react';
 import { Asset, AssetStore } from 'store/flowContext';
 import { renderIf } from 'utils';
 
 import styles from './RevisionExplorer.module.scss';
+import i18n from 'config/i18n';
 
 const cx: any = classNames.bind(styles);
 
@@ -62,14 +63,16 @@ export class RevisionExplorer extends React.Component<
   public handleUpdateRevisions(): Promise<void> {
     if (this.props.assetStore !== null) {
       const assets = this.props.assetStore.revisions;
-      return getAssets(assets.endpoint, assets.type, assets.id || 'id').then(
-        (remoteAssets: Asset[]) => {
-          if (remoteAssets.length > 0) {
-            remoteAssets[0].content.current = true;
-          }
-          this.setState({ revisions: remoteAssets });
+      return getAssets(
+        assets.endpoint + '?version=' + SPEC_VERSION,
+        assets.type,
+        assets.id || 'id'
+      ).then((remoteAssets: Asset[]) => {
+        if (remoteAssets.length > 0) {
+          remoteAssets[0].content.current = true;
         }
-      );
+        this.setState({ revisions: remoteAssets });
+      });
     }
   }
 
@@ -131,10 +134,10 @@ export class RevisionExplorer extends React.Component<
       <div className={classes}>
         <div className={styles.mask} />
         <PopTab
-          header="Revisions"
+          header={i18n.t('revisions.header', 'Revisions')}
           color="#8e5ea7"
           icon="fe-time"
-          label="Revision History"
+          label={i18n.t('revisions.label', 'Revision History')}
           top="360px"
           visible={this.state.visible}
           onShow={this.handleTabClicked}

@@ -1,4 +1,4 @@
-import { StylesConfig } from 'react-select/lib/styles';
+import { StylesConfig } from 'react-select';
 
 export const large = {
   placeholder: (styles: StylesConfig, state: any) => {
@@ -101,7 +101,8 @@ export const small = {
   }),
   input: (styles: StylesConfig) => ({
     ...styles,
-    margin: 0,
+    marginLeft: '-2px',
+    marginTop: '-10px',
     caretColor: '#999',
     boxShadow: 'none',
     border: 'none',

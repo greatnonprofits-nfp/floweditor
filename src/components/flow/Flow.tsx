@@ -51,6 +51,7 @@ import {
 import Debug from 'utils/debug';
 
 import styles from './Flow.module.scss';
+import { Trans } from 'react-i18next';
 
 declare global {
   interface Window {
@@ -162,7 +163,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     );
     this.Plumber.bind(
       'beforeStartDetach',
-      (event: ConnectionEvent) => !this.props.editorState.translating
+      (event: ConnectionEvent) => !this.props.editorState.translating && this.context.config.mutable
     );
     this.Plumber.bind('beforeDetach', (event: ConnectionEvent) => true);
     this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => this.onBeforeConnectorDrop(event));
@@ -189,7 +190,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     this.Plumber.reset();
   }
 
-  public componentWillUpdate(prevProps: FlowStoreProps): void {
+  public UNSAFE_componentWillUpdate(prevProps: FlowStoreProps): void {
     if (
       prevProps.editorState.activityInterval === this.props.editorState.activityInterval &&
       this.props.editorState.activityInterval !== ACTIVITY_INTERVAL
@@ -218,6 +219,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
    */
   private onConnectorDrop(event: ConnectionEvent): boolean {
     const { ghostNode } = this.props.editorState;
+
     // Don't show the node editor if we a dragging back to where we were
     if (isRealValue(ghostNode) && !isDraggingBack(event)) {
       // Wire up the drag from to our ghost node
@@ -228,10 +230,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
       // Save our position for later
       const { left, top } = (this.ghost &&
-        snapToGrid(
-          this.ghost.wrappedInstance.ele.offsetLeft,
-          this.ghost.wrappedInstance.ele.offsetTop
-        )) || { left: 0, top: 0 };
+        snapToGrid(this.ghost.ele.offsetLeft, this.ghost.ele.offsetTop)) || { left: 0, top: 0 };
 
       this.props.editorState.ghostNode.ui.position = { left, top };
       let originalAction = null;
@@ -362,12 +361,14 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
   private getEmptyFlow(): JSX.Element {
     return (
       <div key="create_node" className={styles.empty_flow}>
-        <h1>Let's get started</h1>
-        <div>
-          We recommend starting your flow by sending a message. This message will be sent to anybody
-          right after they join the flow. This is your chance to send a single message or ask them a
-          question.
-        </div>
+        <Trans i18nKey="empty_flow_message">
+          <h1>Let's get started</h1>
+          <div>
+            We recommend starting your flow by sending a message. This message will be sent to
+            anybody right after they join the flow. This is your chance to send a single message or
+            ask them a question.
+          </div>
+        </Trans>
 
         <Button
           name="Create Message"
@@ -399,7 +400,8 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     return (
       <div onDoubleClick={this.onDoubleClick} ref={this.onRef}>
         <Canvas
-          draggingNew={!!this.props.editorState.ghostNode}
+          mutable={this.context.config.mutable}
+          draggingNew={!!this.props.editorState.ghostNode && !this.props.nodeEditorSettings}
           onDragging={(uuids: string[]) => {
             uuids.forEach((uuid: string) => {
               if (uuid in this.props.nodes) {

@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import axios, { AxiosResponse } from 'axios';
 import { Revision } from 'components/revisions/RevisionExplorer';
-import { Endpoints, Exit, FlowDefinition } from 'flowTypes';
+import { Endpoints, Exit, FlowDefinition, SPEC_VERSION } from 'flowTypes';
 import { currencies } from 'store/currencies';
 import { Activity, RecentMessage } from 'store/editor';
 import {
@@ -14,6 +14,7 @@ import {
 } from 'store/flowContext';
 import { assetListToMap } from 'store/helpers';
 import { CompletionSchema } from 'utils/completion';
+import { FlowTypes } from 'config/interfaces';
 
 export interface FlowDetails {
   uuid: string;
@@ -51,11 +52,27 @@ export interface Cancel {
 export const saveRevision = (endpoint: string, definition: FlowDefinition): Promise<Revision> => {
   const csrf = getCookie('csrftoken');
   const headers = csrf ? { 'X-CSRFToken': csrf } : {};
+
+  // update the spec version in our def to the current editor version
+  let patch = '0';
+
+  // honor any existing patch increments
+  let release = definition.spec_version.split('.');
+  if (release.length > 2) {
+    patch = release[2];
+  }
+
+  definition.spec_version = [SPEC_VERSION, patch].join('.');
+
   return new Promise<Revision>((resolve, reject) => {
     axios
       .post(endpoint, definition, { headers })
       .then((response: AxiosResponse) => {
-        resolve(response.data.revision as Revision);
+        if (response.status === 200) {
+          resolve(response.data.revision as Revision);
+        } else {
+          reject(response);
+        }
       })
       .catch(error => reject(error));
   });
@@ -116,15 +133,9 @@ export const postNewAsset = (assets: Assets, payload: any): Promise<Asset> => {
 
 export const fetchAsset = (assets: Assets, id: string): Promise<Asset> => {
   return new Promise<Asset>((resolve, reject) => {
-    axios
-      .get(assets.endpoint)
-      .then((response: AxiosResponse) => {
-        const match: Asset = response.data.results
-          .map((result: any) => resultToAsset(result, assets.type, assets.id))
-          .find((asset: Asset) => asset.id === id);
-        resolve(match);
-      })
-      .catch(error => reject(error));
+    getAssets(assets.endpoint, assets.type, assets.id).then((results: Asset[]) => {
+      resolve(results.find((asset: Asset) => asset.id === id));
+    });
   });
 };
 
@@ -166,10 +177,31 @@ export const getAssets = async (url: string, type: AssetType, id: string): Promi
 
 export const resultToAsset = (result: any, type: AssetType, id: string): Asset => {
   const idKey = id || 'uuid';
+
+  let assetType = type;
+
+  if (type === AssetType.Flow && result.type) {
+    switch (result.type) {
+      case 'message':
+        result.type = FlowTypes.MESSAGE;
+        break;
+      case 'voice':
+        result.type = FlowTypes.VOICE;
+        break;
+      case 'survey':
+        result.type = FlowTypes.SURVEY;
+        break;
+    }
+  }
+
+  if (type !== AssetType.Flow && result.type) {
+    assetType = result.type;
+  }
+
   const asset: Asset = {
     name: result.name || result.text || result.label || result[idKey],
     id: result[idKey],
-    type
+    type: assetType
   };
 
   delete result[idKey];
@@ -177,7 +209,6 @@ export const resultToAsset = (result: any, type: AssetType, id: string): Asset =
   delete result.text;
 
   asset.content = result;
-
   return asset;
 };
 
@@ -189,7 +220,15 @@ export const isMatch = (
   if (shouldExclude && shouldExclude(asset)) {
     return false;
   }
-  return asset.name.toLowerCase().includes(input.toLowerCase());
+
+  const inputLower = input.toLowerCase();
+  // some assets have ids worth matching
+  if (asset.type === AssetType.Currency || asset.type === AssetType.Language) {
+    if (asset.id.toLowerCase().includes(inputLower)) {
+      return true;
+    }
+  }
+  return asset.name.toLowerCase().includes(inputLower);
 };
 
 /**
@@ -222,6 +261,11 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         type: AssetType.Channel,
         items: {}
       },
+      classifiers: {
+        endpoint: getURL(endpoints.classifiers),
+        type: AssetType.Classifier,
+        items: {}
+      },
       languages: {
         endpoint: getURL(endpoints.languages),
         type: AssetType.Language,
@@ -236,6 +280,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
       fields: {
         endpoint: getURL(endpoints.fields),
         type: AssetType.Field,
+        id: 'key',
+        items: {}
+      },
+      globals: {
+        endpoint: getURL(endpoints.globals),
+        type: AssetType.Global,
         id: 'key',
         items: {}
       },
@@ -286,7 +336,7 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
 
     // prefetch some of our assets
     const fetches: any[] = [];
-    ['languages', 'fields', 'groups', 'labels'].forEach((storeId: string) => {
+    ['languages', 'fields', 'groups', 'labels', 'globals'].forEach((storeId: string) => {
       const store = assetStore[storeId];
       fetches.push(
         getAssets(store.endpoint, store.type, store.id || 'uuid').then((assets: Asset[]) => {
@@ -330,14 +380,18 @@ export const getFlowDefinition = (
     (async () => {
       let revisionToLoad = id;
       if (!revisionToLoad) {
-        const response = await axios.get(`${revisions.endpoint}`);
-        if (response.data.results.length > 0) {
-          revisionToLoad = response.data.results[0].id;
+        try {
+          const response = await axios.get(`${revisions.endpoint}?version=${SPEC_VERSION}`);
+          if (response.data.results.length > 0) {
+            revisionToLoad = response.data.results[0].id;
+          }
+        } catch (error) {
+          reject(new Error("Couldn't reach revisions endpoint"));
         }
       }
 
       if (revisionToLoad) {
-        const url = `${revisions.endpoint}${revisionToLoad}`;
+        const url = `${revisions.endpoint}${revisionToLoad}?version=${SPEC_VERSION}`;
         axios
           .get(url)
           .then((response: AxiosResponse) => {

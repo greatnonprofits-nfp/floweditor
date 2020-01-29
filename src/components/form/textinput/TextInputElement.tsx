@@ -121,6 +121,7 @@ export class TextInputElement extends React.Component<TextInputProps, TextInputS
       'contact',
       'child',
       'fields',
+      'globals',
       'input',
       'parent',
       'results',
@@ -143,7 +144,7 @@ export class TextInputElement extends React.Component<TextInputProps, TextInputS
     return (this.textEl = ref);
   }
 
-  public componentWillReceiveProps(nextProps: TextInputProps): void {
+  public UNSAFE_componentWillReceiveProps(nextProps: TextInputProps): void {
     if (nextProps.entry.value !== this.props.entry.value || this.nextCaret > -1) {
       this.setState({ value: nextProps.entry.value }, () => {
         if (this.nextCaret > -1) {
@@ -632,6 +633,7 @@ export class TextInputElement extends React.Component<TextInputProps, TextInputS
     if (this.props.textarea) {
       return (
         <textarea
+          name={this.props.name}
           data-spec="input"
           data-testid="input"
           ref={this.textElRef}
@@ -649,6 +651,7 @@ export class TextInputElement extends React.Component<TextInputProps, TextInputS
     } else {
       return (
         <input
+          name={this.props.name}
           data-spec="input"
           data-testid="input"
           ref={this.textElRef}
@@ -751,7 +754,7 @@ const ConnectedTextInputElement = connect(
   mapStateToProps,
   null,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(TextInputElement);
 
 export default ConnectedTextInputElement;

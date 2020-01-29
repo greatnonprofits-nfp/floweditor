@@ -44,7 +44,8 @@ import {
   UINode,
   Wait,
   WaitTypes,
-  WebhookExitNames
+  WebhookExitNames,
+  HintTypes
 } from 'flowTypes';
 import Localization from 'services/Localization';
 import { Asset, Assets, AssetType, RenderNode } from 'store/flowContext';
@@ -180,17 +181,20 @@ export const createStartSessionAction = ({
   flow = {
     uuid: 'flow_uuid',
     name: 'Flow to Start'
-  }
+  },
+  create_contact = false
 }: {
   uuid?: string;
   groups?: Group[];
   contacts?: Contact[];
   flow?: Flow;
+  create_contact?: boolean;
 } = {}): StartSession => ({
   uuid,
   groups,
   contacts,
   flow,
+  create_contact,
   type: Types.start_session
 });
 
@@ -334,7 +338,10 @@ export const createSetRunResultAction = ({
   type: Types.set_run_result
 });
 
-export const createWebhookNode = (action: CallWebhook | CallResthook | TransferAirtime) => {
+export const createWebhookNode = (
+  action: CallWebhook | CallResthook | TransferAirtime,
+  useCategoryTest: boolean
+) => {
   const { categories, exits } = createCategories([
     WebhookExitNames.Success,
     WebhookExitNames.Failure
@@ -343,18 +350,23 @@ export const createWebhookNode = (action: CallWebhook | CallResthook | TransferA
   const cases: Case[] = [
     {
       uuid: utils.createUUID(),
-      type: Operators.has_only_text,
+      type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
       arguments: [WebhookExitNames.Success],
       category_uuid: categories[0].uuid
     }
   ];
+
+  let operand = '@results.' + utils.snakify(action.result_name);
+  if (!useCategoryTest) {
+    operand += '.category';
+  }
 
   return {
     uuid: utils.createUUID(),
     actions: [action],
     router: {
       type: RouterTypes.switch,
-      operand: `@results.${utils.snakify(action.result_name)}.category`,
+      operand: operand,
       cases,
       categories,
       default_category_uuid: categories[categories.length - 1].uuid
@@ -372,7 +384,7 @@ export const createWebhookRouterNode = (): FlowNode => {
     method: Methods.GET,
     result_name: 'Response'
   };
-  return createWebhookNode(action);
+  return createWebhookNode(action, false);
 };
 
 export const getLocalizationFormProps = (
@@ -518,6 +530,13 @@ export const createRoutes = (categories: string[], hasTimeout: boolean = false):
   });
 
   return resolveRoutes(cases, hasTimeout, null);
+};
+
+export const createWaitRouter = (hintType: HintTypes, resultName: string = 'Result Name') => {
+  const originalNode = createMatchRouter([]);
+  originalNode.node.router.wait = { type: WaitTypes.msg, hint: { type: hintType } };
+  originalNode.node.router.result_name = resultName;
+  return originalNode;
 };
 
 export const createMatchRouter = (matches: string[], hasTimeout: boolean = false): RenderNode => {
@@ -692,7 +711,7 @@ export const createSubflowNode = (
 
 export const createAirtimeTransferNode = (transferAirtimeAction: TransferAirtime): RenderNode => {
   return {
-    node: createWebhookNode(transferAirtimeAction),
+    node: createWebhookNode(transferAirtimeAction, true),
     ui: { position: { left: 0, top: 0 }, type: Types.split_by_airtime },
     inboundConnections: {}
   };
@@ -700,7 +719,7 @@ export const createAirtimeTransferNode = (transferAirtimeAction: TransferAirtime
 
 export const createResthookNode = (callResthookAction: CallResthook): RenderNode => {
   return {
-    node: createWebhookNode(callResthookAction),
+    node: createWebhookNode(callResthookAction, false),
     ui: { position: { left: 0, top: 0 }, type: Types.split_by_resthook },
     inboundConnections: {}
   };
@@ -791,7 +810,10 @@ export const SubscribersGroup = {
 
 export const ColorFlowAsset = {
   name: 'Favorite Color',
-  uuid: '9a93ede6-078f-44c9-ad0a-133793be5d56'
+  uuid: '9a93ede6-078f-44c9-ad0a-133793be5d56',
+  content: {
+    parent_refs: ['colors']
+  }
 };
 
 export const ResthookAsset = {

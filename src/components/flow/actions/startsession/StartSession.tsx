@@ -6,7 +6,7 @@ import { AssetType } from 'store/flowContext';
 
 import styles from './StartSession.module.scss';
 
-const MAX_TO_SHOW = 3;
+const MAX_TO_SHOW = 5;
 
 export const StartSessionComp: React.SFC<StartSession> = (
   action: StartSession,
@@ -18,6 +18,8 @@ export const StartSessionComp: React.SFC<StartSession> = (
       <div className={styles.to}>
         {action.create_contact
           ? 'Create a new contact'
+          : action.contact_query
+          ? action.contact_query
           : renderAssetList(recipients, MAX_TO_SHOW, context.config.endpoints)}
       </div>
       <div className={styles.flow}>

@@ -1,9 +1,19 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { getActionUUID } from 'components/flow/actions/helpers';
 import { Attachment, SendMsgFormState } from 'components/flow/actions/sendmsg/SendMsgForm';
 import { Types } from 'config/interfaces';
 import { MsgTemplating, SendMsg } from 'flowTypes';
 import { AssetStore, AssetType } from 'store/flowContext';
 import { AssetEntry, NodeEditorSettings, StringEntry } from 'store/nodeEditor';
+import { SelectOption } from 'components/form/select/SelectElement';
+import { createUUID } from 'utils';
+
+export const TOPIC_OPTIONS: SelectOption[] = [
+  { value: 'event', label: 'Event' },
+  { value: 'account', label: 'Account' },
+  { value: 'purchase', label: 'Purchase' },
+  { value: 'agent', label: 'Agent' }
+];
 
 export const initializeForm = (
   settings: NodeEditorSettings,
@@ -45,6 +55,7 @@ export const initializeForm = (
     }
 
     return {
+      topic: { value: TOPIC_OPTIONS.find(option => option.value === action.topic) },
       template,
       templateVariables,
       attachments,
@@ -57,6 +68,7 @@ export const initializeForm = (
   }
 
   return {
+    topic: { value: null },
     template,
     templateVariables: [],
     attachments: [],
@@ -74,8 +86,22 @@ export const stateToAction = (settings: NodeEditorSettings, state: SendMsgFormSt
     .map((attachment: Attachment) => `${attachment.type}:${attachment.url}`);
 
   let templating: MsgTemplating = null;
+
   if (state.template && state.template.value) {
+    let templatingUUID = createUUID();
+    if (settings.originalAction && settings.originalAction.type === Types.send_msg) {
+      const action = settings.originalAction as SendMsg;
+      if (
+        action.templating &&
+        action.templating.template &&
+        action.templating.template.uuid === state.template.value.id
+      ) {
+        templatingUUID = action.templating.uuid;
+      }
+    }
+
     templating = {
+      uuid: templatingUUID,
       template: {
         uuid: state.template.value.id,
         name: state.template.value.name
@@ -95,6 +121,10 @@ export const stateToAction = (settings: NodeEditorSettings, state: SendMsgFormSt
 
   if (templating) {
     result.templating = templating;
+  }
+
+  if (state.topic.value) {
+    result.topic = state.topic.value.value;
   }
 
   return result;

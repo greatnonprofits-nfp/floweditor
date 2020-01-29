@@ -5,12 +5,6 @@ import { getIconForAssetType } from 'components/form/assetselector/widgets';
 import FormElement, { FormElementProps } from 'components/form/FormElement';
 import { getAssets, isMatch, postNewAsset, searchAssetMap } from 'external';
 import * as React from 'react';
-import Async from 'react-select/lib/Async';
-import { components } from 'react-select/lib/components';
-import { OptionProps } from 'react-select/lib/components/Option';
-import Creatable from 'react-select/lib/Creatable';
-import { StylesConfig } from 'react-select/lib/styles';
-import { OptionsType, ValueType } from 'react-select/lib/types';
 import { Asset, Assets, AssetType, CompletionOption, REMOVE_VALUE_ASSET } from 'store/flowContext';
 import { AssetEntry } from 'store/nodeEditor';
 import { uniqueBy } from 'utils';
@@ -18,6 +12,10 @@ import { getErroredSelect as getErroredControl, large, messageStyle } from 'util
 
 import styles from './AssetSelector.module.scss';
 import { getCompletions, CompletionAssets } from 'utils/completion';
+import i18n from 'config/i18n';
+import { OptionProps, OptionsType, ValueType, StylesConfig, components } from 'react-select';
+import Creatable from 'react-select/creatable';
+import AsyncSelect from 'react-select/async';
 
 type CallbackFunction = (options: OptionsType<Asset>) => void;
 
@@ -31,7 +29,7 @@ const AssetOption = (props: OptionProps<Asset>) => {
   }
 
   // TODO: add styling for different asset types
-  return !props.isDisabled ? (
+  return !props.isDisabled && components ? (
     <div ref={props.innerRef} {...props.innerProps}>
       <components.Option {...props}>
         {prefix}
@@ -136,7 +134,7 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
 
   private handleChanged(selected: any): void {
     this.setState({ message: null });
-    if (Array.isArray(selected)) {
+    if (Array.isArray(selected) || !selected) {
       this.props.onChange(selected);
     } else if (this.props.onChange) {
       /* istanbul ignore else */
@@ -147,7 +145,7 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
   public handleLoadOptions(input: string, callback: CallbackFunction): void {
     let options = this.props.additionalOptions || [];
 
-    if (input.startsWith('@')) {
+    if (this.props.completion && input.startsWith('@')) {
       const completions = getCompletions(this.props.completion, input.substr(1));
 
       callback(
@@ -183,6 +181,7 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
         const remoteMatches = remoteAssets.filter((asset: Asset) =>
           isMatch(input, asset, this.props.shouldExclude)
         );
+
         const removalAsset: Asset[] = this.props.valueClearable ? [REMOVE_VALUE_ASSET] : [];
 
         // concat them all together and uniquify them
@@ -313,9 +312,24 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
     return style;
   }
 
+  public getOptionValue(option: any) {
+    return option.value || option.id;
+  }
+
+  public getOptionLabel(option: any) {
+    return option.label || option.name;
+  }
+
   public render(): JSX.Element {
+    const fallbackPlaceholder = i18n.t(
+      'asset_selector.placeholder',
+      'Select existing [[name]] or enter a new one',
+      { name: this.props.name.toLocaleLowerCase(), count: this.props.multi ? 1000 : 1 }
+    );
+
     const commonAttributes = {
       className: 'react-select ' + styles.selection,
+      captureMenuScroll: false,
       value: this.state.entry.value,
       components: { Option: AssetOption },
       styles: this.getStyle(),
@@ -329,8 +343,9 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
       isLoading: this.state.isLoading,
       isClearable: this.props.formClearable,
       isSearchable: this.props.searchable,
-      getOptionValue: (option: Asset) => option.id,
-      getOptionLabel: (option: Asset) => option.name
+      getOptionValue: this.getOptionValue,
+      getOptionLabel: this.getOptionLabel,
+      placeholder: this.props.placeholder || fallbackPlaceholder
     };
 
     if (this.props.createAssetFromInput) {
@@ -341,9 +356,6 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
         this.props.additionalOptions,
         this.props.shouldExclude
       );
-
-      const article = !this.props.multi ? 'an' : '';
-      const newLanguage = this.props.multi ? 'new ones' : 'a new one';
 
       return (
         <FormElement
@@ -356,10 +368,6 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
         >
           <Creatable
             {...commonAttributes}
-            placeholder={
-              this.props.placeholder ||
-              `Select ${article} existing ${this.props.name.toLocaleLowerCase()} or enter ${newLanguage}`
-            }
             options={localMatches.sort(this.props.sortFunction || sortByName)}
             isValidNewOption={this.handleCheckValid}
             formatCreateLabel={this.handleCreatePrompt}
@@ -406,7 +414,7 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
           hideError={this.state.menuOpen}
           __className={styles.ele}
         >
-          <Async
+          <AsyncSelect
             {...commonAttributes}
             defaultOptions={defaultOptions}
             cacheOptions={true}

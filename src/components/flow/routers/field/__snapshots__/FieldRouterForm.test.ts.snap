@@ -105,6 +105,11 @@ exports[`FieldRouterForm initializes 1`] = `
               "type": "scheme",
             },
             Object {
+              "id": "twitter",
+              "name": "Twitter Handle",
+              "type": "scheme",
+            },
+            Object {
               "id": "wechat",
               "name": "Wechat ID",
               "type": "scheme",
@@ -176,7 +181,18 @@ exports[`FieldRouterForm initializes 1`] = `
     onCasesUpdated={[Function]}
   />
   <OptionalTextInput
-    helpText="By naming the result, you can reference it later using @results.color"
+    helpText={
+      <Trans
+        i18nKey="forms.result_name_help"
+        values={
+          Object {
+            "resultFormat": "@results.color",
+          }
+        }
+      >
+        By naming the result, you can reference it later using [[resultFormat]]
+      </Trans>
+    }
     maxLength={64}
     name="Result Name"
     onChange={[Function]}
@@ -295,6 +311,11 @@ exports[`FieldRouterForm should render 1`] = `
               "type": "scheme",
             },
             Object {
+              "id": "twitter",
+              "name": "Twitter Handle",
+              "type": "scheme",
+            },
+            Object {
               "id": "wechat",
               "name": "Wechat ID",
               "type": "scheme",
@@ -366,7 +387,18 @@ exports[`FieldRouterForm should render 1`] = `
     onCasesUpdated={[Function]}
   />
   <OptionalTextInput
-    helpText="By naming the result, you can reference it later using @results.color"
+    helpText={
+      <Trans
+        i18nKey="forms.result_name_help"
+        values={
+          Object {
+            "resultFormat": "@results.color",
+          }
+        }
+      >
+        By naming the result, you can reference it later using [[resultFormat]]
+      </Trans>
+    }
     maxLength={64}
     name="Result Name"
     onChange={[Function]}
