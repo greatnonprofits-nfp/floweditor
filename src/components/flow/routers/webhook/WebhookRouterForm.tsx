@@ -30,6 +30,7 @@ import {
 import { createUUID } from 'utils';
 
 import styles from './WebhookRouterForm.module.scss';
+import { large } from 'utils/reactselect';
 
 export interface HeaderEntry extends FormEntry {
   value: Header;
@@ -144,7 +145,7 @@ export default class WebhookRouterForm extends React.Component<
     return this.handleUpdate({ method });
   }
 
-  private handleUrlUpdate(url: string, submitting = false): boolean {
+  private handleUrlUpdate(url: string, name: string, submitting = false): boolean {
     return this.handleUpdate({ url }, submitting);
   }
 
@@ -272,6 +273,7 @@ export default class WebhookRouterForm extends React.Component<
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <div className={styles.method}>
           <SelectElement
+            styles={large as any}
             name="MethodMap"
             entry={this.state.method}
             onChange={this.handleMethodUpdate}

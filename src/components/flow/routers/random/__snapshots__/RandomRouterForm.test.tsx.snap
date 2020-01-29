@@ -343,6 +343,11 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 Send the contact airtime
               </option>
               <option
+                value="split_by_intent"
+              >
+                Split by intent
+              </option>
+              <option
                 value="split_by_expression"
               >
                 Split by a custom expression
@@ -446,6 +451,7 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="e67ce051-f3e4-4c42-807b-e393df5fa382"
                 type="text"
                 value="Bucket 1"
               />
@@ -482,6 +488,7 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="e0bc3776-792f-49d2-b4be-48be2cf8159a"
                 type="text"
                 value="Bucket 2"
               />
@@ -518,6 +525,7 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="6c22884b-0e35-4206-982e-18320691eda9"
                 type="text"
                 value="Bucket 3"
               />
@@ -554,6 +562,7 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="a62e8284-49f8-4292-adbc-d5f6607f85c5"
                 type="text"
                 value="Bucket 4"
               />
@@ -590,6 +599,7 @@ exports[`RandomRouterForm should initialize existing random 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="0c8c9239-9b59-473a-a229-d8a9693be270"
                 type="text"
                 value="Bucket 5"
               />
@@ -782,6 +792,11 @@ exports[`RandomRouterForm should remove exits when shrinking 1`] = `
                 Send the contact airtime
               </option>
               <option
+                value="split_by_intent"
+              >
+                Split by intent
+              </option>
+              <option
                 value="split_by_expression"
               >
                 Split by a custom expression
@@ -885,6 +900,7 @@ exports[`RandomRouterForm should remove exits when shrinking 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="e81b3f1a-0863-4418-8a72-9c9f8aa72b7c"
                 type="text"
                 value="Bucket 1"
               />
@@ -921,6 +937,7 @@ exports[`RandomRouterForm should remove exits when shrinking 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="1888ae1f-2518-4727-98e2-731674e1760e"
                 type="text"
                 value="Bucket 2"
               />
@@ -957,6 +974,7 @@ exports[`RandomRouterForm should remove exits when shrinking 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="dd57500e-a8e8-4a98-8b5b-a33637523a8d"
                 type="text"
                 value="Bucket 3"
               />

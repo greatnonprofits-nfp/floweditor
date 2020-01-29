@@ -13,7 +13,7 @@ exports[`CaseList render should render empty list 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -127,6 +127,21 @@ exports[`CaseList render should render empty list 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -152,6 +167,8 @@ exports[`CaseList render should render empty list 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value=""
                   />
@@ -198,6 +215,7 @@ exports[`CaseList render should render empty list 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value=""
                   />
@@ -249,7 +267,7 @@ exports[`CaseList render should render list of cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -363,6 +381,21 @@ exports[`CaseList render should render list of cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -388,6 +421,8 @@ exports[`CaseList render should render list of cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value="Red, r"
                   />
@@ -434,6 +469,7 @@ exports[`CaseList render should render list of cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value="Red"
                   />
@@ -474,7 +510,7 @@ exports[`CaseList render should render list of cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -588,6 +624,21 @@ exports[`CaseList render should render list of cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -613,6 +664,8 @@ exports[`CaseList render should render list of cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value="Green, g"
                   />
@@ -659,6 +712,7 @@ exports[`CaseList render should render list of cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value="Green"
                   />
@@ -699,7 +753,7 @@ exports[`CaseList render should render list of cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -813,6 +867,21 @@ exports[`CaseList render should render list of cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -838,6 +907,8 @@ exports[`CaseList render should render list of cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value=""
                   />
@@ -884,6 +955,7 @@ exports[`CaseList render should render list of cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value=""
                   />
@@ -935,7 +1007,7 @@ exports[`CaseList updates should remove cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -1049,6 +1121,21 @@ exports[`CaseList updates should remove cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -1074,6 +1161,8 @@ exports[`CaseList updates should remove cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value="Green, g"
                   />
@@ -1120,6 +1209,7 @@ exports[`CaseList updates should remove cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value="Green"
                   />
@@ -1160,7 +1250,7 @@ exports[`CaseList updates should remove cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -1274,6 +1364,21 @@ exports[`CaseList updates should remove cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -1299,6 +1404,8 @@ exports[`CaseList updates should remove cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value=""
                   />
@@ -1345,6 +1452,7 @@ exports[`CaseList updates should remove cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value=""
                   />
@@ -1396,7 +1504,7 @@ exports[`CaseList updates should update cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -1510,6 +1618,21 @@ exports[`CaseList updates should update cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -1535,6 +1658,8 @@ exports[`CaseList updates should update cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value="Purple, p"
                   />
@@ -1581,6 +1706,7 @@ exports[`CaseList updates should update cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value="Red"
                   />
@@ -1621,7 +1747,7 @@ exports[`CaseList updates should update cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -1735,6 +1861,21 @@ exports[`CaseList updates should update cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -1760,6 +1901,8 @@ exports[`CaseList updates should update cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value="Green, g"
                   />
@@ -1806,6 +1949,7 @@ exports[`CaseList updates should update cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value="Green"
                   />
@@ -1846,7 +1990,7 @@ exports[`CaseList updates should update cases 1`] = `
           class="ele group"
         >
           <div
-            class="kase"
+            class="kase has_any_word"
             data-draggable="true"
           >
             <span
@@ -1960,6 +2104,21 @@ exports[`CaseList updates should update cases 1`] = `
                   has an email
                 </option>
                 <option
+                  value="has_state"
+                >
+                  has state
+                </option>
+                <option
+                  value="has_district"
+                >
+                  has district
+                </option>
+                <option
+                  value="has_ward"
+                >
+                  has ward
+                </option>
+                <option
                   value="has_value"
                 >
                   is not empty
@@ -1985,6 +2144,8 @@ exports[`CaseList updates should update cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="-1"
+                    name="arguments"
+                    placeholder=""
                     type="text"
                     value=""
                   />
@@ -2031,6 +2192,7 @@ exports[`CaseList updates should update cases 1`] = `
                     data-spec="input"
                     data-testid="input"
                     maxlength="36"
+                    name="exitName"
                     type="text"
                     value=""
                   />

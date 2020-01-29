@@ -59,5 +59,5 @@ export const stateToNode = (
     uuid: getActionUUID(settings, Types.call_shorten_url)
   };
 
-  return createWebhookBasedNode(action, settings.originalNode);
+  return createWebhookBasedNode(action, settings.originalNode, true);
 };

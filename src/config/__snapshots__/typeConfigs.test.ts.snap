@@ -54,6 +54,20 @@ Array [
     ],
   },
   Object {
+    "description": "Wait for an audio recording",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Wait for Audio",
+    "type": "wait_for_audio",
+    "visibility": Array [
+      "message_offline",
+      "voice",
+    ],
+  },
+  Object {
     "component": [Function],
     "description": "Send the contact a message",
     "form": [Function],
@@ -138,6 +152,11 @@ Array [
     "component": [Function],
     "description": "Send an email",
     "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "subject",
+      "body",
+    ],
     "name": "Send Email",
     "type": "send_email",
     "visibility": Array [
@@ -237,6 +256,7 @@ Array [
     ],
     "component": [Function],
     "description": "Call Zapier",
+    "filter": "resthook",
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
@@ -284,6 +304,7 @@ Array [
     ],
     "component": [Function],
     "description": "Send the contact airtime",
+    "filter": "airtime",
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
@@ -291,18 +312,9 @@ Array [
     ],
     "name": "Send Airtime",
     "type": "transfer_airtime",
-  },
-  Object {
-    "description": "Wait for an audio recording",
-    "form": [Function],
-    "localization": [Function],
-    "localizeableKeys": Array [
-      "exits",
-    ],
-    "name": "Wait for Audio",
-    "type": "wait_for_audio",
     "visibility": Array [
-      "message_offline",
+      "message",
+      "voice",
     ],
   },
   Object {
@@ -342,6 +354,25 @@ Array [
     "type": "wait_for_location",
     "visibility": Array [
       "message_offline",
+    ],
+  },
+  Object {
+    "aliases": Array [
+      "call_classifier",
+    ],
+    "component": [Function],
+    "description": "Split by intent",
+    "filter": "classifier",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Split by Intent",
+    "type": "split_by_intent",
+    "visibility": Array [
+      "message",
+      "voice",
     ],
   },
   Object {
@@ -426,6 +457,25 @@ Object {
     "name": "Add Labels",
     "type": "add_input_labels",
   },
+  "call_classifier": Object {
+    "aliases": Array [
+      "call_classifier",
+    ],
+    "component": [Function],
+    "description": "Split by intent",
+    "filter": "classifier",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Split by Intent",
+    "type": "split_by_intent",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
   "call_giftcard": Object {
     "aliases": Array [
       "split_by_giftcard",
@@ -466,6 +516,7 @@ Object {
     ],
     "component": [Function],
     "description": "Call Zapier",
+    "filter": "resthook",
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
@@ -583,6 +634,11 @@ Object {
     "component": [Function],
     "description": "Send an email",
     "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "subject",
+      "body",
+    ],
     "name": "Send Email",
     "type": "send_email",
     "visibility": Array [
@@ -663,6 +719,7 @@ Object {
     ],
     "component": [Function],
     "description": "Send the contact airtime",
+    "filter": "airtime",
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
@@ -670,6 +727,10 @@ Object {
     ],
     "name": "Send Airtime",
     "type": "transfer_airtime",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
   },
   "split_by_contact_field": Object {
     "description": "Split by a contact field",
@@ -720,6 +781,25 @@ Object {
     "name": "Split by Group Membership",
     "type": "split_by_groups",
   },
+  "split_by_intent": Object {
+    "aliases": Array [
+      "call_classifier",
+    ],
+    "component": [Function],
+    "description": "Split by intent",
+    "filter": "classifier",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Split by Intent",
+    "type": "split_by_intent",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
   "split_by_lookup": Object {
     "aliases": Array [
       "split_by_lookup",
@@ -753,6 +833,7 @@ Object {
     ],
     "component": [Function],
     "description": "Call Zapier",
+    "filter": "resthook",
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
@@ -881,6 +962,7 @@ Object {
     ],
     "component": [Function],
     "description": "Send the contact airtime",
+    "filter": "airtime",
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
@@ -888,6 +970,10 @@ Object {
     ],
     "name": "Send Airtime",
     "type": "transfer_airtime",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
   },
   "wait_for_audio": Object {
     "description": "Wait for an audio recording",
@@ -900,6 +986,7 @@ Object {
     "type": "wait_for_audio",
     "visibility": Array [
       "message_offline",
+      "voice",
     ],
   },
   "wait_for_digits": Object {

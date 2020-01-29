@@ -4,26 +4,20 @@ import { sortByName } from 'components/form/assetselector/helpers';
 import { getIconForAssetType } from 'components/form/assetselector/widgets';
 import FormElement, { FormElementProps } from 'components/form/FormElement';
 import { getAssets, isMatch, postNewAsset, searchAssetMap } from 'external';
-import React from 'react';
-import { Async, components } from 'react-select';
+import * as React from 'react';
+import Async from 'react-select/lib/Async';
+import { components } from 'react-select/lib/components';
 import { OptionProps } from 'react-select/lib/components/Option';
 import Creatable from 'react-select/lib/Creatable';
 import { StylesConfig } from 'react-select/lib/styles';
 import { OptionsType, ValueType } from 'react-select/lib/types';
-import {
-  Asset,
-  Assets,
-  AssetStore,
-  AssetType,
-  CompletionOption,
-  REMOVE_VALUE_ASSET
-} from 'store/flowContext';
+import { Asset, Assets, AssetType, CompletionOption, REMOVE_VALUE_ASSET } from 'store/flowContext';
 import { AssetEntry } from 'store/nodeEditor';
 import { uniqueBy } from 'utils';
-import { getCompletionOptions } from 'utils/completion';
 import { getErroredSelect as getErroredControl, large, messageStyle } from 'utils/reactselect';
 
 import styles from './AssetSelector.module.scss';
+import { getCompletions, CompletionAssets } from 'utils/completion';
 
 type CallbackFunction = (options: OptionsType<Asset>) => void;
 
@@ -87,12 +81,11 @@ export interface AssetSelectorProps extends FormElementProps {
   sortFunction?(a: Asset, b: Asset): number;
 
   // completion options
-  completion?: AssetStore;
+  completion?: CompletionAssets;
 }
 
 interface AssetSelectorState {
   defaultOptions: Asset[];
-  completionOptions: Asset[];
   entry: AssetEntry;
   isLoading: boolean;
   menuOpen: boolean;
@@ -115,25 +108,11 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
       defaultOptions = searchAssetMap('', props.assets.items);
     }
 
-    let completionOptions: Asset[] = [];
-    if (this.props.completion) {
-      completionOptions = getCompletionOptions(true, this.props.completion, false).map(
-        (option: CompletionOption) => {
-          return {
-            id: '@' + option.name,
-            name: '@' + option.name,
-            type: AssetType.Expression
-          };
-        }
-      );
-    }
-
     this.state = {
       menuOpen: false,
       defaultOptions,
       entry: this.props.entry,
-      isLoading: false,
-      completionOptions
+      isLoading: false
     };
   }
 
@@ -168,9 +147,18 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
   public handleLoadOptions(input: string, callback: CallbackFunction): void {
     let options = this.props.additionalOptions || [];
 
-    if (this.state.completionOptions.length > 0 && input.startsWith('@')) {
-      options = options.concat(this.state.completionOptions);
-      callback(searchAssetMap(input, {}, options, this.props.shouldExclude));
+    if (this.props.completion && input.startsWith('@')) {
+      const completions = getCompletions(this.props.completion, input.substr(1));
+
+      callback(
+        completions.map((option: CompletionOption) => {
+          return {
+            id: '@' + option.name,
+            name: '@' + option.name,
+            type: AssetType.Expression
+          };
+        })
+      );
       return;
     }
 
@@ -326,6 +314,9 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
   }
 
   public render(): JSX.Element {
+    const article = !this.props.multi ? 'an' : '';
+    const newLanguage = this.props.multi ? 'new ones' : 'a new one';
+
     const commonAttributes = {
       className: 'react-select ' + styles.selection,
       value: this.state.entry.value,
@@ -342,7 +333,10 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
       isClearable: this.props.formClearable,
       isSearchable: this.props.searchable,
       getOptionValue: (option: Asset) => option.id,
-      getOptionLabel: (option: Asset) => option.name
+      getOptionLabel: (option: Asset) => option.name,
+      placeholder:
+        this.props.placeholder ||
+        `Select ${article} existing ${this.props.name.toLocaleLowerCase()} or enter ${newLanguage}`
     };
 
     if (this.props.createAssetFromInput) {
@@ -353,9 +347,6 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
         this.props.additionalOptions,
         this.props.shouldExclude
       );
-
-      const article = !this.props.multi ? 'an' : '';
-      const newLanguage = this.props.multi ? 'new ones' : 'a new one';
 
       return (
         <FormElement
@@ -368,10 +359,6 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
         >
           <Creatable
             {...commonAttributes}
-            placeholder={
-              this.props.placeholder ||
-              `Select ${article} existing ${this.props.name.toLocaleLowerCase()} or enter ${newLanguage}`
-            }
             options={localMatches.sort(this.props.sortFunction || sortByName)}
             isValidNewOption={this.handleCheckValid}
             formatCreateLabel={this.handleCreatePrompt}

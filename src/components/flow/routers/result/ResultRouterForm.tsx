@@ -101,7 +101,7 @@ export default class ResultRouterForm extends React.Component<
 
   private renderField(): JSX.Element {
     return (
-      <>
+      <div className={styles.non_delimited}>
         <div className={styles.lead_in}>If the flow result</div>
         <div className={styles.result_select}>
           <AssetSelector
@@ -114,13 +114,13 @@ export default class ResultRouterForm extends React.Component<
             onChange={this.handleResultChanged}
           />
         </div>
-      </>
+      </div>
     );
   }
 
   private renderFieldDelimited(): JSX.Element {
     return (
-      <>
+      <div className={styles.delimited}>
         <div className={styles.lead_in}>If the</div>
         <div className={styles.field_number}>
           <SelectElement
@@ -153,7 +153,7 @@ export default class ResultRouterForm extends React.Component<
             options={DELIMITER_OPTIONS}
           />
         </div>
-      </>
+      </div>
     );
   }
 

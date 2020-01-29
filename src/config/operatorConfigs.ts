@@ -1,4 +1,19 @@
-import { HIDDEN, Operator, OperatorMap, Operators, TEXT_TYPES } from 'config/interfaces';
+import { HIDDEN, Operator, OperatorMap, Operators, TEXT_TYPES, ONLINE } from 'config/interfaces';
+
+export const intentOperatorList: Operator[] = [
+  {
+    type: Operators.has_top_intent,
+    verboseName: 'has top intent',
+    operands: 2,
+    visibility: ONLINE
+  },
+  {
+    type: Operators.has_intent,
+    verboseName: 'has intent',
+    operands: 2,
+    visibility: ONLINE
+  }
+];
 
 export const operatorConfigList: Operator[] = [
   {
@@ -112,6 +127,12 @@ export const operatorConfigList: Operator[] = [
     visibility: HIDDEN
   },
   {
+    type: Operators.has_category,
+    verboseName: 'has the category',
+    operands: 0,
+    visibility: HIDDEN
+  },
+  {
     type: Operators.has_phone,
     verboseName: 'has a phone number',
     operands: 0,
@@ -123,6 +144,24 @@ export const operatorConfigList: Operator[] = [
     operands: 0,
     categoryName: 'Has Email',
     visibility: TEXT_TYPES
+  },
+  {
+    type: Operators.has_state,
+    verboseName: 'has state',
+    operands: 0,
+    categoryName: 'Has State'
+  },
+  {
+    type: Operators.has_district,
+    verboseName: 'has district',
+    operands: 1,
+    categoryName: 'Has District'
+  },
+  {
+    type: Operators.has_ward,
+    verboseName: 'has ward',
+    operands: 2,
+    categoryName: 'Has Ward'
   },
   {
     type: Operators.has_error,
@@ -144,7 +183,7 @@ export const operatorConfigList: Operator[] = [
   }
 ];
 
-export const operatorConfigMap: OperatorMap = operatorConfigList.reduce(
+export const operatorConfigMap: OperatorMap = [...operatorConfigList, ...intentOperatorList].reduce(
   (map: OperatorMap, operatorConfig: Operator) => {
     map[operatorConfig.type] = operatorConfig;
     return map;

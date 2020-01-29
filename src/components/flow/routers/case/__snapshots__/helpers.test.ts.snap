@@ -34,11 +34,19 @@ exports[`helpers prefix should prefix "has an error" operator appropriately 1`] 
 
 exports[`helpers prefix should prefix "has any of the words" operator appropriately 1`] = `""`;
 
+exports[`helpers prefix should prefix "has district" operator appropriately 1`] = `""`;
+
 exports[`helpers prefix should prefix "has only the phrase" operator appropriately 1`] = `""`;
 
 exports[`helpers prefix should prefix "has some text" operator appropriately 1`] = `""`;
 
+exports[`helpers prefix should prefix "has state" operator appropriately 1`] = `""`;
+
+exports[`helpers prefix should prefix "has the category" operator appropriately 1`] = `""`;
+
 exports[`helpers prefix should prefix "has the phrase" operator appropriately 1`] = `""`;
+
+exports[`helpers prefix should prefix "has ward" operator appropriately 1`] = `""`;
 
 exports[`helpers prefix should prefix "is in the group" operator appropriately 1`] = `""`;
 
@@ -59,6 +67,18 @@ Object {
     "value": "50 - 3",
   },
   "categoryNameEdited": false,
+  "confidence": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "district": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "intent": Object {
+    "validationFailures": Array [],
+    "value": null,
+  },
   "max": Object {
     "validationFailures": Array [
       Object {
@@ -80,6 +100,10 @@ Object {
     "type": "has_number_between",
     "verboseName": "has a number between",
   },
+  "state": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
   "valid": false,
 }
 `;
@@ -95,6 +119,18 @@ Object {
     "value": "",
   },
   "categoryNameEdited": false,
+  "confidence": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "district": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "intent": Object {
+    "validationFailures": Array [],
+    "value": null,
+  },
   "max": Object {
     "validationFailures": Array [],
     "value": "",
@@ -112,6 +148,10 @@ Object {
       "message_offline",
     ],
   },
+  "state": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
   "valid": true,
 }
 `;
@@ -127,6 +167,18 @@ Object {
     "value": "",
   },
   "categoryNameEdited": false,
+  "confidence": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "district": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "intent": Object {
+    "validationFailures": Array [],
+    "value": null,
+  },
   "max": Object {
     "validationFailures": Array [],
     "value": "",
@@ -139,6 +191,10 @@ Object {
     "operands": 2,
     "type": "has_number_between",
     "verboseName": "has a number between",
+  },
+  "state": Object {
+    "validationFailures": Array [],
+    "value": "",
   },
   "valid": true,
 }
@@ -159,6 +215,18 @@ Object {
     "value": "My Exit",
   },
   "categoryNameEdited": true,
+  "confidence": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "district": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "intent": Object {
+    "validationFailures": Array [],
+    "value": null,
+  },
   "max": Object {
     "validationFailures": Array [],
     "value": "",
@@ -176,6 +244,10 @@ Object {
       "message_offline",
     ],
   },
+  "state": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
   "valid": false,
 }
 `;
@@ -191,6 +263,18 @@ Object {
     "value": "5 - 40",
   },
   "categoryNameEdited": false,
+  "confidence": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "district": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "intent": Object {
+    "validationFailures": Array [],
+    "value": null,
+  },
   "max": Object {
     "validationFailures": Array [],
     "value": "40",
@@ -203,6 +287,10 @@ Object {
     "operands": 2,
     "type": "has_number_between",
     "verboseName": "has a number between",
+  },
+  "state": Object {
+    "validationFailures": Array [],
+    "value": "",
   },
   "valid": true,
 }
@@ -219,6 +307,18 @@ Object {
     "value": "Has Text",
   },
   "categoryNameEdited": false,
+  "confidence": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "district": Object {
+    "validationFailures": Array [],
+    "value": "",
+  },
+  "intent": Object {
+    "validationFailures": Array [],
+    "value": null,
+  },
   "max": Object {
     "validationFailures": Array [],
     "value": "",
@@ -236,6 +336,10 @@ Object {
       "message",
       "message_offline",
     ],
+  },
+  "state": Object {
+    "validationFailures": Array [],
+    "value": "",
   },
   "valid": true,
 }

@@ -398,3 +398,10 @@ export const pluralize = (count: number, noun: string, suffix: string = 's'): st
 
 export const hasString = (names: string[], key: string): boolean =>
   !!names.find((item: string) => item === key);
+
+export const scalarArrayEquals = (a: any[], b: any[]) =>
+  a.every((value, index) => value === b[index]);
+
+export const getURNPath = (urn: string) => {
+  return urn.split(':')[1];
+};

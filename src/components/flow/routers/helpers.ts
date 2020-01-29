@@ -16,6 +16,7 @@ import {
   TransferAirtime,
   UIConfig,
   WebhookExitNames,
+  CallClassifier,
   CallGiftcard,
   TrackableLinkAction
 } from 'flowTypes';
@@ -214,7 +215,7 @@ export const getSwitchRouter = (node: FlowNode): SwitchRouter => {
  * @param originalNode
  */
 export const getDefaultRoute = (
-  hasCategories: boolean,
+  defaultCategoryName: string,
   originalNode: FlowNode
 ): { defaultCategory: Category; defaultExit: Exit } => {
   const originalRouter = getSwitchRouter(originalNode);
@@ -227,7 +228,7 @@ export const getDefaultRoute = (
 
     const defaultExit = originalNode.exits.find((e: Exit) => e.uuid === defaultCategory.exit_uuid);
 
-    defaultCategory.name = hasCategories ? DefaultExitNames.Other : DefaultExitNames.All_Responses;
+    defaultCategory.name = defaultCategoryName;
 
     return { defaultCategory, defaultExit };
   }
@@ -239,7 +240,7 @@ export const getDefaultRoute = (
 
     const defaultCategory = {
       uuid: createUUID(),
-      name: hasCategories ? DefaultExitNames.Other : DefaultExitNames.All_Responses,
+      name: defaultCategoryName,
       exit_uuid: defaultExit.uuid
     };
 
@@ -291,16 +292,19 @@ const getTimeoutRoute = (
 export const resolveRoutes = (
   newCases: CaseProps[],
   hasTimeout: boolean,
-  originalNode: FlowNode
+  originalNode: FlowNode,
+  defaultCategoryName: string = null
 ): ResolvedRoutes => {
   const resolved = categorizeCases(newCases, originalNode);
 
-  // tack on our other category
-  const { defaultCategory, defaultExit } = getDefaultRoute(
-    resolved.categories.length > 0,
-    originalNode
-  );
+  let resolvedDefaultCategory = defaultCategoryName;
+  if (!resolvedDefaultCategory) {
+    resolvedDefaultCategory =
+      resolved.categories.length > 0 ? DefaultExitNames.Other : DefaultExitNames.All_Responses;
+  }
 
+  // tack on our other category
+  const { defaultCategory, defaultExit } = getDefaultRoute(resolvedDefaultCategory, originalNode);
   resolved.categories.push(defaultCategory);
   resolved.exits.push(defaultExit);
 
@@ -328,7 +332,8 @@ export const createWebhookBasedNode = (
     | CallLookup
     | CallGiftcard
     | TrackableLinkAction,
-  originalNode: RenderNode
+  originalNode: RenderNode,
+  useCategoryTest: boolean
 ): RenderNode => {
   const exits: Exit[] = [];
   let cases: Case[] = [];
@@ -373,16 +378,21 @@ export const createWebhookBasedNode = (
     cases = [
       {
         uuid: createUUID(),
-        type: Operators.has_only_text,
+        type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
         arguments: [WebhookExitNames.Success],
         category_uuid: categories[0].uuid
       }
     ];
   }
 
+  let operand = '@results.' + snakify(action.result_name);
+  if (!useCategoryTest) {
+    operand += '.category';
+  }
+
   const router: SwitchRouter = {
     type: RouterTypes.switch,
-    operand: '@results.' + snakify(action.result_name) + '.category',
+    operand: operand,
     cases,
     categories,
     default_category_uuid: categories[categories.length - 1].uuid
@@ -400,6 +410,23 @@ export const createWebhookBasedNode = (
   } else if (action.type === Types.call_shorten_url) {
     splitType = Types.split_by_shorten_url;
   }
+
+  return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);
+};
+
+export const createSplitOnActionResultNode = (
+  action: CallClassifier,
+  originalNode: RenderNode
+): RenderNode => {
+  const splitType = Types.split_by_intent;
+  const exits: Exit[] = [];
+  const router: SwitchRouter = {
+    cases: [],
+    operand: '',
+    categories: [],
+    type: RouterTypes.switch,
+    default_category_uuid: null
+  };
 
   return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);
 };

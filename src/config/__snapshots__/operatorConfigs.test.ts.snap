@@ -145,6 +145,14 @@ Array [
     ],
   },
   Object {
+    "operands": 0,
+    "type": "has_category",
+    "verboseName": "has the category",
+    "visibility": Array [
+      "-",
+    ],
+  },
+  Object {
     "categoryName": "Has Phone",
     "operands": 0,
     "type": "has_phone",
@@ -159,6 +167,24 @@ Array [
       "message",
       "message_offline",
     ],
+  },
+  Object {
+    "categoryName": "Has State",
+    "operands": 0,
+    "type": "has_state",
+    "verboseName": "has state",
+  },
+  Object {
+    "categoryName": "Has District",
+    "operands": 1,
+    "type": "has_district",
+    "verboseName": "has district",
+  },
+  Object {
+    "categoryName": "Has Ward",
+    "operands": 2,
+    "type": "has_ward",
+    "verboseName": "has ward",
   },
   Object {
     "categoryName": "Has Error",
@@ -208,6 +234,14 @@ Object {
     "type": "has_beginning",
     "verboseName": "starts with",
   },
+  "has_category": Object {
+    "operands": 0,
+    "type": "has_category",
+    "verboseName": "has the category",
+    "visibility": Array [
+      "-",
+    ],
+  },
   "has_date": Object {
     "categoryName": "Has Date",
     "operands": 0,
@@ -245,6 +279,12 @@ Object {
       "message_offline",
     ],
   },
+  "has_district": Object {
+    "categoryName": "Has District",
+    "operands": 1,
+    "type": "has_district",
+    "verboseName": "has district",
+  },
   "has_email": Object {
     "categoryName": "Has Email",
     "operands": 0,
@@ -270,6 +310,15 @@ Object {
     "verboseName": "is in the group",
     "visibility": Array [
       "-",
+    ],
+  },
+  "has_intent": Object {
+    "operands": 2,
+    "type": "has_intent",
+    "verboseName": "has intent",
+    "visibility": Array [
+      "message",
+      "voice",
     ],
   },
   "has_number": Object {
@@ -337,6 +386,12 @@ Object {
       "message_offline",
     ],
   },
+  "has_state": Object {
+    "categoryName": "Has State",
+    "operands": 0,
+    "type": "has_state",
+    "verboseName": "has state",
+  },
   "has_text": Object {
     "categoryName": "Has Text",
     "operands": 0,
@@ -357,11 +412,26 @@ Object {
       "message_offline",
     ],
   },
+  "has_top_intent": Object {
+    "operands": 2,
+    "type": "has_top_intent",
+    "verboseName": "has top intent",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
   "has_value": Object {
     "categoryName": "Not Empty",
     "operands": 0,
     "type": "has_value",
     "verboseName": "is not empty",
+  },
+  "has_ward": Object {
+    "categoryName": "Has Ward",
+    "operands": 2,
+    "type": "has_ward",
+    "verboseName": "has ward",
   },
 }
 `;

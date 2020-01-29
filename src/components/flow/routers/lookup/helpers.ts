@@ -88,5 +88,5 @@ export const stateToNode = (
     result_name: state.resultName.value
   };
 
-  return createWebhookBasedNode(newAction, settings.originalNode);
+  return createWebhookBasedNode(newAction, settings.originalNode, true);
 };

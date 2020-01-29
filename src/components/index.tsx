@@ -32,7 +32,6 @@ import {
   mergeEditorState
 } from 'store/thunks';
 import { ACTIVITY_INTERVAL, downloadJSON, renderIf } from 'utils';
-import { fetchFunctions } from 'utils/completion';
 
 const { default: PageVisibility } = require('react-page-visibility');
 
@@ -62,10 +61,7 @@ const hotStore = createStore();
 
 // Root container, wires up context-providers
 export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ config }) => {
-  fetchFunctions(config.endpoints);
-
   const componentRef = React.useRef();
-
   return (
     <ConfigProvider config={{ ...config }}>
       <ReduxProvider store={hotStore}>

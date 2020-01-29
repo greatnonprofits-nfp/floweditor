@@ -68,11 +68,12 @@
   );
 }
 
-.subflow,
+.call_classifier,
 .split_by_random,
 .split_by_expression,
 .split_by_groups,
 .split_by_contact_field,
+.split_by_intent,
 .split_by_run_result {
   background: $dark_gray;
 }
@@ -90,10 +91,13 @@
 }
 
 .url {
-  width: $node_min_width;
+  width: $node_min_width + px;
 }
 
 .node_asset {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   .node_group {
     padding-right: 5px;
   }

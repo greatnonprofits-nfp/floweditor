@@ -87,14 +87,16 @@ export class NodeComp extends React.Component<NodeProps> {
     config: fakePropType
   };
 
-  constructor(props: NodeProps) {
+  constructor(props: NodeProps, context: any) {
     super(props);
 
     bindCallbacks(this, {
       include: [/Ref$/, /^on/, /^get/, /^handle/]
     });
 
-    this.events = createClickHandler(this.onClick, this.handleShouldCancelClick);
+    this.events = context.config.mutable
+      ? createClickHandler(this.onClick, this.handleShouldCancelClick)
+      : {};
   }
 
   private handleShouldCancelClick(): boolean {
@@ -208,10 +210,8 @@ export class NodeComp extends React.Component<NodeProps> {
 
   private hasMissing(): boolean {
     // see if we are splitting on a missing result
-    if (
-      this.props.renderNode.ui.type === Types.split_by_run_result ||
-      this.props.renderNode.ui.type === Types.split_by_run_result_delimited
-    ) {
+    const type = getType(this.props.renderNode);
+    if (type === Types.split_by_run_result || type === Types.split_by_run_result_delimited) {
       if (!(this.props.renderNode.ui.config.operand.id in this.props.results)) {
         return true;
       }
@@ -295,29 +295,15 @@ export class NodeComp extends React.Component<NodeProps> {
     let summary: JSX.Element = null;
 
     // Router node display logic
-    if (this.props.renderNode.ui.type !== Types.execute_actions) {
-      let type = this.props.renderNode.node.router.type;
-
-      if (this.props.renderNode.ui.type) {
-        type = getType(this.props.renderNode);
-      }
-
+    const type = getType(this.props.renderNode);
+    if (type !== Types.execute_actions) {
       const config = getTypeConfig(type);
-
-      // let { name: title } = config;
-
-      let title: string = null;
+      let title: string = config.name;
 
       const switchRouter = getSwitchRouter(this.props.renderNode.node);
       if (switchRouter) {
-        if (this.props.renderNode.ui.type === Types.split_by_contact_field) {
+        if (type === Types.split_by_contact_field && this.props.renderNode.ui.config.operand.name) {
           title = `Split by ${this.props.renderNode.ui.config.operand.name}`;
-        } else {
-          if (this.props.renderNode.ui.type === Types.split_by_expression) {
-            title = 'Split by Expression';
-          } else if (this.props.renderNode.ui.type === Types.wait_for_response) {
-            title = 'Wait for Message';
-          }
         }
       }
 
@@ -333,8 +319,7 @@ export class NodeComp extends React.Component<NodeProps> {
 
       if (
         title === null &&
-        (this.props.renderNode.ui.type === Types.split_by_run_result ||
-          this.props.renderNode.ui.type === Types.split_by_run_result_delimited)
+        (type === Types.split_by_run_result || type === Types.split_by_run_result_delimited)
       ) {
         if (this.props.renderNode.ui.config.operand.id in this.props.results) {
           title = `Split by ${this.props.results[this.props.renderNode.ui.config.operand.id].name}`;
@@ -367,7 +352,7 @@ export class NodeComp extends React.Component<NodeProps> {
       }
     } else {
       // Don't show add actions option if we are translating
-      if (!this.props.translating) {
+      if (!this.props.translating && this.context.config.mutable) {
         addActions = (
           <div
             className={styles.add}
@@ -385,7 +370,8 @@ export class NodeComp extends React.Component<NodeProps> {
       'plumb-drag': true,
       [styles.ghost]: this.props.ghost,
       [styles.flow_start]: this.isStartNodeVisible(),
-      [styles.selected]: this.isSelected()
+      [styles.selected]: this.isSelected(),
+      [styles.immutable]: !this.context.config.mutable
     });
 
     const uuid: JSX.Element = this.renderDebug();

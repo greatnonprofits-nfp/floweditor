@@ -8,6 +8,7 @@ import CallLookupComp from 'components/flow/actions/calllookup/CallLookup';
 import AddGroupsForm from 'components/flow/actions/changegroups/addgroups/AddGroupsForm';
 import ChangeGroupsComp from 'components/flow/actions/changegroups/ChangeGroups';
 import RemoveGroupsForm from 'components/flow/actions/changegroups/removegroups/RemoveGroupsForm';
+import KeyLocalizationForm from 'components/flow/actions/localization/KeyLocalizationForm';
 import MsgLocalizationForm from 'components/flow/actions/localization/MsgLocalizationForm';
 import MissingComp from 'components/flow/actions/missing/Missing';
 import PlayAudioComp from 'components/flow/actions/playaudio/PlayAudio';
@@ -43,13 +44,26 @@ import SubflowRouterForm from 'components/flow/routers/subflow/SubflowRouterForm
 import WaitRouterForm from 'components/flow/routers/wait/WaitRouterForm';
 import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm';
 import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
-import { HIDDEN, MESSAGE, ONLINE, SURVEY, TEXT_TYPES, Type, Types, VOICE } from 'config/interfaces';
-import { HintTypes, RouterTypes } from 'flowTypes';
+import {
+  FlowTypes,
+  HIDDEN,
+  MESSAGE,
+  ONLINE,
+  SURVEY,
+  TEXT_TYPES,
+  Type,
+  Types,
+  VOICE,
+  FeatureFilter
+} from 'config/interfaces';
+import { HintTypes, RouterTypes, FlowEditorConfig } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
 import { GiftcardComp } from 'components/flow/actions/giftcard';
 import ShortenUrlComp from 'components/flow/actions/shortenurl/ShortenUrl';
 import ShortenUrlForm from 'components/flow/routers/shortenurl/ShortenUrlForm';
+import CallClassifierComp from 'components/flow/actions/callclassifier/CallClassifier';
+import ClassifyRouterForm from 'components/flow/routers/classify/ClassifyRouterForm';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -128,6 +142,16 @@ export const typeConfigList: Type[] = [
   },
 
   {
+    type: Types.wait_for_audio,
+    name: 'Wait for Audio',
+    description: 'Wait for an audio recording',
+    form: WaitRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    visibility: [FlowTypes.SURVEY, FlowTypes.VOICE]
+  },
+
+  {
     type: Types.send_msg,
     name: 'Send Message',
     description: 'Send the contact a message',
@@ -152,7 +176,7 @@ export const typeConfigList: Type[] = [
     name: 'Send Broadcast',
     description: 'Send somebody else a message',
     form: SendBroadcastForm,
-    localization: MsgLocalizationForm,
+    localization: KeyLocalizationForm,
     localizeableKeys: ['text'],
     component: SendBroadcastComp
   },
@@ -197,6 +221,8 @@ export const typeConfigList: Type[] = [
     name: 'Send Email',
     description: 'Send an email',
     form: SendEmailForm,
+    localization: KeyLocalizationForm,
+    localizeableKeys: ['subject', 'body'],
     component: SendEmailComp,
     visibility: ONLINE
   },
@@ -270,6 +296,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: CallResthookComp,
     aliases: [Types.split_by_resthook],
+    filter: FeatureFilter.HAS_RESTHOOK,
     visibility: ONLINE
   },
   {
@@ -300,20 +327,13 @@ export const typeConfigList: Type[] = [
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
     component: TransferAirtimeComp,
-    aliases: [Types.split_by_airtime]
+    aliases: [Types.split_by_airtime],
+    visibility: ONLINE,
+    filter: FeatureFilter.HAS_AIRTIME
   },
 
   /** Routers */
 
-  {
-    type: Types.wait_for_audio,
-    name: 'Wait for Audio',
-    description: 'Wait for an audio recording',
-    form: WaitRouterForm,
-    localization: RouterLocalizationForm,
-    localizeableKeys: ['exits'],
-    visibility: SURVEY
-  },
   {
     type: Types.wait_for_image,
     name: 'Wait for Image',
@@ -340,6 +360,18 @@ export const typeConfigList: Type[] = [
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
     visibility: SURVEY
+  },
+  {
+    type: Types.split_by_intent,
+    name: 'Split by Intent',
+    description: 'Split by intent',
+    form: ClassifyRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: CallClassifierComp,
+    aliases: [Types.call_classifier],
+    visibility: ONLINE,
+    filter: FeatureFilter.HAS_CLASSIFIER
   },
   {
     type: Types.split_by_expression,
@@ -411,7 +443,7 @@ export const getTypeConfig = (type: Types | RouterTypes): Type => {
 };
 
 export const getType = (renderNode: RenderNode): any => {
-  const wait = renderNode.node.router.wait;
+  const wait = renderNode.node.router && renderNode.node.router.wait;
   if (wait && wait.hint) {
     switch (wait.hint.type) {
       case HintTypes.digits:
@@ -429,5 +461,15 @@ export const getType = (renderNode: RenderNode): any => {
         return Types.wait_for_video;
     }
   }
+
+  // if we are splitting by field, but don't know the name, force it into split by expression
+  if (renderNode.ui.type === Types.split_by_contact_field && !renderNode.ui.config.operand.name) {
+    return Types.split_by_expression;
+  }
+
   return renderNode.ui.type;
+};
+
+export const hasFeature = (config: FlowEditorConfig, filter: FeatureFilter) => {
+  return !!(config.filters || []).find((name: string) => name === filter);
 };

@@ -43,12 +43,14 @@
       flowType: 'message',
       localStorage: true,
       showTemplates: true,
-
+      mutable: true,
+      filters: ['whatsapp', 'airtime', 'resthook', 'classifier'],
       endpoints: {
         groups: base + 'groups',
         fields: base + 'fields',
         labels: base + 'labels',
         channels: base + 'channels',
+        classifiers: base + 'classifiers',
         resthooks: base + 'resthooks',
         link: base + 'link',
         lookups: base + 'lookups',
@@ -61,6 +63,7 @@
         environment: base + 'environment',
         recipients: base + 'recipients',
         functions: base + 'functions',
+        completion: base + 'completion',
         attachments: base + 'attachments',
         activity: base + 'activity',
 

@@ -5,7 +5,7 @@ import styles from 'components/simulator/LogEvent.module.scss';
 import { Types } from 'config/interfaces';
 import { Flow, Group } from 'flowTypes';
 import * as React from 'react';
-import { createUUID } from 'utils';
+import { createUUID, getURNPath } from 'utils';
 
 const MAP_THUMB = require('static/images/map.jpg');
 
@@ -15,6 +15,22 @@ interface MsgProps {
   urn: string;
   attachments?: string[];
   quick_replies?: string[];
+}
+
+interface WebRequestLog {
+  url: string;
+  request: string;
+  response: string;
+}
+
+interface ClassifierIntent {
+  name: string;
+  confidence: number;
+}
+
+interface ClassifierEntity {
+  value: string;
+  confidence: number;
 }
 
 export interface EventProps {
@@ -45,6 +61,22 @@ export interface EventProps {
   groups_added?: Group[];
   groups_removed?: Group[];
   msg?: MsgProps;
+  http_logs?: WebRequestLog[];
+  extra?: any;
+}
+
+interface FlowEvent {
+  step_uuid: string;
+  type: string;
+}
+
+interface AirtimeTransferEvent extends FlowEvent {
+  actual_amount: number;
+  desired_amount: number;
+  currency: string;
+  http_logs: WebRequestLog[];
+  recipient: string;
+  sender: string;
 }
 
 interface LogEventState {
@@ -70,7 +102,7 @@ const renderError = (error: string): JSX.Element => {
 
 const renderInfo = (info: string): JSX.Element => {
   return (
-    <div className={styles.info}>
+    <div key={info} className={styles.info}>
       <span>{info}</span>
     </div>
   );
@@ -187,28 +219,43 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
     );
   }
 
-  private renderWebhook(): JSX.Element {
+  private renderHTTPRequest(headerClass: Types, log: WebRequestLog): JSX.Element {
     return this.renderClickable(
       <div className={styles.info + ' ' + styles.webhook}>
-        <span>Called webhook {this.props.url}</span>
+        <span>Called {log.url}</span>
       </div>,
       <Dialog
-        title="Webhook Details"
-        headerClass={Types.call_webhook}
+        title="HTTP Request Details"
+        headerClass={headerClass}
         buttons={this.getButtons()}
         noPadding={true}
       >
         <div className={styles.webhook_details}>
-          <div className={''}>{this.props.request}</div>
-          <div className={styles.response}>{this.props.response}</div>
+          <div className={''}>{log.request}</div>
+          <div className={styles.response}>{log.response}</div>
         </div>
       </Dialog>
     );
   }
 
+  private renderWebhook(headerClass: Types): JSX.Element {
+    if (this.props.http_logs) {
+      return (
+        <>
+          {this.props.http_logs.map((log: WebRequestLog) => {
+            return this.renderHTTPRequest(headerClass, log);
+          })}
+        </>
+      );
+    }
+    if (this.props.url) {
+      return this.renderHTTPRequest(headerClass, this.props as WebRequestLog);
+    }
+  }
+
   private renderClickable(element: JSX.Element, details: JSX.Element): JSX.Element {
     return (
-      <div>
+      <div key={this.props.step_uuid}>
         <div className={styles.has_detail} onClick={this.showDetails}>
           {element}
         </div>
@@ -219,7 +266,40 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
     );
   }
 
+  private renderClassification(): JSX.Element {
+    return (
+      <table className={styles.classification}>
+        <tbody>
+          {(this.props.extra.intents || []).map((intent: ClassifierIntent) => (
+            <tr key={intent.name + intent.confidence}>
+              <td>{intent.name}</td>
+              <td>intent</td>
+              <td>{intent.confidence.toFixed(3)}</td>
+            </tr>
+          ))}
+
+          {Object.keys(this.props.extra.entities || []).map((key: string) => {
+            const entities = this.props.extra.entities[key];
+            return entities.map((entity: ClassifierEntity) =>
+              key !== entity.value ? (
+                <tr key={entity.value + entity.confidence}>
+                  <td>{entity.value}</td>
+                  <td>{key}</td>
+                  <td>{entity.confidence.toFixed(3)}</td>
+                </tr>
+              ) : null
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  }
+
   public renderLogEvent(): JSX.Element {
+    if (this.props.extra && this.props.extra.intents) {
+      return this.renderClassification();
+    }
+
     switch (this.props.type) {
       case 'msg_received':
         return renderMessage(this.props.msg.text, this.props.msg.attachments, Direction.MO);
@@ -228,6 +308,8 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
       case 'ivr_created':
         return renderMessage(this.props.msg.text, this.props.msg.attachments, Direction.MT);
       case 'error':
+        return renderError(this.props.text);
+      case 'failure':
         return renderError(this.props.text);
       case 'msg_wait':
         return renderInfo('Waiting for reply');
@@ -251,8 +333,10 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
         );
       case 'resthook_called':
         return renderInfo(`Trigerred flow event ${this.props.resthook}`);
+      case 'classifier_called':
+        return this.renderWebhook(Types.call_classifier);
       case 'webhook_called':
-        return this.renderWebhook();
+        return this.renderWebhook(Types.call_webhook);
       case 'flow_entered':
         return renderInfo(`Entered flow ${this.props.flow.name}`);
       case 'session_triggered':
@@ -263,6 +347,18 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
         return renderInfo(this.props.text);
       case 'environment_refreshed':
         return null;
+      case 'airtime_transferred':
+        const event = this.props as AirtimeTransferEvent;
+        return (
+          <>
+            {this.renderWebhook(Types.transfer_airtime)}
+            {renderInfo(
+              `Transferred ${event.actual_amount} ${event.currency} to ${getURNPath(
+                event.recipient
+              )}`
+            )}
+          </>
+        );
     }
 
     // should only get here if we are get an unexpected event
