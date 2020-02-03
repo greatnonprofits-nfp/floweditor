@@ -23,6 +23,7 @@ import {
   FlowNode,
   Group,
   Label,
+  MediaState,
   PlayAudio,
   RemoveFromGroups,
   Router,
@@ -108,18 +109,21 @@ export const createSendEmailAction = ({
   uuid = utils.createUUID(),
   subject = 'New Sign Up',
   body = '@run.results.name just signed up.',
-  addresses = ['jane@example.com']
+  addresses = ['jane@example.com'],
+  media
 }: {
   uuid?: string;
   subject?: string;
   body?: string;
   addresses?: string[];
+  media?: MediaState | null;
 } = {}): SendEmail => ({
   uuid,
   type: Types.send_email,
   subject,
   body,
-  addresses
+  addresses,
+  media
 });
 
 export const createTransferAirtimeAction = ({

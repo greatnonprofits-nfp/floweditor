@@ -291,10 +291,17 @@ export interface SetPreferredChannel extends Action {
   language: string;
 }
 
+export interface MediaState {
+  value: string;
+  url?: string;
+  type: string;
+}
+
 export interface SendEmail extends Action {
   subject: string;
   body: string;
   addresses: string[];
+  media: MediaState;
 }
 
 export interface SetRunResult extends Action {

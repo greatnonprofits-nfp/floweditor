@@ -1,8 +1,55 @@
+@import 'variables.module.scss';
+$purple: #8e5ea7;
+
 .ele {
-    .subject {
-        margin-top: 8px;
+  .subject {
+    margin-top: 8px;
+  }
+  .message {
+    margin-top: 8px;
+  }
+}
+
+.icon {
+  cursor: pointer;
+  margin: 8px 0;
+  span {
+    font-size: 20px;
+    color: $purple;
+    padding: 4px;
+    border-radius: 5px;
+  }
+}
+
+.uploadField {
+  border: 2px dashed $purple;
+  .uploadBtn {
+    background-color: $purple;
+  }
+  .fileContainer {
+    .uploadPicturesWrapper {
+      .uploadPictureContainer {
+        margin: 0 !important;
+        .deleteImage {
+          background: $purple !important;
+        }
+      }
     }
-    .message {
-        margin-top: 8px;
-    }
+  }
+}
+
+.attachUrlWrapper {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+
+  .url {
+    margin: 0 15px;
+  }
+}
+
+.removeAttach {
+  display: inline-block;
+  margin: 20px 0 0 10px;
+  cursor: pointer;
 }
