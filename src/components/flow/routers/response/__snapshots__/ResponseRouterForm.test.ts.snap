@@ -47,6 +47,12 @@ exports[`ResponseRouterForm initializes case config 1`] = `
     }
     onChange={[MockFunction]}
   />
+  <SpellChecker
+    enabledSpell={false}
+    onEnabledChange={[Function]}
+    onSensitivityChange={[Function]}
+    spellSensitivity="70"
+  />
   <div>
     If the message response...
   </div>
@@ -146,6 +152,12 @@ exports[`ResponseRouterForm should render 1`] = `
     }
     onChange={[MockFunction]}
   />
+  <SpellChecker
+    enabledSpell={false}
+    onEnabledChange={[Function]}
+    onSensitivityChange={[Function]}
+    spellSensitivity="70"
+  />
   <div>
     If the message response...
   </div>
@@ -222,10 +234,12 @@ Object {
       "valid": true,
     },
   ],
+  "enabledSpell": false,
   "resultName": Object {
     "validationFailures": Array [],
     "value": "Favorite Color",
   },
+  "spellSensitivity": "70",
   "timeout": 180,
   "valid": true,
 }
@@ -297,6 +311,7 @@ Array [
             "uuid": "132de855-4042-4dc1-a18f-cc2e6a8f790a",
           },
         ],
+        "config": Object {},
         "default_category_uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
         "operand": "@input.text",
         "result_name": "Favorite Color",
@@ -337,9 +352,11 @@ Object {
       "valid": true,
     },
   ],
+  "enabledSpell": false,
   "resultName": Object {
     "value": "",
   },
+  "spellSensitivity": "70",
   "timeout": 0,
   "valid": true,
 }
@@ -381,6 +398,7 @@ Array [
             "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
           },
         ],
+        "config": Object {},
         "default_category_uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
         "operand": "@input.text",
         "type": "switch",
@@ -405,4 +423,31 @@ Array [
     },
   },
 ]
+`;
+
+exports[`ResponseRouterForm updates should save save config for spell checker 1`] = `
+Object {
+  "cases": Array [
+    Object {
+      "categoryName": "Red",
+      "kase": Object {
+        "arguments": Array [
+          "red",
+        ],
+        "category_uuid": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
+        "type": "has_any_word",
+        "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+      },
+      "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+      "valid": true,
+    },
+  ],
+  "enabledSpell": true,
+  "resultName": Object {
+    "value": "",
+  },
+  "spellSensitivity": "60",
+  "timeout": 0,
+  "valid": true,
+}
 `;

@@ -134,6 +134,7 @@ export interface SwitchRouter extends Router {
   cases: Case[];
   operand: string;
   default_category_uuid: string;
+  config?: ConfigRouter;
 }
 
 export enum WaitTypes {
@@ -496,4 +497,9 @@ export enum WebhookExitNames {
 export enum TransferAirtimeExitNames {
   Success = 'Success',
   Failure = 'Failed'
+}
+
+export interface ConfigRouter {
+  spell_checker?: boolean;
+  spelling_correction_sensitivity?: string;
 }
