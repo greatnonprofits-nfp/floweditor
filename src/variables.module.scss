@@ -80,20 +80,24 @@ $button_hover: lighten($blue, 5%);
 $button_disabled: #ddd;
 
 // z index ordering
+$z_plumb_sources: 1;
 $z_connectors: 100;
 $z_nodes: 150;
 $z_endpoints: 200;
-$z_nodes_hover: 250;
+$z_plumb_arrows: 200;
 $z_counters: 225;
 $z_sticky: 240;
+$z_connectors_hover: 250;
 $z_group_drag_anchor: 300;
 $z_editor_menu: 400;
 $z_footer: 900;
 $z_simulator_tab: 1000;
 $z_simulator: 1000;
+$z_issues: 1000;
 $z_recent_messages: 1005;
 $z_revision_mask: 1020;
 $z_revision_explorer: 1021;
+$z_pop_tabs: 1021;
 $z_dragging: 1500;
 $z_saving: 1900;
 $z_modal: 2000;

@@ -18,6 +18,7 @@ import { getCurrentDefinition } from 'store/helpers';
 import AppState from 'store/state';
 import { DispatchWithState, MergeEditorState } from 'store/thunks';
 import { createUUID } from 'utils';
+import { PopTabType } from 'config/interfaces';
 
 const MESSAGE_DELAY_MS = 200;
 
@@ -58,6 +59,8 @@ export interface SimulatorStoreProps {
 
 export interface SimulatorPassedProps {
   mergeEditorState: MergeEditorState;
+  onToggled: (visible: boolean, tab: PopTabType) => void;
+  popped: string;
 }
 
 export type SimulatorProps = SimulatorStoreProps & SimulatorPassedProps;
@@ -234,7 +237,10 @@ export class Simulator extends React.Component<SimulatorProps, SimulatorState> {
         }
       }
 
-      const simulatedMessages = this.props.activity.recentMessages || {};
+      // if we are resetting, clear our recent messages
+      const simulatedMessages = this.state.session.input
+        ? this.props.activity.recentMessages || {}
+        : {};
 
       for (const key in recentMessages) {
         let messages = simulatedMessages[key] || [];
@@ -294,7 +300,7 @@ export class Simulator extends React.Component<SimulatorProps, SimulatorState> {
             if (fromUUID && toUUID) {
               const key = `${fromUUID}:${toUUID}`;
               const msg: RecentMessage = {
-                sent: new Date(event.created_on),
+                sent: event.created_on,
                 text: event.msg.text
               };
 
@@ -602,6 +608,8 @@ export class Simulator extends React.Component<SimulatorProps, SimulatorState> {
 
   private onToggle(event: any): void {
     const newVisible = !this.state.visible;
+
+    this.props.onToggled(newVisible, PopTabType.SIMULATOR);
 
     this.props.mergeEditorState({ simulating: newVisible });
 
@@ -942,8 +950,9 @@ export class Simulator extends React.Component<SimulatorProps, SimulatorState> {
       messages.push(<LogEvent {...event} key={event.type + '_' + String(event.created_on)} />);
     }
 
-    const simHidden = !this.state.visible ? styles.sim_hidden : '';
-    const tabHidden = this.state.visible ? styles.tab_hidden : '';
+    const hidden = this.props.popped && this.props.popped !== PopTabType.SIMULATOR;
+    const simHidden = hidden || !this.state.visible ? styles.sim_hidden : '';
+    const tabHidden = hidden || this.state.visible ? styles.tab_hidden : '';
 
     const messagesStyle: any = {
       height: 366 - (this.state.drawerOpen ? this.state.drawerHeight - 20 : 0)

@@ -2,7 +2,7 @@ import { react as bindCallbacks } from 'auto-bind';
 import { getDraggedFrom } from 'components/helpers';
 import Modal from 'components/modal/Modal';
 import { Type } from 'config/interfaces';
-import { Action, AnyAction, FlowDefinition } from 'flowTypes';
+import { Action, AnyAction, FlowDefinition, FlowIssue } from 'flowTypes';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -30,6 +30,7 @@ import {
   resetNodeEditingState
 } from 'store/thunks';
 import { CompletionSchema } from 'utils/completion';
+import { LocalizationFormProps } from 'components/flow/props';
 
 export type UpdateLocalizations = (language: string, changes: LocalizationUpdates) => void;
 
@@ -38,6 +39,7 @@ export type UpdateLocalizations = (language: string, changes: LocalizationUpdate
 export interface NodeEditorPassedProps {
   plumberConnectExit: Function;
   plumberRepaintForDuration: Function;
+  helpArticles: { [key: string]: string };
 }
 
 export interface NodeEditorStoreProps {
@@ -51,6 +53,7 @@ export interface NodeEditorStoreProps {
   nodes: { [uuid: string]: RenderNode };
   handleTypeConfigChange: HandleTypeConfigChange;
   resetNodeEditingState: NoParamsAC;
+  issues: FlowIssue[];
   mergeEditorState: MergeEditorState;
   onUpdateLocalizations: OnUpdateLocalizations;
   onUpdateAction: OnUpdateAction;
@@ -70,6 +73,8 @@ export interface FormProps {
   completionSchema: CompletionSchema;
 
   assetStore: AssetStore;
+  issues: FlowIssue[];
+  helpArticles: { [key: string]: string };
 
   nodeSettings?: NodeEditorSettings;
   typeConfig?: Type;
@@ -77,14 +82,15 @@ export interface FormProps {
   onClose?(canceled: boolean): void;
 }
 
-export interface LocalizationProps {
+/* export interface LocalizationProps {
   nodeSettings?: NodeEditorSettings;
   typeConfig?: Type;
   onClose?(canceled: boolean): void;
 
+  issues: FlowIssue[];
   updateLocalizations: UpdateLocalizations;
   language: Asset;
-}
+}*/
 
 export class NodeEditor extends React.Component<NodeEditorProps> {
   constructor(props: NodeEditorProps) {
@@ -95,7 +101,7 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
     });
   }
 
-  private updateLocalizations(language: string, changes: LocalizationUpdates): void {
+  private updateLocalizations(language: string, changes: LocalizationUpdates) {
     this.props.onUpdateLocalizations(language, changes);
   }
 
@@ -143,12 +149,15 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
         const { localization: LocalizationForm } = typeConfig;
 
         if (LocalizationForm) {
-          const localizationProps: LocalizationProps = {
+          const localizationProps: LocalizationFormProps = {
             updateLocalizations: this.updateLocalizations,
             nodeSettings: this.props.settings,
-            typeConfig: this.props.typeConfig,
             onClose: this.close,
-            language: this.props.language
+            language: this.props.language,
+            helpArticles: this.props.helpArticles,
+            issues: this.props.issues.filter(
+              (issue: FlowIssue) => issue.language === this.props.language.id
+            )
           };
 
           return (
@@ -168,6 +177,8 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
         updateAction: this.updateAction,
         updateRouter: this.updateRouter,
         nodeSettings: this.props.settings,
+        helpArticles: this.props.helpArticles,
+        issues: this.props.issues.filter((issue: FlowIssue) => !issue.language),
         typeConfig: this.props.typeConfig,
         onTypeChange: this.props.handleTypeConfigChange,
         onClose: this.close
@@ -185,19 +196,30 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
 
 /* istanbul ignore next */
 const mapStateToProps = ({
-  flowContext: { definition, nodes, assetStore },
+  flowContext: { definition, nodes, assetStore, metadata },
   editorState: { language, translating, completionSchema },
   nodeEditor: { typeConfig, settings }
-}: AppState) => ({
-  language,
-  definition,
-  nodes,
-  translating,
-  typeConfig,
-  settings,
-  assetStore,
-  completionSchema
-});
+}: AppState) => {
+  const issues: FlowIssue[] = metadata
+    ? (metadata.issues || []).filter(
+        (issue: FlowIssue) =>
+          issue.node_uuid === settings.originalNode.node.uuid &&
+          (!settings.originalAction || settings.originalAction.uuid === issue.action_uuid)
+      )
+    : [];
+
+  return {
+    issues,
+    language,
+    definition,
+    nodes,
+    translating,
+    typeConfig,
+    settings,
+    assetStore,
+    completionSchema
+  };
+};
 
 /* istanbul ignore next */
 const mapDispatchToProps = (dispatch: DispatchWithState) =>

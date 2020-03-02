@@ -16,7 +16,12 @@ import AppState from 'store/state';
 import { DisconnectExit, disconnectExit, DispatchWithState } from 'store/thunks';
 import { createClickHandler, getLocalization, renderIf } from 'utils';
 
+import * as moment from 'moment';
 import styles from './Exit.module.scss';
+
+export interface RenderCategory extends Category {
+  missing: boolean;
+}
 
 export interface ExitPassedProps {
   exit: Exit;
@@ -101,10 +106,7 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
   }
 
   public componentDidUpdate(prevProps: ExitProps): void {
-    if (
-      !this.props.exit.destination_uuid ||
-      this.props.exit.destination_uuid !== prevProps.exit.destination_uuid
-    ) {
+    if (this.props.exit.destination_uuid !== prevProps.exit.destination_uuid) {
       this.connect();
       if (this.state.confirmDelete) {
         this.setState({ confirmDelete: false });
@@ -262,8 +264,13 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
 
       return { name, localized };
     } else {
+      const names: string[] = [];
+      this.props.categories.forEach((cat: Category) => {
+        names.push(cat.name);
+      });
+
       return {
-        name: this.props.categories.map((category: Category) => category.name).join(', ')
+        name: names.join(', ')
       };
     }
   }
@@ -287,7 +294,7 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
           {recentMessages.map((recentMessage: RecentMessage, idx: number) => (
             <div key={'recent_' + idx} className={styles.message}>
               <div className={styles.text}>{recentMessage.text}</div>
-              <div className={styles.sent}>{recentMessage.sent.toLocaleString()}</div>
+              <div className={styles.sent}>{moment.utc(recentMessage.sent).fromNow()}</div>
             </div>
           ))}
           {this.state.recentMessages === null ? (

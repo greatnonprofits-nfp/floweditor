@@ -3,7 +3,7 @@
 import { react as bindCallbacks } from 'auto-bind';
 import axios from 'axios';
 import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
+import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import {
   initializeForm as stateToForm,
   stateToAction,
@@ -30,7 +30,6 @@ import {
   mergeForm,
   StringArrayEntry,
   StringEntry,
-  ValidationFailure,
   SelectOptionEntry
 } from 'store/nodeEditor';
 import { MaxOfTenItems, Required, shouldRequireIf, validate } from 'store/validators';
@@ -142,6 +141,11 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
   }
 
   private handleSave(): void {
+    // don't continue if our message already has errors
+    if (hasErrors(this.state.message)) {
+      return;
+    }
+
     // make sure we validate untouched text fields and contact fields
     let valid = this.handleMessageUpdate(this.state.message.value, null, true);
 
@@ -164,19 +168,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     } else {
       this.setState({ templateVariables, valid });
     }
-  }
-
-  public handleFieldFailures(persistantFailures: ValidationFailure[]): void {
-    const message = { ...this.state.message, persistantFailures };
-    this.setState({ message, valid: this.state.valid && !hasErrors(message) });
-  }
-
-  public handleQuickReplyFieldFailures(persistantFailures: ValidationFailure[]): void {
-    const quickReplies = { ...this.state.quickReplies, persistantFailures };
-    this.setState({
-      quickReplies,
-      valid: this.state.valid && !hasErrors(quickReplies)
-    });
   }
 
   public handleAttachmentRemoved(index: number): void {
@@ -398,17 +389,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     }
   }
 
-  private handleTemplateFieldFailures(persistantFailures: ValidationFailure[], num: number): void {
-    const templateVariables = mutate(this.state.templateVariables, {
-      [num]: { $merge: { persistantFailures } }
-    }) as StringEntry[];
-
-    this.setState({
-      templateVariables,
-      valid: this.state.valid && !hasErrors(templateVariables[num])
-    });
-  }
-
   private handleTemplateVariableChanged(updatedText: string, num: number): void {
     const entry = validate(`Variable ${num + 1}`, updatedText, [Required]);
     const templateVariables = mutate(this.state.templateVariables, {
@@ -484,9 +464,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
                     }}
                     entry={this.state.templateVariables[num]}
                     autocomplete={true}
-                    onFieldFailures={(failures: ValidationFailure[]) => {
-                      this.handleTemplateFieldFailures(failures, num);
-                    }}
                   />
                 </div>
               );
@@ -557,7 +534,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             onRemoved={this.handleRemoveQuickReply}
             onItemAdded={this.handleAddQuickReply}
             onEntryChanged={this.handleQuickReplyEntry}
-            onFieldErrors={this.handleQuickReplyFieldFailures}
           />
         </>
       ),
@@ -627,8 +603,8 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           autocomplete={true}
           focus={true}
           textarea={true}
-          onFieldFailures={this.handleFieldFailures}
         />
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

@@ -8,7 +8,7 @@ import NodeEditor from 'components/nodeeditor/NodeEditor';
 import Simulator from 'components/simulator/Simulator';
 import Sticky, { STICKY_BODY, STICKY_TITLE } from 'components/sticky/Sticky';
 import { ConfigProviderContext, fakePropType } from 'config/ConfigProvider';
-import { Exit, FlowDefinition } from 'flowTypes';
+import { Exit, FlowDefinition, FlowMetadata } from 'flowTypes';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -52,6 +52,7 @@ import Debug from 'utils/debug';
 
 import styles from './Flow.module.scss';
 import { Trans } from 'react-i18next';
+import { PopTabType } from 'config/interfaces';
 
 declare global {
   interface Window {
@@ -65,7 +66,7 @@ export interface FlowStoreProps {
 
   definition: FlowDefinition;
   nodes: { [uuid: string]: RenderNode };
-  dependencies: FlowDefinition[];
+  metadata: FlowMetadata;
   nodeEditorSettings: NodeEditorSettings;
 
   updateConnection: UpdateConnection;
@@ -245,6 +246,10 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       });
     }
 
+    if (isDraggingBack(event)) {
+      this.props.mergeEditorState({ ghostNode: null });
+    }
+
     /* istanbul ignore next */
     document.removeEventListener('mousemove', (window as any).ghostListener);
 
@@ -324,7 +329,16 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
   private getSimulator(): JSX.Element {
     return renderIf(this.context.config.endpoints && this.context.config.endpoints.simulateStart)(
-      <Simulator key="simulator" mergeEditorState={this.props.mergeEditorState} />
+      <Simulator
+        key="simulator"
+        popped={this.props.editorState.popped}
+        mergeEditorState={this.props.mergeEditorState}
+        onToggled={(visible: boolean, tab: PopTabType) => {
+          this.props.mergeEditorState({
+            popped: visible ? tab : null
+          });
+        }}
+      />
     );
   }
 
@@ -332,6 +346,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     return renderIf(this.props.nodeEditorSettings !== null)(
       <NodeEditor
         key="node-editor"
+        helpArticles={this.context.config.help}
         plumberConnectExit={this.Plumber.connectExit}
         plumberRepaintForDuration={this.Plumber.repaintForDuration}
       />
@@ -431,7 +446,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
 /* istanbul ignore next */
 const mapStateToProps = ({
-  flowContext: { definition, dependencies, nodes },
+  flowContext: { definition, metadata, nodes },
   // tslint:disable-next-line: no-shadowed-variable
   editorState,
   nodeEditor: { settings }
@@ -440,7 +455,7 @@ const mapStateToProps = ({
     nodeEditorSettings: settings,
     definition,
     nodes,
-    dependencies,
+    metadata,
     editorState: editorState as Partial<EditorState>
   };
 };

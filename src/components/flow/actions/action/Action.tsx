@@ -2,14 +2,14 @@ import { react as bindCallbacks } from 'auto-bind';
 import classNames from 'classnames/bind';
 import shared from 'components/shared.module.scss';
 import TitleBar from 'components/titlebar/TitleBar';
-import { ConfigProviderContext, fakePropType } from 'config/ConfigProvider';
+import { fakePropType } from 'config/ConfigProvider';
 import { Types } from 'config/interfaces';
 import { getTypeConfig } from 'config/typeConfigs';
-import { Action, AnyAction, Endpoints, LocalizationMap } from 'flowTypes';
+import { Action, AnyAction, Endpoints, LocalizationMap, FlowIssue } from 'flowTypes';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Asset, RenderNode } from 'store/flowContext';
+import { Asset, RenderNode, AssetStore } from 'store/flowContext';
 import AppState from 'store/state';
 import {
   ActionAC,
@@ -22,22 +22,27 @@ import {
 import { createClickHandler, getLocalization } from 'utils';
 
 import styles from './Action.module.scss';
+import { hasIssues } from 'components/flow/helpers';
+import MountScroll from 'components/mountscroll/MountScroll';
 
 export interface ActionWrapperPassedProps {
   first: boolean;
   action: AnyAction;
   localization: LocalizationMap;
   selected: boolean;
+  issues: FlowIssue[];
   render: (action: AnyAction, endpoints: Endpoints) => React.ReactNode;
 }
 
 export interface ActionWrapperStoreProps {
+  assetStore: AssetStore;
   renderNode: RenderNode;
   language: Asset;
   translating: boolean;
   onOpenNodeEditor: OnOpenNodeEditor;
   removeAction: ActionAC;
   moveActionUp: ActionAC;
+  scrollToAction: string;
 }
 
 export type ActionWrapperProps = ActionWrapperPassedProps & ActionWrapperStoreProps;
@@ -55,7 +60,7 @@ export class ActionWrapper extends React.Component<ActionWrapperProps> {
     config: fakePropType
   };
 
-  constructor(props: ActionWrapperProps, context: ConfigProviderContext) {
+  constructor(props: ActionWrapperProps) {
     super(props);
 
     bindCallbacks(this, {
@@ -159,17 +164,39 @@ export class ActionWrapper extends React.Component<ActionWrapperProps> {
 
   public render(): JSX.Element {
     const { name } = getTypeConfig(this.props.action.type);
+
     const classes = this.getClasses();
     const actionToInject = this.getAction();
-    const titleBarClass = (shared as any)[this.props.action.type] || shared.missing;
+
+    let titleBarClass = (shared as any)[this.props.action.type] || shared.missing;
     const actionClass = (styles as any)[this.props.action.type] || styles.missing;
     const showRemoval = !this.props.translating;
     const showMove = !this.props.first && !this.props.translating;
+
+    if (hasIssues(this.props.issues, this.props.translating, this.props.language)) {
+      titleBarClass = shared.missing;
+    }
 
     const events = this.context.config.mutable
       ? createClickHandler(this.handleActionClicked, () => this.props.selected)
       : {};
 
+    const body = (
+      <>
+        <TitleBar
+          __className={titleBarClass}
+          title={name}
+          onRemoval={this.handleRemoval}
+          showRemoval={showRemoval}
+          showMove={showMove}
+          onMoveUp={this.handleMoveUp}
+          shouldCancelClick={() => this.props.selected}
+        />
+        <div className={styles.body + ' ' + actionClass} data-spec={actionBodySpecId}>
+          {this.props.render(actionToInject, this.context.config.endpoints)}
+        </div>
+      </>
+    );
     return (
       <div
         id={`action-${this.props.action.uuid}`}
@@ -178,18 +205,11 @@ export class ActionWrapper extends React.Component<ActionWrapperProps> {
       >
         <div className={styles.overlay} data-spec={actionOverlaySpecId} />
         <div {...events} data-spec={actionInteractiveDivSpecId}>
-          <TitleBar
-            __className={titleBarClass}
-            title={name}
-            onRemoval={this.handleRemoval}
-            showRemoval={showRemoval}
-            showMove={showMove}
-            onMoveUp={this.handleMoveUp}
-            shouldCancelClick={() => this.props.selected}
-          />
-          <div className={styles.body + ' ' + actionClass} data-spec={actionBodySpecId}>
-            {this.props.render(actionToInject, this.context.config.endpoints)}
-          </div>
+          {this.props.scrollToAction && this.props.scrollToAction === this.props.action.uuid ? (
+            <MountScroll pulseAfterScroll={true}>{body}</MountScroll>
+          ) : (
+            body
+          )}
         </div>
       </div>
     );
@@ -199,10 +219,13 @@ export class ActionWrapper extends React.Component<ActionWrapperProps> {
 /* istanbul ignore next */
 const mapStateToProps = ({
   flowContext: {
+    assetStore,
     definition: { localization }
   },
-  editorState: { language, translating }
+  editorState: { language, translating, scrollToAction }
 }: AppState) => ({
+  scrollToAction,
+  assetStore,
   language,
   translating,
   localization

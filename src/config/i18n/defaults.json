@@ -85,6 +85,10 @@
       "description": "Split by a result in the flow",
       "name": "Split by Flow Result"
     },
+    "split_by_scheme": {
+      "description": "Split by URN type",
+      "name": "Split by URN Type"
+    },
     "start_session": {
       "description": "Start somebody else in a flow",
       "name": "Start Somebody Else"
@@ -126,6 +130,9 @@
   "asset_selector": {
     "placeholder": "Select existing [[name]] or enter a new one",
     "placeholder_plural": "Select existing [[name]] or enter a new one"
+  },
+  "assets": {
+    "classifier": "Call [[name]] classifier"
   },
   "body": "Body",
   "buttons": {
@@ -226,9 +233,13 @@
     "split_by_group": {
       "label": "Select the groups you'd like to split by below"
     },
+    "split_by_scheme": "Channel types",
     "type_label": "When a contact arrives at this point in your flow..."
   },
   "groups": "Groups",
+  "issues": {
+    "named": "Cannot find a [[type]] for <1>[[name]]</1>"
+  },
   "message": "Message",
   "operator": {
     "has_pattern": "matches regex"
@@ -278,19 +289,59 @@
     "label": "Revision History"
   },
   "schemes": {
-    "email": "Email Address",
-    "external": "External ID",
-    "facebook": "Facebook ID",
-    "firebase": "Firebase ID",
-    "jiochat": "Jiochat ID",
-    "line": "Line ID",
-    "phone": "Phone Number",
-    "telegram": "Telegram ID",
-    "twitter": "Twitter Handle",
-    "twitterid": "Twitter ID",
-    "viber": "Viber ID",
-    "wechat": "Wechat ID",
-    "whatsapp": "Whatsapp Number"
+    "email": {
+      "name": "Email",
+      "path": "Email Address"
+    },
+    "external": {
+      "name": "External",
+      "path": "External ID"
+    },
+    "facebook": {
+      "path": "Facebook"
+    },
+    "firebase": {
+      "name": "Firebase",
+      "path": "Firebase ID"
+    },
+    "jiochat": {
+      "path": "Jiochat ID"
+    },
+    "jiojach": {
+      "name": "Jiochat"
+    },
+    "line": {
+      "name": "Line",
+      "path": "Line ID"
+    },
+    "phone": {
+      "name": "SMS",
+      "path": "Phone Number"
+    },
+    "telegram": {
+      "name": "Telegram",
+      "path": "Telegram ID"
+    },
+    "twitter": {
+      "name": "Twitter",
+      "path": "Twitter Handle"
+    },
+    "twitterid": {
+      "name": "Twitter",
+      "path": "Twitter ID"
+    },
+    "viber": {
+      "name": "Viber",
+      "path": "Viber ID"
+    },
+    "wechat": {
+      "name": "Wechat",
+      "path": "Wechat ID"
+    },
+    "whatsapp": {
+      "name": "WhatsApp",
+      "path": "WhatsApp Number"
+    }
   },
   "simulator": {
     "added_to_group": "Added to ",
@@ -300,12 +351,13 @@
     "contact_name_changed": "Set contact name to \"[[name]]\"",
     "flow_entered": "Entered flow \"[[flow]]\"",
     "httplog_dialog": "HTTP Request Details",
+    "input_labels_added": "Message labeled with ",
     "msg_wait": "Waiting for reply",
     "removed_from_group": "Removed from ",
     "resthook_called": "Triggered flow event \"[[resthook]]\"",
     "run_result_changed": "Set result \"[[field]]\" to \"[[value]]\"",
     "sent_email": {
-      "summary": "Sent email to \"[[recipients]]\" with subject \"[[subject]]\"",
+      "summary": "Sent email to [[recipients]] with subject \"[[subject]]\"",
       "title": "Email Details"
     },
     "session_triggered": "Started somebody else in \"[[flow]]\""

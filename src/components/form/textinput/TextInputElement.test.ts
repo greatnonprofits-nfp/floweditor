@@ -11,6 +11,7 @@ import { AssetType } from 'store/flowContext';
 import * as completionSchema from 'test/assets/completion.json';
 import functions from 'test/assets/functions.json';
 import { composeComponentTestUtils } from 'testUtils';
+import { dump } from 'utils';
 
 // we need to track where our cursor would be to simulate properly
 let mockCursor = 0;
@@ -120,7 +121,6 @@ const createWrapper = () => {
       onChange: jest.fn(),
       textarea: true,
       autocomplete: true,
-      onFieldFailures: jest.fn(),
       onBlur: jest.fn()
     }
   }).wrapper;
@@ -344,13 +344,6 @@ describe(TextInputElement.name, () => {
   });
 
   describe('visibility', () => {
-    it('should check contact fields on blur', () => {
-      const wrapper = createWrapper();
-      simulateString(wrapper, '@fields.missing');
-      wrapper.instance().handleBlur({});
-      expect(wrapper.props().onFieldFailures).toHaveBeenCalled();
-    });
-
     it('should hide if outside completed expression', () => {
       const wrapper = createWrapper();
       simulateString(wrapper, '@(default(contact.first_name, contact.name))');

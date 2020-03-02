@@ -28,9 +28,16 @@ export interface Activity {
 }
 
 export interface RecentMessage {
-  sent: Date;
+  sent: string;
   text: string;
 }
+
+export interface Warning {
+  name: string;
+  type: string;
+}
+
+export type Warnings = { [uuid: string]: Warning };
 
 export interface EditorState {
   currentRevision: number | null;
@@ -47,6 +54,11 @@ export interface EditorState {
   dragGroup: boolean;
   dragSelection: DragSelection | null;
   debug?: DebugState | null;
+
+  // which poptab is popped
+  popped: string;
+
+  warnings: Warnings;
 
   modalMessage?: ModalMessage;
   saving?: boolean;
@@ -69,6 +81,9 @@ export interface EditorState {
 
   // is our page visible or tabbed away
   visible: boolean;
+
+  scrollToNode: string;
+  scrollToAction: string;
 }
 
 export interface ModalMessage {
@@ -103,11 +118,17 @@ export const initialState: EditorState = {
   dragSelection: null,
   ghostNode: null,
   debug: null,
+  warnings: {},
+
+  popped: null,
 
   activity: { segments: {}, nodes: {} },
   liveActivity: { segments: {}, nodes: {} },
   activityInterval: 5000,
-  visible: true
+  visible: true,
+
+  scrollToNode: null,
+  scrollToAction: null
 };
 
 // Action Creator

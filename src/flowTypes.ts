@@ -58,6 +58,9 @@ export interface FlowEditorConfig {
   onLoad?: () => void;
   onActivityClicked?: (uuid: string) => void;
 
+  // help links
+  help: { [key: string]: string };
+
   // whether to force a save on load
   forceSaveOnLoad?: boolean;
 
@@ -68,6 +71,62 @@ export interface LocalizationMap {
   [lang: string]: {
     [uuid: string]: any;
   };
+}
+
+export interface Result {
+  key: string;
+  name: string;
+  categories: string[];
+  node_uuids: string[];
+}
+
+export enum DependencyType {
+  channel = 'channel',
+  classifier = 'classifier',
+  contact = 'contact',
+  field = 'field',
+  flow = 'flow',
+  group = 'group',
+  label = 'label',
+  template = 'template'
+}
+
+export interface Dependency {
+  uuid?: string;
+  key?: string;
+  name: string;
+  type: DependencyType;
+  missing?: boolean;
+  nodes: { [uuid: string]: string[] };
+}
+
+export interface FlowMetadata {
+  dependencies: Dependency[];
+  waiting_exit_uuids: string[];
+  results: Result[];
+  parent_refs: string[];
+  issues: FlowIssue[];
+}
+
+export enum FlowIssueType {
+  MISSING_DEPENDENCY = 'missing_dependency',
+  LEGACY_EXTRA = 'legacy_extra',
+  INVALID_REGEX = 'invalid_regex'
+}
+
+export interface FlowIssue {
+  type: FlowIssueType;
+  node_uuid: string;
+  action_uuid: string;
+  description: string;
+  dependency?: Dependency;
+  language?: string;
+  regex?: string;
+}
+
+export interface FlowDetails {
+  definition: FlowDefinition;
+  metadata: FlowMetadata;
 }
 
 export interface FlowDefinition {

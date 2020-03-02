@@ -19,7 +19,7 @@ export const getRoutableFields = (flowType: FlowTypes = null): Asset[] => {
   return [
     ...getContactProperties(flowType),
     ...SCHEMES.map((scheme: Scheme) => ({
-      name: scheme.name,
+      name: scheme.path,
       id: scheme.scheme,
       type: AssetType.Scheme
     }))
@@ -95,9 +95,9 @@ export const stateToNode = (
   let operand = DEFAULT_OPERAND;
   const asset = state.field.value;
   if (asset.type === AssetType.Scheme) {
-    operand = `@(urn_parts(urns.${asset.id}).path)`;
+    operand = `@(default(urn_parts(urns.${asset.id}).path, ""))`;
   } else if (asset.type === AssetType.Field) {
-    operand = `@contact.fields.${asset.id}`;
+    operand = `@fields.${asset.id}`;
   } else {
     operand = `@contact.${asset.id}`;
   }

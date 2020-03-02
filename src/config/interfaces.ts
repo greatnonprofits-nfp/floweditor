@@ -34,6 +34,7 @@ export enum Types {
   split_by_intent = 'split_by_intent',
   split_by_random = 'split_by_random',
   split_by_resthook = 'split_by_resthook',
+  split_by_scheme = 'split_by_scheme',
   split_by_subflow = 'split_by_subflow',
   split_by_webhook = 'split_by_webhook',
   wait_for_response = 'wait_for_response',
@@ -96,6 +97,12 @@ export interface FlowTypeVisibility {
   filter?: FeatureFilter;
 }
 
+export enum PopTabType {
+  SIMULATOR = 'Simulator',
+  REVISION_HISTORY = 'Revision History',
+  ISSUES_TAB = 'Issues Tab'
+}
+
 export interface Type extends FlowTypeVisibility {
   type: Types;
   name: string;
@@ -105,6 +112,9 @@ export interface Type extends FlowTypeVisibility {
   aliases?: string[];
   localization?: React.ComponentClass<any>;
   localizeableKeys?: string[];
+
+  // opportunity to massage our object for display
+  massageForDisplay?: (obj: any) => void;
 }
 
 export interface Operator extends FlowTypeVisibility {
