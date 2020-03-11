@@ -47,11 +47,47 @@ exports[`SendBroadcastForm render should render an empty form with no action 2`]
     onChange={[MockFunction]}
   />
   <AssetSelector
+    assets={
+      Object {
+        "items": Object {},
+        "type": "contact",
+      }
+    }
     completion={
       Object {
-        "languages": Object {
-          "items": Object {},
-          "type": "language",
+        "assetStore": Object {
+          "channels": Object {
+            "items": Object {},
+            "type": "channel",
+          },
+          "fields": Object {
+            "items": Object {},
+            "type": "field",
+          },
+          "flows": Object {
+            "items": Object {},
+            "type": "flow",
+          },
+          "labels": Object {
+            "items": Object {},
+            "type": "label",
+          },
+          "languages": Object {
+            "items": Object {},
+            "type": "language",
+          },
+          "recipients": Object {
+            "items": Object {},
+            "type": "contact",
+          },
+          "results": Object {
+            "items": Object {},
+            "type": "result",
+          },
+        },
+        "schema": Object {
+          "root": Array [],
+          "types": Array [],
         },
       }
     }
@@ -77,7 +113,6 @@ exports[`SendBroadcastForm render should render an empty form with no action 2`]
     focus={true}
     name="Message"
     onChange={[Function]}
-    onFieldFailures={[Function]}
     showLabel={false}
     textarea={true}
   />
@@ -119,11 +154,47 @@ exports[`SendBroadcastForm render should render self, children with base props 1
     onChange={[MockFunction]}
   />
   <AssetSelector
+    assets={
+      Object {
+        "items": Object {},
+        "type": "contact",
+      }
+    }
     completion={
       Object {
-        "languages": Object {
-          "items": Object {},
-          "type": "language",
+        "assetStore": Object {
+          "channels": Object {
+            "items": Object {},
+            "type": "channel",
+          },
+          "fields": Object {
+            "items": Object {},
+            "type": "field",
+          },
+          "flows": Object {
+            "items": Object {},
+            "type": "flow",
+          },
+          "labels": Object {
+            "items": Object {},
+            "type": "label",
+          },
+          "languages": Object {
+            "items": Object {},
+            "type": "language",
+          },
+          "recipients": Object {
+            "items": Object {},
+            "type": "contact",
+          },
+          "results": Object {
+            "items": Object {},
+            "type": "result",
+          },
+        },
+        "schema": Object {
+          "root": Array [],
+          "types": Array [],
         },
       }
     }
@@ -142,16 +213,19 @@ exports[`SendBroadcastForm render should render self, children with base props 1
           },
           Object {
             "id": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
+            "missing": false,
             "name": "Kellan Alexander",
             "type": "contact",
           },
           Object {
             "id": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
+            "missing": false,
             "name": "Norbert Kwizera",
             "type": "contact",
           },
           Object {
             "id": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+            "missing": false,
             "name": "Rowan Seymour",
             "type": "contact",
           },
@@ -175,7 +249,6 @@ exports[`SendBroadcastForm render should render self, children with base props 1
     focus={true}
     name="Message"
     onChange={[Function]}
-    onFieldFailures={[Function]}
     showLabel={false}
     textarea={true}
   />
@@ -220,16 +293,19 @@ Object {
       },
       Object {
         "id": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
+        "missing": false,
         "name": "Kellan Alexander",
         "type": "contact",
       },
       Object {
         "id": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
+        "missing": false,
         "name": "Norbert Kwizera",
         "type": "contact",
       },
       Object {
         "id": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+        "missing": false,
         "name": "Rowan Seymour",
         "type": "contact",
       },
@@ -247,7 +323,7 @@ Array [
     "legacy_vars": Array [],
     "text": "Message to Group",
     "type": "send_broadcast",
-    "uuid": "132de855-4042-4dc1-a18f-cc2e6a8f790a",
+    "uuid": "42ebf1d0-a43e-4ba6-9577-c863b20c88c4",
   },
 ]
 `;

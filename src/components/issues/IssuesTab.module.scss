@@ -1,0 +1,55 @@
+@import 'variables.module.scss';
+
+.hidden {
+  visibility: hidden;
+  z-index: 0;
+}
+
+.message {
+  padding: 12px 12px;
+
+  .header {
+    display: inline-block;
+  }
+
+  &:hover {
+    background: $light_gray_2;
+    cursor: pointer;
+  }
+}
+
+.issues_wrapper {
+  background-color: #fff;
+  width: 250px;
+  height: 325px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.language {
+  padding: 6px 10px;
+  color: #fff;
+  font-weight: 400;
+  background: $red;
+}
+
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  display: none;
+  z-index: -1;
+  transition: opacity 0.6s;
+}
+
+.visible {
+  .mask {
+    opacity: 1;
+    // display: block;
+    z-index: $z_pop_tabs + 1;
+  }
+}

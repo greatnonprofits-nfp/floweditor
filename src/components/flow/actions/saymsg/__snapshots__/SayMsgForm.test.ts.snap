@@ -28,7 +28,9 @@ exports[`SayMsgForm render should render 1`] = `
         "localizeableKeys": Array [
           "text",
           "quick_replies",
+          "templating",
         ],
+        "massageForDisplay": [Function],
         "name": "Send Message",
         "type": "send_msg",
       }
@@ -45,11 +47,11 @@ exports[`SayMsgForm render should render 1`] = `
     focus={true}
     name="Message"
     onChange={[Function]}
-    onFieldFailures={[Function]}
     showLabel={false}
     textarea={true}
   />
   <UploadButton
+    endpoint="/assets/attachments.json"
     icon="fe-mic"
     onUploadChanged={[Function]}
     removeText="Remove Recording"

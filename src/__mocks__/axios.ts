@@ -1,5 +1,7 @@
+import { config } from 'test/config';
+
 export const axios = require.requireActual('axios');
-const { endpoints } = require('test/config');
+
 const boringFlowResp = require('test/assets/flows/boring.json');
 const flowsResp = require('test/assets/flows.json');
 const groupsResp = require('test/assets/groups.json');
@@ -8,6 +10,7 @@ const fieldsResp = require('test/assets/fields.json');
 const recipientsResp = require('test/assets/recipients.json');
 const labelsResp = require('test/assets/labels.json');
 const revisionsResp = require('test/assets/revisions.json');
+const completionResp = require('test/assets/completion.json');
 
 const getEndpoint = (urlStr: string) => {
   const queryIdx = urlStr.indexOf('?');
@@ -29,8 +32,10 @@ const getUUIDQuery = (urlStr: string) => {
   return null;
 };
 
-axios.get = jest.fn(url => {
+axios.get = jest.fn((url: string) => {
   const { endpoint, containsQuery } = getEndpoint(url);
+  const endpoints = config.endpoints;
+
   switch (endpoint) {
     case endpoints.flows:
       if (containsQuery && containsUUIDQuery(url)) {
@@ -45,7 +50,7 @@ axios.get = jest.fn(url => {
       return resolvePromise(flowsResp);
     case endpoints.groups:
       return resolvePromise(groupsResp);
-    case endpoints.contacts:
+    case endpoints.recipients:
       return resolvePromise(contactsResp);
     case endpoints.fields:
       return resolvePromise(fieldsResp);

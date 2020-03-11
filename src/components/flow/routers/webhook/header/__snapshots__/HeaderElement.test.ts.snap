@@ -48,7 +48,7 @@ exports[`HeaderElement instance methods handleChangeName should update state, ca
             "value": "Content-Type",
           }
         }
-        name="name"
+        name="Header Name"
         onChange={[Function]}
         placeholder="Header Name"
       />
@@ -64,9 +64,8 @@ exports[`HeaderElement instance methods handleChangeName should update state, ca
             "value": "application/json",
           }
         }
-        name="value"
+        name="Value"
         onChange={[Function]}
-        onFieldFailures={[Function]}
         placeholder="Value"
       />
     </div>
@@ -124,7 +123,7 @@ exports[`HeaderElement instance methods handleChangeValue should update state, c
             "value": "Content-Type",
           }
         }
-        name="name"
+        name="Header Name"
         onChange={[Function]}
         placeholder="Header Name"
       />
@@ -144,9 +143,8 @@ exports[`HeaderElement instance methods handleChangeValue should update state, c
             },
           }
         }
-        name="value"
+        name="Value"
         onChange={[Function]}
-        onFieldFailures={[Function]}
         placeholder="Value"
       />
     </div>
@@ -205,7 +203,7 @@ exports[`HeaderElement render should render remove icon 1`] = `
             "value": "Content-Type",
           }
         }
-        name="name"
+        name="Header Name"
         onChange={[Function]}
         placeholder="Header Name"
       />
@@ -221,9 +219,8 @@ exports[`HeaderElement render should render remove icon 1`] = `
             "value": "application/json",
           }
         }
-        name="value"
+        name="Value"
         onChange={[Function]}
-        onFieldFailures={[Function]}
         placeholder="Value"
       />
     </div>
@@ -246,9 +243,8 @@ Object {
   "entry": Object {
     "value": "application/json",
   },
-  "name": "value",
+  "name": "Value",
   "onChange": [Function],
-  "onFieldFailures": [Function],
   "placeholder": "Value",
 }
 `;
@@ -280,7 +276,7 @@ exports[`HeaderElement render should render self, children with base props 2`] =
             "value": "Content-Type",
           }
         }
-        name="name"
+        name="Header Name"
         onChange={[Function]}
         placeholder="Header Name"
       />
@@ -296,9 +292,8 @@ exports[`HeaderElement render should render self, children with base props 2`] =
             "value": "application/json",
           }
         }
-        name="value"
+        name="Value"
         onChange={[Function]}
-        onFieldFailures={[Function]}
         placeholder="Value"
       />
     </div>

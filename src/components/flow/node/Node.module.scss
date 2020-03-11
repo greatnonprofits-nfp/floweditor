@@ -1,4 +1,4 @@
-@import "variables.module.scss";
+@import 'variables.module.scss';
 
 @keyframes pulse {
   0% {
@@ -19,10 +19,6 @@
   padding: $node_padding + px;
   z-index: $z_nodes;
   position: relative;
-  &:hover {
-    z-index: $z_nodes_hover;
-  }
-  // transition: top 200ms ease-out;
 
   .uuid {
     user-select: text;
@@ -61,6 +57,12 @@
     }
   }
 
+  &.immutable {
+    .node {
+      cursor: default;
+    }
+  }
+
   .node {
     // transition: box-shadow 50ms ease-in, border 50ms ease-in;
     border: 1px solid $borders;
@@ -95,7 +97,6 @@
       overflow: hidden;
       border-top-left-radius: $curvature - 1px;
       border-top-right-radius: $curvature - 1px;
-
       // min-width: $node_min_width + px;
       // max-width: $node_max_width + px;
     }
@@ -103,7 +104,7 @@
     .exit_table {
       border: 0px solid red;
       .exits {
-        box-shadow: -1px -1px 0px 0px $node_shadow_color;
+        box-shadow: 0px -2px 0px -1px $borders;
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;

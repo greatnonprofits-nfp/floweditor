@@ -24,6 +24,11 @@ exports[`SendEmailForm render should render 1`] = `
         "component": [Function],
         "description": "Send an email",
         "form": [Function],
+        "localization": [Function],
+        "localizeableKeys": Array [
+          "subject",
+          "body",
+        ],
         "name": "Send Email",
         "type": "send_email",
         "visibility": Array [
@@ -50,7 +55,7 @@ exports[`SendEmailForm render should render 1`] = `
       onChange={[Function]}
       onCheckValid={[Function]}
       placeholder="To"
-      prompt="Enter e-mail address"
+      prompt="Enter email address"
     />
     <Connect(TextInputElement)
       __className="subject"
@@ -62,7 +67,6 @@ exports[`SendEmailForm render should render 1`] = `
       }
       name="Subject"
       onChange={[Function]}
-      onFieldFailures={[Function]}
       placeholder="Subject"
     />
     <Connect(TextInputElement)
@@ -75,7 +79,6 @@ exports[`SendEmailForm render should render 1`] = `
       }
       name="Message"
       onChange={[Function]}
-      onFieldFailures={[Function]}
       showLabel={false}
       textarea={true}
     />
@@ -93,7 +96,7 @@ Array [
     "body": "What is a group of tigers called?",
     "subject": "URGENT: I have a question",
     "type": "send_email",
-    "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+    "uuid": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
   },
 ]
 `;
