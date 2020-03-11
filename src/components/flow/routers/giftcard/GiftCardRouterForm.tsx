@@ -1,9 +1,9 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import { FormState, StringEntry, AssetEntry, mergeForm } from 'store/nodeEditor';
 import { RouterFormProps } from 'components/flow/props';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import TypeList from 'components/nodeeditor/TypeList';
-import HelpIcon from 'components/helpicon/HelpIcon';
 import { createResultNameInput } from '../widgets';
 import { nodeToState, stateToNode } from './helpers';
 import {
@@ -17,7 +17,7 @@ import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
-import variables from 'variables.module.scss';
+import styles from './GiftCardRouterForm.module.scss';
 
 export interface GiftCardRouterFormState extends FormState {
   giftcardDb: AssetEntry;
@@ -103,7 +103,10 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           }}
           className="giftcard-type"
         />
-        <HelpIcon iconColor={variables.orange} iconSize="18px" dataFor="giftcardType">
+        <div className={styles.icon} data-tip data-for="giftcardType">
+          <span className="fe-help" />
+        </div>
+        <ReactTooltip id="giftcardType" effect="solid" multiline={true} className={styles.tooltip}>
           <p>
             Assign Gift Card: This option will reserve a gift card for the contact, saving their
             phone number and returning information needed to redeem the gift card electronically.
@@ -112,7 +115,7 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
             Check Gift Card Status: This option will return the number of Gift Cards that are
             unassigned in your database.
           </p>
-        </HelpIcon>
+        </ReactTooltip>
 
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>
