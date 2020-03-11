@@ -8,15 +8,32 @@ import {
   Exit,
   FlowNode,
   RouterTypes,
-  TransferAirtime
+  TransferAirtime,
+  Action,
+  AnyAction,
+  FlowIssue
 } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
+import { getType } from 'config/typeConfigs';
 
 export const getCategoriesForExit = (renderNode: RenderNode, exit: Exit): Category[] => {
+  // if we are
+  const isGroupSplit = getType(renderNode) === Types.split_by_groups;
+
   if (!renderNode.node.router) {
     return [];
   }
-  return renderNode.node.router.categories.filter((cat: Category) => cat.exit_uuid === exit.uuid);
+  return renderNode.node.router.categories
+    .filter((cat: Category) => cat.exit_uuid === exit.uuid)
+    .map((cat: Category) => {
+      if (isGroupSplit) {
+        return {
+          ...cat
+        };
+      } else {
+        return { ...cat, missing: false };
+      }
+    });
 };
 
 export const getResultName = (node: FlowNode) => {
@@ -41,4 +58,21 @@ export const getResultName = (node: FlowNode) => {
       return resultAction.result_name;
     }
   }
+};
+
+export const getVisibleActions = (renderNode: RenderNode): Action[] => {
+  // subflow nodes hide their set run results
+  if (getType(renderNode) === Types.split_by_subflow) {
+    return renderNode.node.actions.filter((action: Action) => action.type !== Types.set_run_result);
+  }
+
+  return renderNode.node.actions;
+};
+
+export const filterIssuesForAction = (
+  nodeUUID: string,
+  action: AnyAction,
+  issues: FlowIssue[]
+): FlowIssue[] => {
+  return issues.filter(issue => issue.node_uuid === nodeUUID && issue.action_uuid === action.uuid);
 };

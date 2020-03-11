@@ -126,6 +126,11 @@ exports[`AddURNForm renders 1`] = `
                 Send the contact airtime
               </option>
               <option
+                value="split_by_intent"
+              >
+                Split by intent
+              </option>
+              <option
                 value="split_by_expression"
               >
                 Split by a custom expression
@@ -150,6 +155,11 @@ exports[`AddURNForm renders 1`] = `
               >
                 Split by group membership
               </option>
+              <option
+                value="split_by_scheme"
+              >
+                Split by URN type
+              </option>
             </select>
           </div>
         </div>
@@ -168,14 +178,44 @@ exports[`AddURNForm renders 1`] = `
               data-testid="select"
             >
               <option
-                value="ext"
+                value="tel"
               >
-                External ID
+                Phone Number
+              </option>
+              <option
+                value="whatsapp"
+              >
+                WhatsApp Number
               </option>
               <option
                 value="facebook"
               >
-                Facebook ID
+                Facebook
+              </option>
+              <option
+                value="twitterid"
+              >
+                Twitter ID
+              </option>
+              <option
+                value="telegram"
+              >
+                Telegram ID
+              </option>
+              <option
+                value="viber"
+              >
+                Viber ID
+              </option>
+              <option
+                value="line"
+              >
+                Line ID
+              </option>
+              <option
+                value="wechat"
+              >
+                Wechat ID
               </option>
               <option
                 value="fcm"
@@ -188,44 +228,19 @@ exports[`AddURNForm renders 1`] = `
                 Jiochat ID
               </option>
               <option
-                value="line"
-              >
-                Line ID
-              </option>
-              <option
                 value="mailto"
               >
                 Email Address
               </option>
               <option
-                value="tel"
+                value="twitter"
               >
-                Phone Number
+                Twitter Handle
               </option>
               <option
-                value="telegram"
+                value="ext"
               >
-                Telegram ID
-              </option>
-              <option
-                value="twitterid"
-              >
-                Twitter ID
-              </option>
-              <option
-                value="wechat"
-              >
-                Wechat ID
-              </option>
-              <option
-                value="whatsapp"
-              >
-                Whatsapp Number
-              </option>
-              <option
-                value="viber"
-              >
-                Viber ID
+                External ID
               </option>
             </select>
           </div>
@@ -244,6 +259,7 @@ exports[`AddURNForm renders 1`] = `
                 data-spec="input"
                 data-testid="input"
                 maxlength="-1"
+                name="URN"
                 placeholder="Enter the URN value"
                 type="text"
                 value="+12065551212"

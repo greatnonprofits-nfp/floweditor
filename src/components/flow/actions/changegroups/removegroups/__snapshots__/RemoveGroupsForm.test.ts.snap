@@ -34,7 +34,7 @@ exports[`RemoveGroupsForm render should render 1`] = `
     <p
       data-spec="label"
     >
-      Select the group(s) to remove the contact from.
+      Select the groups to remove the contact from.
     </p>
     <AssetSelector
       entry={
@@ -65,6 +65,11 @@ exports[`RemoveGroupsForm render should render 1`] = `
               "name": "Subscribers",
               "type": "group",
             },
+            Object {
+              "id": "e0cccbcf-49be-4eef-88a7-ce2150a6d902",
+              "name": "Champions",
+              "type": "group",
+            },
           ],
         }
       }
@@ -72,15 +77,16 @@ exports[`RemoveGroupsForm render should render 1`] = `
       name="Groups"
       onChange={[Function]}
       searchable={true}
+      shouldExclude={[Function]}
     />
   </div>
   <CheckboxElement
     checked={false}
     description="Remove the active contact from all groups they're a member of."
     labelClassName="checkbox"
-    name="Remove from All"
+    name="Remove from all"
     onChange={[Function]}
-    title="Remove from All"
+    title="Remove from all"
   />
 </Dialog>
 `;
@@ -96,7 +102,7 @@ Array [
       },
     ],
     "type": "remove_contact_groups",
-    "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+    "uuid": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
   },
 ]
 `;

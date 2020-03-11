@@ -10,6 +10,10 @@ exports[`Simulator renders 1`] = `
       id="simulator"
       key="sim"
     >
+      <ContextExplorer
+        onClose={[Function]}
+        visible={false}
+      />
       <div
         className="screen"
       >
@@ -93,6 +97,18 @@ exports[`Simulator renders 1`] = `
         <div
           className="footer"
         >
+          <div
+            className="show_context_button"
+          >
+            <div
+              className="context-button"
+              onClick={[Function]}
+            >
+              <span
+                className="fe-at-sign"
+              />
+            </div>
+          </div>
           <span
             className="reset inactive"
             onClick={[Function]}

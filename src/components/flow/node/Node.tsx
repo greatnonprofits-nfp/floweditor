@@ -3,21 +3,25 @@ import classNames from 'classnames/bind';
 import Counter from 'components/counter/Counter';
 import ActionWrapper from 'components/flow/actions/action/Action';
 import ExitComp from 'components/flow/exit/Exit';
-import { getCategoriesForExit, getResultName } from 'components/flow/node/helpers';
+import {
+  getCategoriesForExit,
+  getResultName,
+  getVisibleActions,
+  filterIssuesForAction
+} from 'components/flow/node/helpers';
 import { getSwitchRouter } from 'components/flow/routers/helpers';
 import shared from 'components/shared.module.scss';
 import TitleBar from 'components/titlebar/TitleBar';
 import { fakePropType } from 'config/ConfigProvider';
 import { Types } from 'config/interfaces';
-import { getOperatorConfig } from 'config/operatorConfigs';
 import { getType, getTypeConfig } from 'config/typeConfigs';
-import { AnyAction, Exit, FlowDefinition, FlowNode, SwitchRouter } from 'flowTypes';
+import { AnyAction, Exit, FlowDefinition, FlowNode, FlowIssue } from 'flowTypes';
 import * as React from 'react';
 import FlipMove from 'react-flip-move';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DebugState } from 'store/editor';
-import { AssetMap, RenderNode } from 'store/flowContext';
+import { AssetMap, RenderNode, Asset } from 'store/flowContext';
 import AppState from 'store/state';
 import {
   DispatchWithState,
@@ -33,6 +37,8 @@ import {
 import { ClickHandler, createClickHandler } from 'utils';
 
 import styles from './Node.module.scss';
+import { hasIssues } from '../helpers';
+import MountScroll from 'components/mountscroll/MountScroll';
 
 export interface NodePassedProps {
   nodeUUID: string;
@@ -56,6 +62,7 @@ export interface NodePassedProps {
 
 export interface NodeStoreProps {
   results: AssetMap;
+  language: Asset;
   languages: AssetMap;
   activeCount: number;
   containerOffset: { top: number; left: number };
@@ -63,11 +70,14 @@ export interface NodeStoreProps {
   simulating: boolean;
   debug: DebugState;
   renderNode: RenderNode;
+  issues: FlowIssue[];
   definition: FlowDefinition;
   onAddToNode: OnAddToNode;
   onOpenNodeEditor: OnOpenNodeEditor;
   removeNode: RemoveNode;
   mergeEditorState: MergeEditorState;
+  scrollToNode: string;
+  scrollToAction: string;
 }
 
 export type NodeProps = NodePassedProps & NodeStoreProps;
@@ -87,14 +97,16 @@ export class NodeComp extends React.Component<NodeProps> {
     config: fakePropType
   };
 
-  constructor(props: NodeProps) {
+  constructor(props: NodeProps, context: any) {
     super(props);
 
     bindCallbacks(this, {
       include: [/Ref$/, /^on/, /^get/, /^handle/]
     });
 
-    this.events = createClickHandler(this.onClick, this.handleShouldCancelClick);
+    this.events = context.config.mutable
+      ? createClickHandler(this.onClick, this.handleShouldCancelClick)
+      : {};
   }
 
   private handleShouldCancelClick(): boolean {
@@ -206,28 +218,6 @@ export class NodeComp extends React.Component<NodeProps> {
     return this.props.selected;
   }
 
-  private hasMissing(): boolean {
-    // see if we are splitting on a missing result
-    if (
-      this.props.renderNode.ui.type === Types.split_by_run_result ||
-      this.props.renderNode.ui.type === Types.split_by_run_result_delimited
-    ) {
-      if (!(this.props.renderNode.ui.config.operand.id in this.props.results)) {
-        return true;
-      }
-    }
-
-    if (this.props.renderNode.node.router) {
-      const kases = (this.props.renderNode.node.router as SwitchRouter).cases || [];
-      for (const kase of kases) {
-        if (!getOperatorConfig(kase.type)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   private isStartNodeVisible(): boolean {
     return this.props.startingNode;
   }
@@ -259,11 +249,21 @@ export class NodeComp extends React.Component<NodeProps> {
         ref: (ref: any) => (this.firstAction = ref)
       };
 
-      this.props.renderNode.node.actions.forEach((action: AnyAction, idx: number) => {
+      getVisibleActions(this.props.renderNode).forEach((action: AnyAction, idx: number) => {
         const actionConfig = getTypeConfig(action.type);
 
+        const issues: FlowIssue[] = filterIssuesForAction(
+          this.props.nodeUUID,
+          action,
+          this.props.issues
+        );
+
         if (actionConfig.hasOwnProperty('component') && actionConfig.component) {
-          const { component: ActionDiv } = actionConfig;
+          const { component: ActionComponent } = actionConfig;
+          if (actionConfig.massageForDisplay) {
+            actionConfig.massageForDisplay(action);
+          }
+
           actions.push(
             <ActionWrapper
               {...firstRef}
@@ -272,9 +272,16 @@ export class NodeComp extends React.Component<NodeProps> {
               selected={this.props.selected}
               action={action}
               first={idx === 0}
-              render={(anyAction: AnyAction) => (
-                <ActionDiv {...anyAction} languages={this.props.languages} />
-              )}
+              issues={issues}
+              render={(anyAction: AnyAction) => {
+                return (
+                  <ActionComponent
+                    {...anyAction}
+                    languages={this.props.languages}
+                    issues={issues}
+                  />
+                );
+              }}
             />
           );
         }
@@ -295,29 +302,15 @@ export class NodeComp extends React.Component<NodeProps> {
     let summary: JSX.Element = null;
 
     // Router node display logic
-    if (this.props.renderNode.ui.type !== Types.execute_actions) {
-      let type = this.props.renderNode.node.router.type;
-
-      if (this.props.renderNode.ui.type) {
-        type = getType(this.props.renderNode);
-      }
-
+    const type = getType(this.props.renderNode);
+    if (type !== Types.execute_actions) {
       const config = getTypeConfig(type);
-
-      // let { name: title } = config;
-
-      let title: string = null;
+      let title: string = config.name;
 
       const switchRouter = getSwitchRouter(this.props.renderNode.node);
       if (switchRouter) {
-        if (this.props.renderNode.ui.type === Types.split_by_contact_field) {
+        if (type === Types.split_by_contact_field && this.props.renderNode.ui.config.operand.name) {
           title = `Split by ${this.props.renderNode.ui.config.operand.name}`;
-        } else {
-          if (this.props.renderNode.ui.type === Types.split_by_expression) {
-            title = 'Split by Expression';
-          } else if (this.props.renderNode.ui.type === Types.wait_for_response) {
-            title = 'Wait for Message';
-          }
         }
       }
 
@@ -333,14 +326,9 @@ export class NodeComp extends React.Component<NodeProps> {
 
       if (
         title === null &&
-        (this.props.renderNode.ui.type === Types.split_by_run_result ||
-          this.props.renderNode.ui.type === Types.split_by_run_result_delimited)
+        (type === Types.split_by_run_result || type === Types.split_by_run_result_delimited)
       ) {
-        if (this.props.renderNode.ui.config.operand.id in this.props.results) {
-          title = `Split by ${this.props.results[this.props.renderNode.ui.config.operand.id].name}`;
-        } else {
-          title = `Missing ${this.props.renderNode.ui.config.operand.id}`;
-        }
+        title = `Split by ${this.props.results[this.props.renderNode.ui.config.operand.id].name}`;
       }
 
       if (title === null) {
@@ -349,13 +337,18 @@ export class NodeComp extends React.Component<NodeProps> {
 
       if (!this.props.renderNode.node.actions || !this.props.renderNode.node.actions.length) {
         // Router headers are introduced here while action headers are introduced in ./Action/Action
-
         header = (
           // Wrap in a relative parent so it honors node clipping
           <div style={{ position: 'relative' }}>
             <div {...this.events}>
               <TitleBar
-                __className={(shared as any)[this.hasMissing() ? 'missing' : config.type]}
+                __className={
+                  (shared as any)[
+                    hasIssues(this.props.issues, this.props.translating, this.props.language)
+                      ? 'missing'
+                      : config.type
+                  ]
+                }
                 showRemoval={!this.props.translating}
                 onRemoval={this.handleRemoval}
                 shouldCancelClick={this.handleShouldCancelClick}
@@ -367,7 +360,7 @@ export class NodeComp extends React.Component<NodeProps> {
       }
     } else {
       // Don't show add actions option if we are translating
-      if (!this.props.translating) {
+      if (!this.props.translating && this.context.config.mutable) {
         addActions = (
           <div
             className={styles.add}
@@ -385,10 +378,45 @@ export class NodeComp extends React.Component<NodeProps> {
       'plumb-drag': true,
       [styles.ghost]: this.props.ghost,
       [styles.flow_start]: this.isStartNodeVisible(),
-      [styles.selected]: this.isSelected()
+      [styles.selected]: this.isSelected(),
+      [styles.immutable]: !this.context.config.mutable
     });
 
     const uuid: JSX.Element = this.renderDebug();
+
+    const body = (
+      <div className={styles.node}>
+        {this.isStartNodeVisible() ? (
+          <div className={styles.flow_start_message}>Flow Start</div>
+        ) : null}
+
+        {uuid}
+        <Counter
+          count={this.props.activeCount}
+          containerStyle={styles.active}
+          countStyle={''}
+          keepVisible={this.props.simulating}
+          onClick={() => {
+            if (this.context.config.onActivityClicked) {
+              this.context.config.onActivityClicked(this.props.nodeUUID, this.props.activeCount);
+            }
+          }}
+        />
+
+        <div className={styles.cropped}>
+          {header}
+          {actionList}
+          {summary}
+        </div>
+
+        <div className={`${styles.exit_table}`}>
+          <div className={styles.exits} {...this.events}>
+            {exits}
+          </div>
+          {addActions}
+        </div>
+      </div>
+    );
 
     const renderedNode = (
       <div
@@ -396,37 +424,13 @@ export class NodeComp extends React.Component<NodeProps> {
         className={`${styles.node_container} ${classes}`}
         ref={this.eleRef}
       >
-        <div className={styles.node}>
-          {this.isStartNodeVisible() ? (
-            <div className={styles.flow_start_message}>Flow Start</div>
-          ) : null}
-
-          {uuid}
-          <Counter
-            count={this.props.activeCount}
-            containerStyle={styles.active}
-            countStyle={''}
-            keepVisible={this.props.simulating}
-            onClick={() => {
-              if (this.context.config.onActivityClicked) {
-                this.context.config.onActivityClicked(this.props.nodeUUID, this.props.activeCount);
-              }
-            }}
-          />
-
-          <div className={styles.cropped}>
-            {header}
-            {actionList}
-            {summary}
-          </div>
-
-          <div className={`${styles.exit_table}`}>
-            <div className={styles.exits} {...this.events}>
-              {exits}
-            </div>
-            {addActions}
-          </div>
-        </div>
+        {!this.props.scrollToAction &&
+        this.props.scrollToNode &&
+        this.props.scrollToNode === this.props.nodeUUID ? (
+          <MountScroll pulseAfterScroll={true}>{body}</MountScroll>
+        ) : (
+          body
+        )}
       </div>
     );
     return renderedNode;
@@ -438,12 +442,23 @@ const mapStateToProps = (
     flowContext: {
       nodes,
       definition,
+      metadata,
       assetStore: {
         results: { items: results },
         languages: { items: languages }
       }
     },
-    editorState: { translating, debug, ghostNode, simulating, containerOffset, activity }
+    editorState: {
+      translating,
+      debug,
+      ghostNode,
+      simulating,
+      containerOffset,
+      activity,
+      language,
+      scrollToAction,
+      scrollToNode
+    }
   }: AppState,
   props: NodePassedProps
 ) => {
@@ -465,8 +480,14 @@ const mapStateToProps = (
 
   const activeCount = activity.nodes[props.nodeUUID] || 0;
 
+  const issues = metadata
+    ? (metadata.issues || []).filter(issue => issue.node_uuid === props.nodeUUID)
+    : [];
+
   return {
+    issues,
     results,
+    language,
     languages,
     activeCount,
     containerOffset,
@@ -474,7 +495,9 @@ const mapStateToProps = (
     debug,
     definition,
     renderNode,
-    simulating
+    simulating,
+    scrollToNode,
+    scrollToAction
   };
 };
 
@@ -493,5 +516,5 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
   null,
-  { withRef: true }
+  { forwardRef: true }
 )(NodeComp);

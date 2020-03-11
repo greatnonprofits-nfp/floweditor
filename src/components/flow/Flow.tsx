@@ -8,7 +8,7 @@ import NodeEditor from 'components/nodeeditor/NodeEditor';
 import Simulator from 'components/simulator/Simulator';
 import Sticky, { STICKY_BODY, STICKY_TITLE } from 'components/sticky/Sticky';
 import { ConfigProviderContext, fakePropType } from 'config/ConfigProvider';
-import { Exit, FlowDefinition } from 'flowTypes';
+import { Exit, FlowDefinition, FlowMetadata } from 'flowTypes';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -51,6 +51,8 @@ import {
 import Debug from 'utils/debug';
 
 import styles from './Flow.module.scss';
+import { Trans } from 'react-i18next';
+import { PopTabType } from 'config/interfaces';
 
 declare global {
   interface Window {
@@ -64,7 +66,7 @@ export interface FlowStoreProps {
 
   definition: FlowDefinition;
   nodes: { [uuid: string]: RenderNode };
-  dependencies: FlowDefinition[];
+  metadata: FlowMetadata;
   nodeEditorSettings: NodeEditorSettings;
 
   updateConnection: UpdateConnection;
@@ -162,7 +164,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     );
     this.Plumber.bind(
       'beforeStartDetach',
-      (event: ConnectionEvent) => !this.props.editorState.translating
+      (event: ConnectionEvent) => !this.props.editorState.translating && this.context.config.mutable
     );
     this.Plumber.bind('beforeDetach', (event: ConnectionEvent) => true);
     this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => this.onBeforeConnectorDrop(event));
@@ -189,7 +191,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     this.Plumber.reset();
   }
 
-  public componentWillUpdate(prevProps: FlowStoreProps): void {
+  public UNSAFE_componentWillUpdate(prevProps: FlowStoreProps): void {
     if (
       prevProps.editorState.activityInterval === this.props.editorState.activityInterval &&
       this.props.editorState.activityInterval !== ACTIVITY_INTERVAL
@@ -218,6 +220,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
    */
   private onConnectorDrop(event: ConnectionEvent): boolean {
     const { ghostNode } = this.props.editorState;
+
     // Don't show the node editor if we a dragging back to where we were
     if (isRealValue(ghostNode) && !isDraggingBack(event)) {
       // Wire up the drag from to our ghost node
@@ -228,10 +231,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
       // Save our position for later
       const { left, top } = (this.ghost &&
-        snapToGrid(
-          this.ghost.wrappedInstance.ele.offsetLeft,
-          this.ghost.wrappedInstance.ele.offsetTop
-        )) || { left: 0, top: 0 };
+        snapToGrid(this.ghost.ele.offsetLeft, this.ghost.ele.offsetTop)) || { left: 0, top: 0 };
 
       this.props.editorState.ghostNode.ui.position = { left, top };
       let originalAction = null;
@@ -244,6 +244,10 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
         originalNode: ghostNode,
         originalAction
       });
+    }
+
+    if (isDraggingBack(event)) {
+      this.props.mergeEditorState({ ghostNode: null });
     }
 
     /* istanbul ignore next */
@@ -325,7 +329,16 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
   private getSimulator(): JSX.Element {
     return renderIf(this.context.config.endpoints && this.context.config.endpoints.simulateStart)(
-      <Simulator key="simulator" mergeEditorState={this.props.mergeEditorState} />
+      <Simulator
+        key="simulator"
+        popped={this.props.editorState.popped}
+        mergeEditorState={this.props.mergeEditorState}
+        onToggled={(visible: boolean, tab: PopTabType) => {
+          this.props.mergeEditorState({
+            popped: visible ? tab : null
+          });
+        }}
+      />
     );
   }
 
@@ -333,6 +346,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     return renderIf(this.props.nodeEditorSettings !== null)(
       <NodeEditor
         key="node-editor"
+        helpArticles={this.context.config.help}
         plumberConnectExit={this.Plumber.connectExit}
         plumberRepaintForDuration={this.Plumber.repaintForDuration}
       />
@@ -362,12 +376,14 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
   private getEmptyFlow(): JSX.Element {
     return (
       <div key="create_node" className={styles.empty_flow}>
-        <h1>Let's get started</h1>
-        <div>
-          We recommend starting your flow by sending a message. This message will be sent to anybody
-          right after they join the flow. This is your chance to send a single message or ask them a
-          question.
-        </div>
+        <Trans i18nKey="empty_flow_message">
+          <h1>Let's get started</h1>
+          <div>
+            We recommend starting your flow by sending a message. This message will be sent to
+            anybody right after they join the flow. This is your chance to send a single message or
+            ask them a question.
+          </div>
+        </Trans>
 
         <Button
           name="Create Message"
@@ -399,7 +415,8 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     return (
       <div onDoubleClick={this.onDoubleClick} ref={this.onRef}>
         <Canvas
-          draggingNew={!!this.props.editorState.ghostNode}
+          mutable={this.context.config.mutable}
+          draggingNew={!!this.props.editorState.ghostNode && !this.props.nodeEditorSettings}
           onDragging={(uuids: string[]) => {
             uuids.forEach((uuid: string) => {
               if (uuid in this.props.nodes) {
@@ -429,7 +446,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
 /* istanbul ignore next */
 const mapStateToProps = ({
-  flowContext: { definition, dependencies, nodes },
+  flowContext: { definition, metadata, nodes },
   // tslint:disable-next-line: no-shadowed-variable
   editorState,
   nodeEditor: { settings }
@@ -438,7 +455,7 @@ const mapStateToProps = ({
     nodeEditorSettings: settings,
     definition,
     nodes,
-    dependencies,
+    metadata,
     editorState: editorState as Partial<EditorState>
   };
 };

@@ -14,6 +14,7 @@ const categories = [{ uuid: utils.createUUID(), name: 'Red', exit_uuid: exit.uui
 const { setup } = composeComponentTestUtils<ExitProps>(ExitComp, {
   exit,
   categories,
+  recentMessages: [],
   node: { uuid: utils.createUUID(), actions: [], exits: [] },
   showDragHelper: false,
   translating: false,
@@ -39,8 +40,8 @@ describe(ExitComp.name, () => {
     instance.setState(
       {
         recentMessages: [
-          { text: 'Hi Mom!', sent: 'Apr 1, 2019' },
-          { text: 'Hi Dad!', sent: 'Apr 2, 2019' }
+          { text: 'Hi Mom!', sent: new Date().toUTCString() },
+          { text: 'Hi Dad!', sent: new Date().toUTCString() }
         ]
       },
       () => {

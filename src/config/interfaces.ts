@@ -17,6 +17,7 @@ export enum Types {
   set_contact_name = 'set_contact_name',
   set_contact_language = 'set_contact_language',
   set_run_result = 'set_run_result',
+  call_classifier = 'call_classifier',
   call_resthook = 'call_resthook',
   call_webhook = 'call_webhook',
   call_lookup = 'call_lookup',
@@ -33,8 +34,10 @@ export enum Types {
   split_by_run_result = 'split_by_run_result',
   split_by_run_result_delimited = 'split_by_run_result_delimited',
   split_by_groups = 'split_by_groups',
+  split_by_intent = 'split_by_intent',
   split_by_random = 'split_by_random',
   split_by_resthook = 'split_by_resthook',
+  split_by_scheme = 'split_by_scheme',
   split_by_subflow = 'split_by_subflow',
   split_by_webhook = 'split_by_webhook',
   split_by_giftcard = 'split_by_giftcard',
@@ -81,11 +84,29 @@ export enum Operators {
   has_state = 'has_state',
   has_ward = 'has_ward',
   has_pattern = 'has_pattern',
-  has_error = 'has_error'
+  has_error = 'has_error',
+  has_intent = 'has_intent',
+  has_top_intent = 'has_top_intent',
+  has_category = 'has_category'
+}
+
+export enum FeatureFilter {
+  HAS_RESTHOOK = 'resthook',
+  HAS_WHATSAPP = 'whatsapp',
+  HAS_AIRTIME = 'airtime',
+  HAS_CLASSIFIER = 'classifier',
+  HAS_FACEBOOK = 'facebook'
 }
 
 export interface FlowTypeVisibility {
   visibility?: FlowTypes[];
+  filter?: FeatureFilter;
+}
+
+export enum PopTabType {
+  SIMULATOR = 'Simulator',
+  REVISION_HISTORY = 'Revision History',
+  ISSUES_TAB = 'Issues Tab'
 }
 
 export interface Type extends FlowTypeVisibility {
@@ -97,6 +118,9 @@ export interface Type extends FlowTypeVisibility {
   aliases?: string[];
   localization?: React.ComponentClass<any>;
   localizeableKeys?: string[];
+
+  // opportunity to massage our object for display
+  massageForDisplay?: (obj: any) => void;
 }
 
 export interface Operator extends FlowTypeVisibility {

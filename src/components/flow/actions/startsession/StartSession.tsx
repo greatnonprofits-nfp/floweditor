@@ -1,4 +1,4 @@
-import { getRecipients, renderAssetList } from 'components/flow/actions/helpers';
+import { getRecipients, renderAssetList, renderAsset } from 'components/flow/actions/helpers';
 import { fakePropType } from 'config/ConfigProvider';
 import { StartSession } from 'flowTypes';
 import * as React from 'react';
@@ -6,9 +6,9 @@ import { AssetType } from 'store/flowContext';
 
 import styles from './StartSession.module.scss';
 
-const MAX_TO_SHOW = 3;
+const MAX_TO_SHOW = 5;
 
-const StartSessionComp: React.SFC<StartSession> = (
+export const StartSessionComp: React.SFC<StartSession> = (
   action: StartSession,
   context: any
 ): JSX.Element => {
@@ -16,18 +16,19 @@ const StartSessionComp: React.SFC<StartSession> = (
   return (
     <div className={styles.node}>
       <div className={styles.to}>
-        {renderAssetList(recipients, MAX_TO_SHOW, context.config.endpoints)}
+        {action.create_contact
+          ? 'Create a new contact'
+          : action.contact_query
+          ? action.contact_query
+          : renderAssetList(recipients, MAX_TO_SHOW, context.config.endpoints)}
       </div>
       <div className={styles.flow}>
-        {renderAssetList(
-          [
-            {
-              name: action.flow.name,
-              id: action.flow.uuid,
-              type: AssetType.Flow
-            }
-          ],
-          3,
+        {renderAsset(
+          {
+            name: action.flow.name,
+            id: action.flow.uuid,
+            type: AssetType.Flow
+          },
           context.config.endpoints
         )}
       </div>

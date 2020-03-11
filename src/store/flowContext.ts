@@ -1,14 +1,33 @@
-import { FlowDefinition, FlowNode, UINode } from 'flowTypes';
-import { combineReducers } from 'redux';
+import {
+  FlowDefinition,
+  FlowNode,
+  UINode,
+  FlowMetadata,
+  FlowIssue,
+  FlowIssueType
+} from 'flowTypes';
+import { combineReducers, Action } from 'redux';
 import ActionTypes, {
   UpdateAssetsAction,
   UpdateBaseLanguageAction,
   UpdateContactFieldsAction,
   UpdateDefinitionAction,
-  UpdateDependenciesAction,
-  UpdateNodesAction
+  UpdateNodesAction,
+  UpdateMetadataAction
 } from 'store/actionTypes';
 import Constants from 'store/constants';
+import { Type } from 'config/interfaces';
+
+/**
+ * Some issues are ignored in the editor
+ */
+const filterIssues = (metadata: FlowMetadata) => {
+  if (metadata && metadata.issues) {
+    metadata.issues = metadata.issues.filter(
+      (issue: FlowIssue) => issue.type !== FlowIssueType.LEGACY_EXTRA
+    );
+  }
+};
 
 // tslint:disable:no-shadowed-variable
 export interface RenderNodeMap {
@@ -20,6 +39,12 @@ export interface RenderNode {
   node: FlowNode;
   inboundConnections: { [nodeUUID: string]: string };
   ghost?: boolean;
+}
+
+export interface RenderAction {
+  action: Action;
+  config: Type;
+  index?: number;
 }
 
 export interface FunctionExample {
@@ -43,26 +68,28 @@ export interface ContactFields {
 
 export enum AssetType {
   Channel = 'channel',
+  Classifier = 'classifier',
+  Contact = 'contact',
+  ContactProperty = 'property',
   Currency = 'currency',
-  Template = 'template',
-  Revision = 'revision',
+  Environment = 'environment',
+  Expression = 'expression',
+  Field = 'field',
   Flow = 'flow',
+  Global = 'global',
   GiftCard = 'giftcard',
   Group = 'group',
-  Field = 'field',
-  Result = 'result',
-  Contact = 'contact',
-  Resthook = 'resthook',
-  Lookup = 'lookup',
-  URN = 'urn',
   Label = 'label',
+  Lookup = 'lookup',
   Language = 'language',
-  Environment = 'environment',
   Remove = 'remove',
-  ContactProperty = 'property',
+  Resthook = 'resthook',
+  Result = 'result',
+  Revision = 'revision',
   Scheme = 'scheme',
-  Expression = 'expression',
-  TrackableLink = 'shorten_url'
+  Template = 'template',
+  TrackableLink = 'shorten_url',
+  URN = 'urn'
 }
 
 export interface Reference {
@@ -86,6 +113,7 @@ export const REMOVE_VALUE_ASSET = {
   name: 'Remove Value',
   type: AssetType.Remove
 };
+
 export const DEFAULT_LANGUAGE = {
   id: 'base',
   name: 'Default',
@@ -117,7 +145,7 @@ export interface Assets {
 }
 
 export interface FlowContext {
-  dependencies: FlowDefinition[];
+  metadata: FlowMetadata;
   baseLanguage: Asset;
   contactFields: ContactFields;
   definition: FlowDefinition;
@@ -128,8 +156,14 @@ export interface FlowContext {
 // Initial state
 export const initialState: FlowContext = {
   definition: null,
-  dependencies: null,
   baseLanguage: null,
+  metadata: {
+    dependencies: [],
+    results: [],
+    waiting_exit_uuids: [],
+    parent_refs: [],
+    issues: []
+  },
   contactFields: {},
   nodes: {},
   assetStore: {}
@@ -150,12 +184,15 @@ export const updateNodes = (nodes: RenderNodeMap): UpdateNodesAction => ({
   }
 });
 
-export const updateDependencies = (dependencies: FlowDefinition[]): UpdateDependenciesAction => ({
-  type: Constants.UPDATE_DEPENDENCIES,
-  payload: {
-    dependencies
-  }
-});
+export const updateMetadata = (metadata: FlowMetadata): UpdateMetadataAction => {
+  filterIssues(metadata);
+  return {
+    type: Constants.UPDATE_METADATA,
+    payload: {
+      metadata
+    }
+  };
+};
 
 export const updateBaseLanguage = (baseLanguage: Asset): UpdateBaseLanguageAction => ({
   type: Constants.UPDATE_BASE_LANGUAGE,
@@ -200,13 +237,10 @@ export const nodes = (state: {} = initialState.nodes, action: ActionTypes) => {
   }
 };
 
-export const dependencies = (
-  state: FlowDefinition[] = initialState.dependencies,
-  action: ActionTypes
-) => {
+export const metadata = (state: FlowMetadata = initialState.metadata, action: ActionTypes) => {
   switch (action.type) {
-    case Constants.UPDATE_DEPENDENCIES:
-      return action.payload.dependencies;
+    case Constants.UPDATE_METADATA:
+      return action.payload.metadata;
     default:
       return state;
   }
@@ -246,7 +280,7 @@ export const contactFields = (
 export default combineReducers({
   definition,
   nodes,
-  dependencies,
+  metadata,
   assetStore,
   baseLanguage,
   contactFields

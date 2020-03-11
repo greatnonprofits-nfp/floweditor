@@ -48,5 +48,5 @@ export const stateToNode = (
     uuid: getActionUUID(nodeSettings, Types.call_giftcard)
   };
 
-  return createWebhookBasedNode(action, nodeSettings.originalNode);
+  return createWebhookBasedNode(action, nodeSettings.originalNode, false);
 };

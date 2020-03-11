@@ -7,26 +7,42 @@ exports[`ChangeGroupsComp helpers getChangeGroupsMarkup should return ChangeGrou
   <div
     className="node_asset"
   >
-    <span
-      className="node_group fe-group"
-    />
-    Early Adopters
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Early Adopters
+    </React.Fragment>
   </div>
   <div
     className="node_asset"
   >
-    <span
-      className="node_group fe-group"
-    />
-    Testers
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Testers
+    </React.Fragment>
   </div>
   <div
     className="node_asset"
   >
-    <span
-      className="node_group fe-group"
-    />
-    Subscribers
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Subscribers
+    </React.Fragment>
+  </div>
+  <div
+    className="node_asset"
+  >
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Champions
+    </React.Fragment>
   </div>
 </div>
 `;
@@ -46,26 +62,42 @@ Array [
   <div
     className="node_asset"
   >
-    <span
-      className="node_group fe-group"
-    />
-    Early Adopters
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Early Adopters
+    </React.Fragment>
   </div>,
   <div
     className="node_asset"
   >
-    <span
-      className="node_group fe-group"
-    />
-    Testers
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Testers
+    </React.Fragment>
   </div>,
   <div
     className="node_asset"
   >
-    <span
-      className="node_group fe-group"
-    />
-    Subscribers
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Subscribers
+    </React.Fragment>
+  </div>,
+  <div
+    className="node_asset"
+  >
+    <React.Fragment>
+      <span
+        className="node_group fe-group"
+      />
+      Champions
+    </React.Fragment>
   </div>,
 ]
 `;
@@ -78,7 +110,7 @@ exports[`ChangeGroupsComp helpers getRemoveAllMarkup should return remove-all ma
 </div>
 `;
 
-exports[`ChangeGroupsComp render should limit div to 3 groups, include ellipsesText 1`] = `
+exports[`ChangeGroupsComp render should limit div to max number of groups 1`] = `
 <div
   data-spec="content"
 >
@@ -110,9 +142,20 @@ exports[`ChangeGroupsComp render should limit div to 3 groups, include ellipsesT
     Early Adopters
   </div>
   <div
+    className="node_asset"
+    key="afaba971-8943-4dd8-860b-3561ed4f1fe1"
+  >
+    <span
+      className="node_group fe-group"
+    />
+    Testers
+  </div>
+  <div
     key="ellipses"
   >
-    ...
+    +
+    2
+     more
   </div>
 </div>
 `;
@@ -160,6 +203,15 @@ exports[`ChangeGroupsComp render should render group name 1`] = `
       className="node_group fe-group"
     />
     Subscribers
+  </div>
+  <div
+    className="node_asset"
+    key="e0cccbcf-49be-4eef-88a7-ce2150a6d902"
+  >
+    <span
+      className="node_group fe-group"
+    />
+    Champions
   </div>
 </div>
 `;

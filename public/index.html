@@ -42,13 +42,20 @@
       flow: 'a4f64f1b-85bc-477e-b706-de313a022979',
       flowType: 'message',
       localStorage: true,
-      showTemplates: true,
-
+      mutable: true,
+      filters: ['facebook', 'whatsapp', 'airtime', 'resthook', 'classifier'],
+      help: {
+        legacy_extra: 'help.html',
+        missing_dependency: 'help.html',
+        invalid_regex: 'help.html'
+      },
       endpoints: {
+        globals: base + 'globals',
         groups: base + 'groups',
         fields: base + 'fields',
         labels: base + 'labels',
         channels: base + 'channels',
+        classifiers: base + 'classifiers',
         resthooks: base + 'resthooks',
         link: base + 'link',
         lookups: base + 'lookups',
@@ -61,6 +68,7 @@
         environment: base + 'environment',
         recipients: base + 'recipients',
         functions: base + 'functions',
+        completion: base + 'completion',
         attachments: base + 'attachments',
         activity: base + 'activity',
 

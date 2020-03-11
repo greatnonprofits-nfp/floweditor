@@ -1,16 +1,22 @@
-import { UpdateLocalizations } from 'components/nodeeditor/NodeEditor';
 import { Type } from 'config/interfaces';
-import { AnyAction, ContactProperties } from 'flowTypes';
+import { AnyAction, ContactProperties, FlowIssue } from 'flowTypes';
 import { Asset, AssetStore, AssetType, RenderNode } from 'store/flowContext';
 import { NodeEditorSettings } from 'store/nodeEditor';
 import { DispatchWithState, GetState } from 'store/thunks';
 import { titleCase } from 'utils';
+import { CompletionSchema } from 'utils/completion';
 
-export interface ActionFormProps {
+export interface IssueProps {
+  helpArticles: { [key: string]: string };
+  issues: FlowIssue[];
+}
+
+export interface ActionFormProps extends IssueProps {
   // action details
   nodeSettings: NodeEditorSettings;
   typeConfig: Type;
   assetStore: AssetStore;
+  completionSchema: CompletionSchema;
 
   addAsset(assetType: string, asset: Asset): void;
 
@@ -25,7 +31,7 @@ export interface ActionFormProps {
   onClose(canceled: boolean): void;
 }
 
-export interface RouterFormProps {
+export interface RouterFormProps extends IssueProps {
   nodeSettings: NodeEditorSettings;
   typeConfig: Type;
 
@@ -39,11 +45,12 @@ export interface RouterFormProps {
   onClose(canceled: boolean): void;
 }
 
-export interface LocalizationFormProps {
+export interface LocalizationFormProps extends IssueProps {
   language: Asset;
   nodeSettings: NodeEditorSettings;
-  updateLocalizations(languageCode: string, localizations: any[]): UpdateLocalizations;
+  updateLocalizations(languageCode: string, localizations: any[]): void;
   onClose(canceled: boolean): void;
+  helpArticles: { [key: string]: string };
 }
 
 export const NAME_PROPERTY: Asset = {

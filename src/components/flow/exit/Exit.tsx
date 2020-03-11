@@ -16,7 +16,12 @@ import AppState from 'store/state';
 import { DisconnectExit, disconnectExit, DispatchWithState } from 'store/thunks';
 import { createClickHandler, getLocalization, renderIf } from 'utils';
 
+import * as moment from 'moment';
 import styles from './Exit.module.scss';
+
+export interface RenderCategory extends Category {
+  missing: boolean;
+}
 
 export interface ExitPassedProps {
   exit: Exit;
@@ -101,14 +106,15 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
   }
 
   public componentDidUpdate(prevProps: ExitProps): void {
-    if (
-      !this.props.exit.destination_uuid ||
-      this.props.exit.destination_uuid !== prevProps.exit.destination_uuid
-    ) {
+    if (this.props.exit.destination_uuid !== prevProps.exit.destination_uuid) {
       this.connect();
       if (this.state.confirmDelete) {
         this.setState({ confirmDelete: false });
       }
+    }
+
+    if (this.state.showDragHelper && prevProps.showDragHelper && !this.props.showDragHelper) {
+      this.setState({ showDragHelper: false });
     }
 
     this.props.plumberUpdateClass(
@@ -258,8 +264,13 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
 
       return { name, localized };
     } else {
+      const names: string[] = [];
+      this.props.categories.forEach((cat: Category) => {
+        names.push(cat.name);
+      });
+
       return {
-        name: this.props.categories.map((category: Category) => category.name).join(', ')
+        name: names.join(', ')
       };
     }
   }
@@ -283,7 +294,7 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
           {recentMessages.map((recentMessage: RecentMessage, idx: number) => (
             <div key={'recent_' + idx} className={styles.message}>
               <div className={styles.text}>{recentMessage.text}</div>
-              <div className={styles.sent}>{recentMessage.sent.toLocaleString()}</div>
+              <div className={styles.sent}>{moment.utc(recentMessage.sent).fromNow()}</div>
             </div>
           ))}
           {this.state.recentMessages === null ? (
@@ -305,12 +316,13 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
     const dragNodeClasses = cx(styles.endpoint, connected);
     const confirmDelete =
       this.state.confirmDelete && this.props.exit.hasOwnProperty('destination_uuid');
-    const confirm: JSX.Element = confirmDelete ? (
-      <div
-        className={styles.confirm_x + ' fe-x'}
-        {...createClickHandler(this.onDisconnect, () => this.props.dragging)}
-      />
-    ) : null;
+    const confirm: JSX.Element =
+      confirmDelete && this.context.config.mutable ? (
+        <div
+          className={styles.confirm_x + ' fe-x'}
+          {...createClickHandler(this.onDisconnect, () => this.props.dragging)}
+        />
+      ) : null;
     const exitClasses: string = cx({
       [styles.exit]: true,
       'plumb-exit': true,
@@ -320,18 +332,23 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
       [styles.confirm_delete]: confirmDelete
     });
     const activity = this.getSegmentCount();
+
+    const events = this.context.config.mutable
+      ? createClickHandler(
+          this.handleClick,
+          () => {
+            return this.props.dragging;
+          },
+          this.handleMouseDown
+        )
+      : {};
+
     return (
       <div className={exitClasses}>
         {name ? <div className={nameStyle}>{name}</div> : null}
         <div
           ref={(ref: HTMLDivElement) => (this.ele = ref)}
-          {...createClickHandler(
-            this.handleClick,
-            () => {
-              return this.props.dragging;
-            },
-            this.handleMouseDown
-          )}
+          {...events}
           id={`${this.props.node.uuid}:${this.props.exit.uuid}`}
           className={dragNodeClasses}
         >
