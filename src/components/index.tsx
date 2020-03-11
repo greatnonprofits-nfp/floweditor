@@ -71,6 +71,12 @@ export interface FlowEditorStoreProps {
 
 const hotStore = createStore();
 
+class ComponentToPrint extends React.Component {
+  render() {
+    return <ConnectedFlowEditor />;
+  }
+}
+
 // Root container, wires up context-providers
 export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ config }) => {
   const componentRef = React.useRef();
@@ -98,7 +104,7 @@ export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ confi
             content={() => componentRef.current}
             copyStyles
           />
-          <ConnectedFlowEditor ref={componentRef} />
+          <ComponentToPrint ref={componentRef} />
         </React.Fragment>
       </ReduxProvider>
     </ConfigProvider>
