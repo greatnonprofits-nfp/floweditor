@@ -299,7 +299,6 @@ export const typeConfigList: Type[] = [
     form: SetRunResultForm,
     component: SetRunResultComp
   },
-
   {
     type: Types.play_audio,
     name: i18n.t('actions.play_audio.name', 'Play Recording'),
@@ -308,7 +307,6 @@ export const typeConfigList: Type[] = [
     component: PlayAudioComp,
     visibility: VOICE
   },
-
   {
     type: Types.call_webhook,
     name: i18n.t('actions.call_webhook.name', 'Call Webhook'),
@@ -322,8 +320,8 @@ export const typeConfigList: Type[] = [
   },
   {
     type: Types.call_lookup,
-    name: 'Call Lookup',
-    description: 'Call Lookup',
+    name: i18n.t('actions.call_lookup.name', 'Call Lookup'),
+    description: i18n.t('actions.call_lookup.description', 'Call Lookup'),
     form: LookupRouterForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
@@ -333,8 +331,8 @@ export const typeConfigList: Type[] = [
   },
   {
     type: Types.call_giftcard,
-    name: 'Call Giftcard',
-    description: 'Call Giftcard',
+    name: i18n.t('actions.call_giftcard.name', 'Call Giftcard'),
+    description: i18n.t('actions.call_giftcard.description', 'Call Giftcard'),
     form: GiftCardRouterForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
@@ -344,8 +342,8 @@ export const typeConfigList: Type[] = [
   },
   {
     type: Types.call_shorten_url,
-    name: 'Shorten Trackable Link',
-    description: 'Shorten Trackable Link',
+    name: i18n.t('actions.call_shorten_url.name', 'Shorten Trackable Link'),
+    description: i18n.t('actions.call_shorten_url.description', 'Shorten Trackable Link'),
     form: ShortenUrlForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
