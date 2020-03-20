@@ -284,6 +284,7 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
                 popped={this.props.popped}
               />
             )}
+            <div id="portal-root" />
           </div>
         </div>
       </PageVisibility>
