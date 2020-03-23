@@ -39,7 +39,6 @@ import {
   UpdateSticky
 } from 'store/thunks';
 import {
-  ACTIVITY_INTERVAL,
   createUUID,
   isRealValue,
   NODE_PADDING,
@@ -191,15 +190,6 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     this.Plumber.reset();
   }
 
-  public UNSAFE_componentWillUpdate(prevProps: FlowStoreProps): void {
-    if (
-      prevProps.editorState.activityInterval === this.props.editorState.activityInterval &&
-      this.props.editorState.activityInterval !== ACTIVITY_INTERVAL
-    ) {
-      this.props.mergeEditorState({ activityInterval: ACTIVITY_INTERVAL });
-    }
-  }
-
   /**
    * Called right before a connector is dropped onto a new node
    */
@@ -227,7 +217,11 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       this.Plumber.recalculate(ghostNode.node.uuid);
 
       const dragPoint = getDraggedFrom(ghostNode);
-      this.Plumber.connect(dragPoint.nodeUUID + ':' + dragPoint.exitUUID, ghostNode.node.uuid);
+      this.Plumber.connect(
+        dragPoint.nodeUUID + ':' + dragPoint.exitUUID,
+        ghostNode.node.uuid,
+        connection => {}
+      );
 
       // Save our position for later
       const { left, top } = (this.ghost &&
