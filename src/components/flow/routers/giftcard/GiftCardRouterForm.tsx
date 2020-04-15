@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
 import { FormState, StringEntry, AssetEntry, mergeForm } from 'store/nodeEditor';
 import { RouterFormProps } from 'components/flow/props';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import TypeList from 'components/nodeeditor/TypeList';
+import HelpIcon from 'components/helpicon/HelpIcon';
 import { createResultNameInput } from '../widgets';
 import { nodeToState, stateToNode } from './helpers';
 import {
@@ -17,7 +17,7 @@ import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
-import styles from './GiftCardRouterForm.module.scss';
+import variables from 'variables.module.scss';
 
 export interface GiftCardRouterFormState extends FormState {
   giftcardDb: AssetEntry;
@@ -29,6 +29,12 @@ const GIFTCARD_OPTIONS: { [key: string]: SelectOption } = {
   GIFTCARD_ASSIGNING: { value: 'GIFTCARD_ASSIGNING', label: 'Assign Gift Card' },
   GIFTCARD_CHECK: { value: 'GIFTCARD_CHECK', label: 'Check Status' }
 };
+
+const customStyles: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'flex-end'
+};
+const customMargin: React.CSSProperties = { marginBottom: '6px' };
 
 class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRouterFormState> {
   constructor(props: RouterFormProps) {
@@ -94,28 +100,30 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           name="giftcardDb"
           onChange={this.handleGiftcardChanged}
         />
-        <SelectElement
-          name="giftcardType"
-          options={Object.values(GIFTCARD_OPTIONS)}
-          onChange={this.handleUpdateAssignChange}
-          entry={{
-            value: entry
-          }}
-          className="giftcard-type"
-        />
-        <div className={styles.icon} data-tip data-for="giftcardType">
-          <span className="fe-help" />
+        <div style={customStyles}>
+          <SelectElement
+            name="giftcardType"
+            options={Object.values(GIFTCARD_OPTIONS)}
+            onChange={this.handleUpdateAssignChange}
+            entry={{
+              value: entry
+            }}
+            className="giftcard-type"
+          />
+          <div style={customMargin}>
+            <HelpIcon iconColor={variables.orange} iconSize="18px" dataFor="giftcardType">
+              <p>
+                Assign Gift Card: This option will reserve a gift card for the contact, saving their
+                phone number and returning information needed to redeem the gift card
+                electronically.
+              </p>
+              <p>
+                Check Status: This option will return the number of Gift Cards that are unassigned
+                in your database.
+              </p>
+            </HelpIcon>
+          </div>
         </div>
-        <ReactTooltip id="giftcardType" effect="solid" multiline={true} className={styles.tooltip}>
-          <p>
-            Assign Gift Card: This option will reserve a gift card for the contact, saving their
-            phone number and returning information needed to redeem the gift card electronically.
-          </p>
-          <p>
-            Check Gift Card Status: This option will return the number of Gift Cards that are
-            unassigned in your database.
-          </p>
-        </ReactTooltip>
 
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
       </Dialog>

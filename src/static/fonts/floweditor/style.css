@@ -432,3 +432,6 @@
 .fe-battery:before {
   content: '\e900';
 }
+.fe-help:before {
+  content: '\e90f';
+}
