@@ -1,6 +1,6 @@
 # Flow Editor
 
-[![Build Status](https://travis-ci.org/nyaruka/floweditor.svg?branch=master)](https://travis-ci.org/nyaruka/floweditor)
+[![Build Status](https://github.com/nyaruka/floweditor/workflows/Build/badge.svg)](https://github.com/nyaruka/floweditor/actions?workflow=Build)
 [![codecov](https://codecov.io/gh/nyaruka/floweditor/branch/master/graph/badge.svg)](https://codecov.io/gh/nyaruka/floweditor)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c2200da1ba5a0176836e/maintainability)](https://codeclimate.com/github/nyaruka/floweditor/maintainability)
 
@@ -47,6 +47,16 @@ Then you are ready to fire up the development server for the editor.
 % yarn start
 ```
 
+### Localization
+
+The project is fully localized using `i18next` and leans on `react-i18next` to integrate it inside components. To generate new keys and defaults for localization, we use `i18next-scanner`. Use the yarn command `scan` to update localization keys.
+
+```bash
+% yarn scan
+```
+
+This file is then uploaded to Transifex for broad language translations. Once a language reaches full translation, it will be merged into the project.
+
 ### Running Tests
 
 This project uses [Jest](https://facebook.github.io/jest/) for unit/snapshot testing and [react-testing-library](https://testing-library.com/docs/react-testing-library/intro) where we can. The project has some older more complex tests that use [Enzyme](https://github.com/airbnb/enzyme). Typescript and Jest are integrated via [ts-jest](https://github.com/kulshekhar/ts-jest).
@@ -84,4 +94,4 @@ To publish, simply invoke the desired semver -- patch, minor or major. This will
 
 ### Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/nyaruka/floweditor/blob/master/CONTRIBUTING.md) for details on this project's code of conduct, and the process for submitting pull requests to this repo.
+We encourage you to open issues on this project with any bugs you encounter or to make feature requests.

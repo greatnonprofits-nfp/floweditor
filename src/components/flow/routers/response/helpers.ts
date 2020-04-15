@@ -8,7 +8,8 @@ import {
 import { ResponseRouterFormState } from 'components/flow/routers/response/ResponseRouterForm';
 import { DEFAULT_OPERAND } from 'components/nodeeditor/constants';
 import { Types } from 'config/interfaces';
-import { Router, RouterTypes, SwitchRouter, Wait, WaitTypes, ConfigRouter } from 'flowTypes';
+import { getType } from 'config/typeConfigs';
+import { Router, RouterTypes, SwitchRouter, Wait, WaitTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 
@@ -18,19 +19,12 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
   // TODO: work out an incremental result name
   let resultName: StringEntry = { value: 'Result' };
   let timeout = 0;
-  let enabledSpell: boolean = false;
-  let spellSensitivity: string = '70';
 
-  if (settings.originalNode && settings.originalNode.ui.type === Types.wait_for_response) {
+  if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
     if (router) {
       if (hasCases(settings.originalNode.node)) {
         initialCases = createCaseProps(router.cases, settings.originalNode);
-      }
-
-      if (router.config && router.config.spell_checker) {
-        enabledSpell = router.config.spell_checker;
-        spellSensitivity = router.config.spelling_correction_sensitivity;
       }
 
       resultName = { value: router.result_name || '' };
@@ -45,9 +39,7 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
     cases: initialCases,
     resultName,
     timeout,
-    valid: true,
-    enabledSpell,
-    spellSensitivity
+    valid: true
   };
 };
 
@@ -74,12 +66,6 @@ export const stateToNode = (
     };
   }
 
-  const config: ConfigRouter = {};
-  if (state.enabledSpell) {
-    config.spell_checker = state.enabledSpell;
-    config.spelling_correction_sensitivity = state.spellSensitivity;
-  }
-
   const router: SwitchRouter = {
     type: RouterTypes.switch,
     default_category_uuid: defaultCategory,
@@ -87,7 +73,6 @@ export const stateToNode = (
     categories,
     operand: DEFAULT_OPERAND,
     wait,
-    config,
     ...optionalRouter
   };
 

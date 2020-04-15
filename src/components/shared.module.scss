@@ -4,6 +4,46 @@
   background: $light_gray;
 }
 
+.issues {
+  margin: 15px 0px 5px 0px;
+  background: $light_gray_2;
+  font-size: 12px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+
+  .header {
+    display: flex;
+    background: #fff;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 10px;
+    color: $red;
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 18px;
+      margin-right: 8px;
+    }
+
+    .title {
+      font-size: 13px;
+    }
+
+    .summary {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 11px;
+    }
+  }
+}
+
+.issue_help {
+  cursor: pointer;
+  &:hover {
+    color: lighten($red, 3%);
+    text-decoration: underline;
+  }
+}
+
 .wait_for_audio,
 .wait_for_image,
 .wait_for_video,
@@ -19,7 +59,7 @@
 }
 
 .remove_contact_groups {
-  background: $red;
+  background: $gray;
 }
 
 .send_email,
@@ -57,23 +97,30 @@
 }
 
 .missing {
-  $color_1: rgba(243, 78, 78, 0.6);
-  $color_2: rgba(228, 37, 37, 0.4);
+  $color_1: tomato;
+  $color_2: lighten(tomato, 3%);
+
   background-image: repeating-linear-gradient(
-    60deg,
+    120deg,
     $color_1,
-    $color_1 12px,
-    $color_2 12px,
-    $color_2 24px
-  );
+    $color_1 6px,
+    $color_2 6px,
+    $color_2 18px
+  ) !important;
 }
 
-.subflow,
+.missing_asset {
+  color: $error_color;
+}
+
+.call_classifier,
 .split_by_random,
 .split_by_expression,
 .split_by_groups,
 .split_by_contact_field,
-.split_by_run_result {
+.split_by_intent,
+.split_by_run_result,
+.split_by_scheme {
   background: $dark_gray;
 }
 
@@ -90,10 +137,13 @@
 }
 
 .url {
-  width: $node_min_width;
+  width: $node_min_width + px;
 }
 
 .node_asset {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   .node_group {
     padding-right: 5px;
   }

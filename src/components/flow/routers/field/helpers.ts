@@ -10,7 +10,7 @@ import {
 import { getContactProperties } from 'components/helpers';
 import { DEFAULT_OPERAND } from 'components/nodeeditor/constants';
 import { FlowTypes, Types } from 'config/interfaces';
-import { Scheme, SCHEMES } from 'config/typeConfigs';
+import { getType, Scheme, SCHEMES } from 'config/typeConfigs';
 import { Router, RouterTypes, SwitchRouter } from 'flowTypes';
 import { Asset, AssetStore, AssetType, RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
@@ -19,7 +19,7 @@ export const getRoutableFields = (flowType: FlowTypes = null): Asset[] => {
   return [
     ...getContactProperties(flowType),
     ...SCHEMES.map((scheme: Scheme) => ({
-      name: scheme.name,
+      name: scheme.path,
       id: scheme.scheme,
       type: AssetType.Scheme
     }))
@@ -37,7 +37,8 @@ export const nodeToState = (
 
   let field: any = null;
 
-  if (settings.originalNode && settings.originalNode.ui.type === Types.split_by_contact_field) {
+  const type = getType(settings.originalNode);
+  if (settings.originalNode && type === Types.split_by_contact_field) {
     const router = settings.originalNode.node.router as SwitchRouter;
 
     if (router) {
@@ -94,9 +95,9 @@ export const stateToNode = (
   let operand = DEFAULT_OPERAND;
   const asset = state.field.value;
   if (asset.type === AssetType.Scheme) {
-    operand = `@(format_urn(urns.${asset.id}))`;
+    operand = `@(default(urn_parts(urns.${asset.id}).path, ""))`;
   } else if (asset.type === AssetType.Field) {
-    operand = `@contact.fields.${asset.id}`;
+    operand = `@fields.${asset.id}`;
   } else {
     operand = `@contact.${asset.id}`;
   }

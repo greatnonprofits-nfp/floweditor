@@ -1,22 +1,25 @@
 /* istanbul ignore file */
 import axios, { AxiosResponse } from 'axios';
-import { Revision } from 'components/revisions/RevisionExplorer';
-import { Endpoints, Exit, FlowDefinition } from 'flowTypes';
+import { SaveResult } from 'components/revisions/RevisionExplorer';
+import { Endpoints, Exit, FlowDefinition, SPEC_VERSION, FlowDetails } from 'flowTypes';
 import { currencies } from 'store/currencies';
 import { Activity, RecentMessage } from 'store/editor';
-import { Asset, AssetMap, Assets, AssetStore, AssetType } from 'store/flowContext';
+import {
+  Asset,
+  AssetMap,
+  Assets,
+  AssetStore,
+  AssetType,
+  CompletionOption
+} from 'store/flowContext';
 import { assetListToMap } from 'store/helpers';
-
-export interface FlowDetails {
-  uuid: string;
-  name: string;
-  definition: FlowDefinition;
-  dependencies: FlowDefinition[];
-}
+import { CompletionSchema } from 'utils/completion';
+import { FlowTypes } from 'config/interfaces';
 
 // Configure axios to always send JSON requests
 axios.defaults.headers.post['Content-Type'] = 'application/javascript';
 axios.defaults.responseType = 'json';
+axios.defaults.timeout = 30000;
 
 /**
  * Gets the path activity and the count of active particpants at each node
@@ -33,21 +36,37 @@ export const getActivity = (
     axios
       .get(`${activityEndpoint}?flow=${flowUUID}`, { headers })
       .then((response: AxiosResponse) => resolve(response.data as Activity))
-      .catch(error => reject(error))
+      .catch((error: any) => reject(error))
   );
 
 export interface Cancel {
   reject?: () => void;
 }
 
-export const saveRevision = (endpoint: string, definition: FlowDefinition): Promise<Revision> => {
+export const saveRevision = (endpoint: string, definition: FlowDefinition): Promise<SaveResult> => {
   const csrf = getCookie('csrftoken');
   const headers = csrf ? { 'X-CSRFToken': csrf } : {};
-  return new Promise<Revision>((resolve, reject) => {
+
+  // update the spec version in our def to the current editor version
+  let patch = '0';
+
+  // honor any existing patch increments
+  let release = definition.spec_version.split('.');
+  if (release.length > 2) {
+    patch = release[2];
+  }
+
+  definition.spec_version = [SPEC_VERSION, patch].join('.');
+
+  return new Promise<SaveResult>((resolve, reject) => {
     axios
       .post(endpoint, definition, { headers })
       .then((response: AxiosResponse) => {
-        resolve(response.data.revision as Revision);
+        if (response.status === 200) {
+          resolve(response.data as SaveResult);
+        } else {
+          reject(response);
+        }
       })
       .catch(error => reject(error));
   });
@@ -65,7 +84,7 @@ export const getRecentMessages = (
       .then((response: AxiosResponse) => {
         const recentMessages: RecentMessage[] = [];
         for (const row of response.data) {
-          recentMessages.push({ text: row.text, sent: new Date(row.sent) });
+          recentMessages.push({ text: row.text, sent: row.sent });
         }
 
         resolve(response.data as RecentMessage[]);
@@ -108,15 +127,9 @@ export const postNewAsset = (assets: Assets, payload: any): Promise<Asset> => {
 
 export const fetchAsset = (assets: Assets, id: string): Promise<Asset> => {
   return new Promise<Asset>((resolve, reject) => {
-    axios
-      .get(assets.endpoint)
-      .then((response: AxiosResponse) => {
-        const match: Asset = response.data.results
-          .map((result: any) => resultToAsset(result, assets.type, assets.id))
-          .find((asset: Asset) => asset.id === id);
-        resolve(match);
-      })
-      .catch(error => reject(error));
+    getAssets(assets.endpoint, assets.type, assets.id).then((results: Asset[]) => {
+      resolve(results.find((asset: Asset) => asset.id === id));
+    });
   });
 };
 
@@ -158,10 +171,31 @@ export const getAssets = async (url: string, type: AssetType, id: string): Promi
 
 export const resultToAsset = (result: any, type: AssetType, id: string): Asset => {
   const idKey = id || 'uuid';
+
+  let assetType = type;
+
+  if (type === AssetType.Flow && result.type) {
+    switch (result.type) {
+      case 'message':
+        result.type = FlowTypes.MESSAGE;
+        break;
+      case 'voice':
+        result.type = FlowTypes.VOICE;
+        break;
+      case 'survey':
+        result.type = FlowTypes.SURVEY;
+        break;
+    }
+  }
+
+  if (type !== AssetType.Flow && result.type) {
+    assetType = result.type;
+  }
+
   const asset: Asset = {
     name: result.name || result.text || result.label || result[idKey],
     id: result[idKey],
-    type
+    type: assetType
   };
 
   delete result[idKey];
@@ -169,7 +203,6 @@ export const resultToAsset = (result: any, type: AssetType, id: string): Asset =
   delete result.text;
 
   asset.content = result;
-
   return asset;
 };
 
@@ -181,7 +214,15 @@ export const isMatch = (
   if (shouldExclude && shouldExclude(asset)) {
     return false;
   }
-  return asset.name.toLowerCase().includes(input.toLowerCase());
+
+  const inputLower = input.toLowerCase();
+  // some assets have ids worth matching
+  if (asset.type === AssetType.Currency || asset.type === AssetType.Language) {
+    if (asset.id.toLowerCase().includes(inputLower)) {
+      return true;
+    }
+  }
+  return asset.name.toLowerCase().includes(inputLower);
 };
 
 /**
@@ -214,6 +255,11 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         type: AssetType.Channel,
         items: {}
       },
+      classifiers: {
+        endpoint: getURL(endpoints.classifiers),
+        type: AssetType.Classifier,
+        items: {}
+      },
       languages: {
         endpoint: getURL(endpoints.languages),
         type: AssetType.Language,
@@ -234,6 +280,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
       fields: {
         endpoint: getURL(endpoints.fields),
         type: AssetType.Field,
+        id: 'key',
+        items: {}
+      },
+      globals: {
+        endpoint: getURL(endpoints.globals),
+        type: AssetType.Global,
         id: 'key',
         items: {}
       },
@@ -296,15 +348,17 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
 
     // prefetch some of our assets
     const fetches: any[] = [];
-    ['languages', 'fields', 'groups', 'labels'].forEach((storeId: string) => {
-      const store = assetStore[storeId];
-      fetches.push(
-        getAssets(store.endpoint, store.type, store.id || 'uuid').then((assets: Asset[]) => {
-          store.items = assetListToMap(assets);
-          store.prefetched = true;
-        })
-      );
-    });
+    ['languages', 'fields', 'groups', 'labels', 'globals', 'classifiers'].forEach(
+      (storeId: string) => {
+        const store = assetStore[storeId];
+        fetches.push(
+          getAssets(store.endpoint, store.type, store.id || 'uuid').then((assets: Asset[]) => {
+            store.items = assetListToMap(assets);
+            store.prefetched = true;
+          })
+        );
+      }
+    );
 
     // wait for our prefetches to finish
     Promise.all(fetches).then((results: any) => {
@@ -313,27 +367,47 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
   });
 };
 
-export const getFlowDefinition = (
-  revisions: Assets,
-  id: string = null
-): Promise<FlowDefinition> => {
-  return new Promise<FlowDefinition>((resolve, reject) => {
+export const getFunctions = (endpoint: string): Promise<CompletionOption[]> => {
+  return new Promise<CompletionOption[]>((resolve, reject) => {
+    axios
+      .get(endpoint)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => reject(error));
+  });
+};
+
+export const getCompletionSchema = (endpoint: string): Promise<CompletionSchema> => {
+  return new Promise<CompletionSchema>((resolve, reject) => {
+    axios.get(endpoint).then(response => {
+      resolve(response.data);
+    });
+  });
+};
+
+export const getFlowDetails = (revisions: Assets, id: string = null): Promise<FlowDetails> => {
+  return new Promise<FlowDetails>((resolve, reject) => {
     (async () => {
       let revisionToLoad = id;
       if (!revisionToLoad) {
-        const response = await axios.get(`${revisions.endpoint}`);
-        if (response.data.results.length > 0) {
-          revisionToLoad = response.data.results[0].id;
+        try {
+          const response = await axios.get(`${revisions.endpoint}?version=${SPEC_VERSION}`);
+          if (response.data.results.length > 0) {
+            revisionToLoad = response.data.results[0].id;
+          }
+        } catch (error) {
+          reject(new Error("Couldn't reach revisions endpoint"));
         }
       }
 
       if (revisionToLoad) {
-        const url = `${revisions.endpoint}${revisionToLoad}`;
+        const url = `${revisions.endpoint}${revisionToLoad}?version=${SPEC_VERSION}`;
         axios
           .get(url)
           .then((response: AxiosResponse) => {
-            const definition = response.data as FlowDefinition;
-            return resolve(definition);
+            const details = response.data as FlowDetails;
+            return resolve(details);
           })
           .catch(error => reject(error));
       } else {
@@ -365,4 +439,8 @@ export const getURL = (path: string): string => {
 
   const result = `${getBaseURL() + url}`;
   return result;
+};
+
+export const showHelpArticle = (link: string) => {
+  window.open(link, 'floweditor_help');
 };

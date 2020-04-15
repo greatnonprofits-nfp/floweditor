@@ -2,19 +2,26 @@ import { react as bindCallbacks } from 'auto-bind';
 import classNames from 'classnames/bind';
 import { PopTab } from 'components/poptab/PopTab';
 import dateFormat from 'dateformat';
-import { getAssets, getFlowDefinition } from 'external';
-import { FlowDefinition } from 'flowTypes';
+import { getAssets, getFlowDetails } from 'external';
+import { FlowDefinition, SPEC_VERSION, FlowDetails, FlowMetadata } from 'flowTypes';
 import React from 'react';
 import { Asset, AssetStore } from 'store/flowContext';
 import { renderIf } from 'utils';
 
 import styles from './RevisionExplorer.module.scss';
+import i18n from 'config/i18n';
+import { PopTabType } from 'config/interfaces';
 
 const cx: any = classNames.bind(styles);
 
 export interface User {
   email: string;
   name: string;
+}
+
+export interface SaveResult {
+  revision: Revision;
+  metadata: FlowMetadata;
 }
 
 export interface Revision {
@@ -27,11 +34,12 @@ export interface Revision {
 }
 
 export interface RevisionExplorerProps {
-  simulating: boolean;
   assetStore: AssetStore;
-  loadFlowDefinition: (definition: FlowDefinition, assetStore: AssetStore) => void;
+  loadFlowDefinition: (details: FlowDetails, assetStore: AssetStore) => void;
   createNewRevision: () => void;
+  onToggled: (visible: boolean, tab: PopTabType) => void;
   utc?: boolean;
+  popped: string;
 }
 
 export interface RevisionExplorerState {
@@ -62,18 +70,22 @@ export class RevisionExplorer extends React.Component<
   public handleUpdateRevisions(): Promise<void> {
     if (this.props.assetStore !== null) {
       const assets = this.props.assetStore.revisions;
-      return getAssets(assets.endpoint, assets.type, assets.id || 'id').then(
-        (remoteAssets: Asset[]) => {
-          if (remoteAssets.length > 0) {
-            remoteAssets[0].content.current = true;
-          }
-          this.setState({ revisions: remoteAssets });
+      return getAssets(
+        assets.endpoint + '?version=' + SPEC_VERSION,
+        assets.type,
+        assets.id || 'id'
+      ).then((remoteAssets: Asset[]) => {
+        if (remoteAssets.length > 0) {
+          remoteAssets[0].content.current = true;
         }
-      );
+        this.setState({ revisions: remoteAssets });
+      });
     }
   }
 
   public handleTabClicked(): void {
+    this.props.onToggled(!this.state.visible, PopTabType.REVISION_HISTORY);
+
     this.setState(
       (prevState: RevisionExplorerState) => {
         return { visible: !prevState.visible };
@@ -83,9 +95,9 @@ export class RevisionExplorer extends React.Component<
           this.handleUpdateRevisions();
         } else {
           if (this.state.revision && this.state.revision.id !== this.state.revisions[0].id) {
-            getFlowDefinition(this.props.assetStore.revisions, this.state.revisions[0].id).then(
-              (definition: FlowDefinition) => {
-                this.props.loadFlowDefinition(definition, this.props.assetStore);
+            getFlowDetails(this.props.assetStore.revisions, this.state.revisions[0].id).then(
+              (details: FlowDetails) => {
+                this.props.loadFlowDefinition(details, this.props.assetStore);
                 this.setState({ revision: null });
               }
             );
@@ -101,12 +113,10 @@ export class RevisionExplorer extends React.Component<
     return (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
       event.preventDefault();
-      getFlowDefinition(this.props.assetStore.revisions, revision.id).then(
-        (definition: FlowDefinition) => {
-          this.props.loadFlowDefinition(definition, this.props.assetStore);
-          this.setState({ revision });
-        }
-      );
+      getFlowDetails(this.props.assetStore.revisions, revision.id).then((details: FlowDetails) => {
+        this.props.loadFlowDefinition(details, this.props.assetStore);
+        this.setState({ revision });
+      });
     };
   };
 
@@ -124,17 +134,17 @@ export class RevisionExplorer extends React.Component<
   public render(): JSX.Element {
     const classes = cx({
       [styles.visible]: this.state.visible,
-      [styles.simulating]: this.props.simulating
+      [styles.hidden]: this.props.popped && this.props.popped !== PopTabType.REVISION_HISTORY
     });
 
     return (
       <div className={classes}>
         <div className={styles.mask} />
         <PopTab
-          header="Revisions"
+          header={i18n.t('revisions.header', 'Revisions')}
           color="#8e5ea7"
           icon="fe-time"
-          label="Revision History"
+          label={i18n.t('revisions.label', 'Revision History')}
           top="360px"
           visible={this.state.visible}
           onShow={this.handleTabClicked}

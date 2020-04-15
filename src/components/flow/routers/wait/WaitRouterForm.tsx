@@ -1,6 +1,6 @@
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
+import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import TypeList from 'components/nodeeditor/TypeList';
@@ -10,6 +10,7 @@ import { Alphanumeric, StartIsNonNumeric, validate } from 'store/validators';
 
 import { nodeToState, stateToNode } from './helpers';
 import styles from './WaitRouterForm.module.scss';
+import i18n from 'config/i18n';
 
 export interface WaitRouterFormState extends FormState {
   resultName: StringEntry;
@@ -45,8 +46,11 @@ export default class WaitRouterForm extends React.Component<RouterFormProps, Wai
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
@@ -59,6 +63,7 @@ export default class WaitRouterForm extends React.Component<RouterFormProps, Wai
         <div className={styles.result_name}>
           {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
         </div>
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

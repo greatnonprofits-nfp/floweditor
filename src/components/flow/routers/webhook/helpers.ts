@@ -2,6 +2,7 @@ import { createWebhookBasedNode } from 'components/flow/routers/helpers';
 import { WebhookRouterFormState } from 'components/flow/routers/webhook/WebhookRouterForm';
 import { DEFAULT_BODY } from 'components/nodeeditor/constants';
 import { Types } from 'config/interfaces';
+import { getType } from 'config/typeConfigs';
 import { CallWebhook } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
@@ -10,7 +11,8 @@ import { createUUID } from 'utils';
 export enum Methods {
   GET = 'GET',
   POST = 'POST',
-  PUT = 'PUT'
+  PUT = 'PUT',
+  DELETE = 'DELETE'
 }
 
 export interface MethodOption {
@@ -30,7 +32,8 @@ export const GET_METHOD: MethodOption = {
 export const METHOD_OPTIONS: MethodOption[] = [
   GET_METHOD,
   { value: Methods.POST, label: Methods.POST },
-  { value: Methods.PUT, label: Methods.PUT }
+  { value: Methods.PUT, label: Methods.PUT },
+  { value: Methods.DELETE, label: Methods.DELETE }
 ];
 
 export const getOriginalAction = (settings: NodeEditorSettings): CallWebhook => {
@@ -52,11 +55,11 @@ export const nodeToState = (settings: NodeEditorSettings): WebhookRouterFormStat
     resultName,
     method: { value: GET_METHOD },
     url: { value: '' },
-    postBody: { value: DEFAULT_BODY },
+    body: { value: getDefaultBody(Methods.GET) },
     valid: false
   };
 
-  if (settings.originalNode.ui.type === Types.split_by_webhook) {
+  if (getType(settings.originalNode) === Types.split_by_webhook) {
     const action = getOriginalAction(settings) as CallWebhook;
 
     // add in our headers
@@ -73,13 +76,13 @@ export const nodeToState = (settings: NodeEditorSettings): WebhookRouterFormStat
     state.resultName = { value: action.result_name };
     state.url = { value: action.url };
     state.method = { value: { label: action.method, value: action.method } };
-    state.postBody = { value: action.body };
+    state.body = { value: action.body };
     state.valid = true;
   } else {
     state.headers.push({
       value: {
         uuid: createUUID(),
-        name: 'Content-Type',
+        name: 'Accept',
         value: 'application/json'
       }
     });
@@ -121,14 +124,14 @@ export const stateToNode = (
     headers,
     type: Types.call_webhook,
     url: state.url.value,
+    body: state.body.value,
     method: state.method.value.value as Methods,
     result_name: state.resultName.value
   };
 
-  // include the body if we aren't a get
-  if (newAction.method !== Methods.GET) {
-    newAction.body = state.postBody.value;
-  }
+  return createWebhookBasedNode(newAction, settings.originalNode, false);
+};
 
-  return createWebhookBasedNode(newAction, settings.originalNode);
+export const getDefaultBody = (method: string): string => {
+  return method === Methods.GET ? '' : DEFAULT_BODY;
 };

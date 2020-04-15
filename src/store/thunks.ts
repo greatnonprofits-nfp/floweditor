@@ -1,10 +1,16 @@
 import { determineTypeConfig } from 'components/flow/helpers';
 import { getResultName } from 'components/flow/node/helpers';
 import { getSwitchRouter } from 'components/flow/routers/helpers';
-import { Revision } from 'components/revisions/RevisionExplorer';
+import { SaveResult } from 'components/revisions/RevisionExplorer';
 import { FlowTypes, Type, Types } from 'config/interfaces';
 import { getTypeConfig } from 'config/typeConfigs';
-import { createAssetStore, getFlowDefinition, saveRevision } from 'external';
+import {
+  createAssetStore,
+  getCompletionSchema,
+  getFlowDetails,
+  saveRevision,
+  getFunctions
+} from 'external';
 import isEqual from 'fast-deep-equal';
 import {
   Action,
@@ -18,7 +24,8 @@ import {
   SendMsg,
   SetContactField,
   SetRunResult,
-  StickyNote
+  StickyNote,
+  FlowDetails
 } from 'flowTypes';
 import mutate from 'immutability-helper';
 import { Dispatch } from 'redux';
@@ -33,7 +40,8 @@ import {
   updateBaseLanguage,
   updateContactFields,
   updateDefinition,
-  updateNodes
+  updateNodes,
+  updateMetadata
 } from 'store/flowContext';
 import {
   createEmptyNode,
@@ -54,7 +62,9 @@ import {
   updateUserAddingAction
 } from 'store/nodeEditor';
 import AppState from 'store/state';
-import { createUUID, hasString, NODE_SPACING, timeEnd, timeStart } from 'utils';
+import { createUUID, hasString, NODE_SPACING, timeEnd, timeStart, ACTIVITY_INTERVAL } from 'utils';
+import { AxiosError } from 'axios';
+import i18n from 'config/i18n';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -62,7 +72,7 @@ export type DispatchWithState = Dispatch<AppState>;
 
 export type GetState = () => AppState;
 
-export type Thunk<T> = (dispatch: DispatchWithState, getState?: GetState) => T;
+export type Thunk<T> = (dispatch: Dispatch<AppState>, getState?: GetState) => T;
 
 export type AsyncThunk = Thunk<Promise<void>>;
 
@@ -90,9 +100,10 @@ export type FetchFlow = (
 ) => Thunk<Promise<void>>;
 
 export type LoadFlowDefinition = (
-  definition: FlowDefinition,
-  assetStore: AssetStore
-) => Thunk<Promise<void>>;
+  details: FlowDetails,
+  assetStore: AssetStore,
+  onLoad?: () => void
+) => Thunk<void>;
 
 export type CreateNewRevision = () => Thunk<void>;
 
@@ -149,19 +160,49 @@ export interface ErrorMessage {
 }
 
 export type LocalizationUpdates = Array<{ uuid: string; translations?: any }>;
-const QUIET_SAVE = 2000;
+const QUIET_SAVE = 1000;
+const SAVE_ALERT_MILLIS = 1000 * 60;
 
 let markDirty: (quiet?: number) => void = () => {};
-let lastDirtyAttempt: any = null;
+let lastDirtyAttemptTimeout: any = null;
 let postingRevision = false;
+
+let lastDirtyMillis: number = 0;
+let lastSuccessfulMillis: number = 0;
+
+const NETWORK_ERROR = i18n.t(
+  'errors.network',
+  'Hmm, we ran into a problem trying to save your changes. It could just be that your internet connection is not working well at the moment. Please wait a minute or so and try again.'
+);
+
+export const createSaveMonitor = (dispatch: DispatchWithState) => {
+  window.setInterval(() => {
+    if (
+      lastSuccessfulMillis < lastDirtyMillis &&
+      new Date().getTime() - lastDirtyMillis > SAVE_ALERT_MILLIS
+    ) {
+      dispatch(
+        mergeEditorState({
+          modalMessage: {
+            title: "Uh oh, we couldn't save your changes",
+            body: NETWORK_ERROR
+          },
+          saving: false
+        })
+      );
+    }
+  }, 5000);
+};
 
 export const createDirty = (
   revisionsEndpoint: string,
   dispatch: DispatchWithState,
   getState: GetState
 ) => (quiet: number = QUIET_SAVE) => {
-  if (lastDirtyAttempt) {
-    window.clearTimeout(lastDirtyAttempt);
+  lastDirtyMillis = new Date().getTime();
+
+  if (lastDirtyAttemptTimeout) {
+    window.clearTimeout(lastDirtyAttemptTimeout);
   }
 
   const {
@@ -176,40 +217,43 @@ export const createDirty = (
   newDefinition.revision = currentRevision;
 
   if (postingRevision) {
-    lastDirtyAttempt = window.setTimeout(() => {
+    lastDirtyAttemptTimeout = window.setTimeout(() => {
       markDirty();
     }, QUIET_SAVE);
     return;
   }
 
-  lastDirtyAttempt = window.setTimeout(() => {
+  lastDirtyAttemptTimeout = window.setTimeout(() => {
     postingRevision = true;
     saveRevision(revisionsEndpoint, newDefinition).then(
-      (revision: Revision) => {
+      (result: SaveResult) => {
+        const revision = result.revision;
         definition.revision = revision.revision;
         dispatch(updateDefinition(definition));
+
+        if (result.metadata) {
+          dispatch(updateMetadata(result.metadata));
+        }
 
         const updatedAssets = mutators.addRevision(assetStore, revision);
         dispatch(updateAssets(updatedAssets));
         dispatch(
           mergeEditorState({
             currentRevision: revision.revision,
-            saving: false
+            saving: false,
+            activityInterval: ACTIVITY_INTERVAL
           })
         );
+
+        lastSuccessfulMillis = new Date().getTime();
         postingRevision = false;
       },
-      (error: any) => {
-        const errorMessage = error.response.data as ErrorMessage;
+      (error: AxiosError) => {
+        const errorMessage = error.response
+          ? (error.response.data as ErrorMessage).description
+          : NETWORK_ERROR;
 
-        const body =
-          (errorMessage && errorMessage.description) ||
-          'Hmm, we ran into a problem trying to save your changes. ' +
-            'It could just be that your internet connection is not working ' +
-            'well at the moment. Perhaps wait a minute or so and try again. It may also ' +
-            "be that we encountered a problem we didn't anticipate. " +
-            "If your connection is good and you still can't save your " +
-            'changes, please contact support so we can help you out.';
+        const body = errorMessage;
         dispatch(
           mergeEditorState({
             modalMessage: {
@@ -241,11 +285,14 @@ export const createNewRevision = () => (dispatch: DispatchWithState, getState: G
 };
 
 export const loadFlowDefinition = (
-  definition: FlowDefinition,
+  details: FlowDetails,
   assetStore: AssetStore,
   onLoad: () => void
 ) => (dispatch: DispatchWithState, getState: GetState): void => {
   // first see if we need our asset store initialized
+
+  const definition = details.definition;
+
   const {
     editorState: { fetchingFlow }
   } = getState();
@@ -273,7 +320,7 @@ export const loadFlowDefinition = (
   }
 
   // add assets we found in our flow to our asset store
-  const components = getFlowComponents(definition);
+  const components = getFlowComponents(definition, assetStore);
   mergeAssetMaps(assetStore.fields.items, components.fields);
   mergeAssetMaps(assetStore.groups.items, components.groups);
   mergeAssetMaps(assetStore.labels.items, components.labels);
@@ -292,6 +339,7 @@ export const loadFlowDefinition = (
   }
 
   dispatch(updateBaseLanguage(language));
+  dispatch(updateMetadata(details.metadata));
 
   // store our flow definition without any nodes
   dispatch(updateDefinition(mutators.pruneDefinition(definition)));
@@ -335,16 +383,38 @@ export const fetchFlow = (
     fetchFlowActivity(endpoints.activity, dispatch, getState, uuid);
   };
 
-  const definition = await getFlowDefinition(assetStore.revisions);
+  const completionSchema = await getCompletionSchema(endpoints.completion);
+  const functions = await getFunctions(endpoints.functions);
 
-  dispatch(loadFlowDefinition(definition, assetStore, onLoad));
-  dispatch(mergeEditorState({ currentRevision: definition.revision }));
+  getFlowDetails(assetStore.revisions)
+    .then((response: any) => {
+      // backwards compatibitly for during deployment
+      const details: FlowDetails = response.definition
+        ? response
+        : { definition: response as FlowDefinition, metadata: { issues: [] } };
 
-  markDirty = createDirty(assetStore.revisions.endpoint, dispatch, getState);
+      dispatch(loadFlowDefinition(details, assetStore, onLoad));
+      dispatch(
+        mergeEditorState({
+          currentRevision: details.definition.revision,
+          completionSchema,
+          functions
+        })
+      );
 
-  if (forceSave) {
-    markDirty(0);
-  }
+      markDirty = createDirty(assetStore.revisions.endpoint, dispatch, getState);
+      if (forceSave) {
+        markDirty(0);
+      }
+
+      createSaveMonitor(dispatch);
+    })
+    .catch(error => {
+      // not much we can do without our flow definition
+      // log it to the console, this should really only happen if
+      // misconfigured or the endpoint is unavailable
+      console.error(error);
+    });
 };
 
 export const addAsset: AddAsset = (assetType: string, asset: Asset) => (
@@ -687,7 +757,7 @@ export const onUpdateAction = (
     dispatch(updateContactFields({ ...contactFields, [field.key]: field.name }));
   }
 
-  markDirty();
+  markDirty(0);
 
   timeEnd('onUpdateAction');
 
@@ -877,6 +947,7 @@ export const onUpdateRouter = (renderNode: RenderNode) => (
   if (originalNode) {
     const previousPosition = originalNode.ui.position;
     renderNode.ui.position = previousPosition;
+    renderNode.inboundConnections = originalNode.inboundConnections;
   }
 
   if (originalNode.ghost) {
@@ -951,7 +1022,7 @@ export const onUpdateRouter = (renderNode: RenderNode) => (
 
   dispatch(updateNodes(updated));
 
-  markDirty();
+  markDirty(0);
   return updated;
 };
 

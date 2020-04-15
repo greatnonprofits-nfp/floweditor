@@ -1,7 +1,7 @@
 import { react as bindCallbacks } from 'auto-bind';
 import * as React from 'react';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
+import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import CaseList, { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import { nodeToState, stateToNode } from 'components/flow/routers/response/helpers';
@@ -10,7 +10,8 @@ import TimeoutControl from 'components/form/timeout/TimeoutControl';
 import TypeList from 'components/nodeeditor/TypeList';
 import { FormState, StringEntry } from 'store/nodeEditor';
 import { Alphanumeric, StartIsNonNumeric, validate } from 'store/validators';
-import { SpellChecker } from '../../../spellchecker/SpellChecker';
+import { WAIT_LABEL } from 'components/flow/routers/constants';
+import i18n from 'config/i18n';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -25,8 +26,6 @@ export interface ResponseRouterFormState extends FormState {
   cases: CaseProps[];
   resultName: StringEntry;
   timeout: number;
-  enabledSpell: boolean;
-  spellSensitivity: string;
 }
 
 export const leadInSpecId = 'lead-in';
@@ -71,17 +70,12 @@ export default class ResponseRouterForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
-  }
-
-  private onEnabledChange(): void {
-    this.setState(prevState => ({ enabledSpell: !prevState.enabledSpell }));
-  }
-
-  private onSensitivityChange(event: React.FormEvent<HTMLInputElement>): void {
-    this.setState({ spellSensitivity: event.currentTarget.value });
   }
 
   public renderEdit(): JSX.Element {
@@ -97,19 +91,14 @@ export default class ResponseRouterForm extends React.Component<
         }
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
-        <SpellChecker
-          enabledSpell={this.state.enabledSpell}
-          onEnabledChange={this.onEnabledChange}
-          spellSensitivity={this.state.spellSensitivity}
-          onSensitivityChange={this.onSensitivityChange}
-        />
-        <div>If the message response...</div>
+        <div>{WAIT_LABEL}</div>
         <CaseList
           data-spec="cases"
           cases={this.state.cases}
           onCasesUpdated={this.handleCasesUpdated}
         />
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

@@ -23,16 +23,18 @@ export interface PendingConnections {
     className: string;
     slot: number;
     totalSlots: number;
+    onConnected: (activityId: string, recentMessagesId: string) => void;
   };
 }
 
 export const REPAINT_DURATION = 600;
 export const TARGET_DEFAULTS = {
-  anchor: ['Continuous', { shape: 'Dot', faces: ['top', 'left', 'right'] }],
+  anchor: ['Continuous', { shape: 'Rectangle', faces: ['top', 'left', 'right'] }],
   endpoint: [
-    'Dot',
+    'Rectangle',
     {
-      radius: 13,
+      width: 23,
+      height: 23,
       cssClass: 'plumb-endpoint',
       hoverClass: 'plumb-endpoint-hover'
     }
@@ -94,7 +96,7 @@ export default class Plumber {
     this.jsPlumb = importDefaults({
       DragOptions: { cursor: 'pointer', zIndex: 1000 },
       DropOptions: { tolerance: 'touch', hoverClass: 'plumb-hover' },
-      Endpoint: 'Blank',
+      Endpoint: 'Rectangle',
       EndpointStyle: { strokeStyle: 'transparent' },
       PaintStyle: { strokeWidth: 3.5 },
       ConnectionsDetachable: true,
@@ -155,10 +157,16 @@ export default class Plumber {
     this.jsPlumb.makeTarget(uuid, TARGET_DEFAULTS);
   }
 
-  public connectExit(node: FlowNode, exit: Exit, className: string = null): void {
+  public connectExit(
+    node: FlowNode,
+    exit: Exit,
+    onConnection: (activityId: string, recentMessagesId: string) => void,
+    className: string = null
+  ): void {
     this.connect(
       `${node.uuid}:${exit.uuid}`,
       exit.destination_uuid,
+      onConnection,
       className,
       node.exits.findIndex((e: Exit) => e.uuid === exit.uuid),
       node.exits.length
@@ -261,26 +269,41 @@ export default class Plumber {
             // now make our new connection
             if (target != null) {
               // don't allow manual detachments if our connection is styled
-              if (className) {
-                this.jsPlumb.connect({
-                  source,
-                  target,
-                  anchors,
-                  fireEvent: false,
-                  cssClass: className,
-                  detachable: false,
-                  connector
-                });
-              } else {
-                this.jsPlumb.connect({
-                  source,
-                  target,
-                  anchors,
-                  fireEvent: false,
-                  cssClass: className,
-                  connector
-                });
-              }
+
+              const plumbConnect = this.jsPlumb.connect({
+                source,
+                target,
+                anchors,
+                fireEvent: false,
+                cssClass: className,
+                detachable: !className,
+                overlays: [
+                  [
+                    'Label',
+                    {
+                      label: '',
+                      location: 12,
+                      id: 'activity'
+                    }
+                  ],
+                  [
+                    'Label',
+                    {
+                      label: '',
+                      location: 20,
+                      id: 'recent_messages'
+                    }
+                  ]
+                ],
+                connector
+              });
+
+              const activityElement = plumbConnect.getOverlays()['activity'].getElement();
+              const recentsElement = plumbConnect.getOverlays()['recent_messages'].getElement();
+              activityElement.classList.add('jtk-activity');
+              recentsElement.classList.add('jtk-recents');
+
+              connection.onConnected(activityElement.id, recentsElement.id);
             }
           }
 
@@ -314,6 +337,7 @@ export default class Plumber {
   public connect(
     source: string,
     target: string,
+    onConnected: (activityId: string, recentMessagesId: string) => void,
     className: string = null,
     slot: number = 0,
     totalSlots: number = 0
@@ -323,7 +347,8 @@ export default class Plumber {
       target,
       className,
       slot,
-      totalSlots
+      totalSlots,
+      onConnected
     };
     this.checkForPendingConnections();
   }
@@ -365,16 +390,10 @@ export default class Plumber {
     });
   }
 
-  public recalculate(uuid?: string): void {
-    // window.setTimeout(() => {
-    this.jsPlumb.revalidate(uuid);
-    /*if (uuid) {
-            this.jsPlumb.recalculateOffsets(uuid);
-        } else {
-            this.jsPlumb.recalculateOffsets();
-        }
-        this.jsPlumb.repaint(uuid);*/
-    // }, 0);
+  public recalculate(uuid: string): void {
+    window.setTimeout(() => {
+      this.jsPlumb.revalidate(uuid);
+    }, 0);
   }
 
   public reset(): void {

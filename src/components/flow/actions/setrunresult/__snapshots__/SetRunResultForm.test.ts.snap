@@ -34,6 +34,12 @@ exports[`SetRunResultForm render should render 1`] = `
     className="form"
   >
     <AssetSelector
+      assets={
+        Object {
+          "items": Object {},
+          "type": "result",
+        }
+      }
       createAssetFromInput={[Function]}
       createPrefix="New: "
       entry={
@@ -46,7 +52,18 @@ exports[`SetRunResultForm render should render 1`] = `
         }
       }
       formClearable={true}
-      helpText="The name of the result, used to reference later as @results.name"
+      helpText={
+        <Trans
+          i18nKey="forms.result_name_help"
+          values={
+            Object {
+              "resultFormat": "@results.name",
+            }
+          }
+        >
+          By naming the result, you can reference it later using [[resultFormat]]
+        </Trans>
+      }
       name="Result"
       onChange={[Function]}
       searchable={true}
@@ -63,7 +80,6 @@ exports[`SetRunResultForm render should render 1`] = `
       helpText="The value to save for this result or empty to clears it. You can use expressions, for example: @(title(input))"
       name="Value"
       onChange={[Function]}
-      onFieldFailures={[Function]}
       showLabel={true}
     />
     <Connect(TextInputElement)

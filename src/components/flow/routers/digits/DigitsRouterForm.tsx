@@ -1,6 +1,6 @@
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
+import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import CaseList, { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import { createResultNameInput } from 'components/flow/routers/widgets';
@@ -11,6 +11,7 @@ import { Alphanumeric, StartIsNonNumeric, validate } from 'store/validators';
 
 import styles from './DigitsRouterForm.module.scss';
 import { nodeToState, stateToNode } from './helpers';
+import i18n from 'config/i18n';
 
 export interface DigitsRouterFormState extends FormState {
   cases: CaseProps[];
@@ -52,8 +53,11 @@ export default class DigitsRouterForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
@@ -70,6 +74,7 @@ export default class DigitsRouterForm extends React.Component<
           onCasesUpdated={this.handleCasesUpdated}
         />
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

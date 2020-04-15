@@ -4,10 +4,14 @@ import { BroadcastMsg } from 'flowTypes';
 import * as React from 'react';
 
 import styles from './SendBroadcast.module.scss';
+import i18n from 'config/i18n';
 
-export const PLACEHOLDER = 'Send a message to the contact';
+export const PLACEHOLDER = i18n.t(
+  'actions.send_broadcast.placeholder',
+  'Send a message to the contact'
+);
 
-const MAX_TO_SHOW = 3;
+const MAX_TO_SHOW = 5;
 
 const SendBroadcastComp: React.SFC<BroadcastMsg> = (
   action: BroadcastMsg,

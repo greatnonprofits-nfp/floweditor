@@ -16,7 +16,13 @@ import AppState from 'store/state';
 import { DisconnectExit, disconnectExit, DispatchWithState } from 'store/thunks';
 import { createClickHandler, getLocalization, renderIf } from 'utils';
 
+import * as moment from 'moment';
 import styles from './Exit.module.scss';
+import { Portal } from 'components/Portal';
+
+export interface RenderCategory extends Category {
+  missing: boolean;
+}
 
 export interface ExitPassedProps {
   exit: Exit;
@@ -25,7 +31,11 @@ export interface ExitPassedProps {
   showDragHelper: boolean;
   plumberMakeSource: (id: string) => void;
   plumberRemove: (id: string) => void;
-  plumberConnectExit: (node: FlowNode, exit: Exit) => void;
+  plumberConnectExit: (
+    node: FlowNode,
+    exit: Exit,
+    onConnection: (activityId: string, recentMessagesId: string) => void
+  ) => void;
   plumberUpdateClass: (
     node: FlowNode,
     exit: Exit,
@@ -51,10 +61,11 @@ export interface ExitState {
   recentMessages: RecentMessage[];
   fetchingRecentMessages: boolean;
   showDragHelper: boolean;
+  activityId: string;
+  recentMessagesId: string;
 }
 
 const cx: any = classNames.bind(styles);
-
 export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
   private timeout: number;
   private hideDragHelper: number;
@@ -68,7 +79,9 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
       confirmDelete: false,
       recentMessages: null,
       fetchingRecentMessages: false,
-      showDragHelper: props.showDragHelper
+      showDragHelper: props.showDragHelper,
+      activityId: null,
+      recentMessagesId: null
     };
 
     bindCallbacks(this, {
@@ -101,14 +114,15 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
   }
 
   public componentDidUpdate(prevProps: ExitProps): void {
-    if (
-      !this.props.exit.destination_uuid ||
-      this.props.exit.destination_uuid !== prevProps.exit.destination_uuid
-    ) {
+    if (this.props.exit.destination_uuid !== prevProps.exit.destination_uuid) {
       this.connect();
       if (this.state.confirmDelete) {
         this.setState({ confirmDelete: false });
       }
+    }
+
+    if (this.state.showDragHelper && prevProps.showDragHelper && !this.props.showDragHelper) {
+      this.setState({ showDragHelper: false });
     }
 
     this.props.plumberUpdateClass(
@@ -181,7 +195,13 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
   }
 
   private connect(): void {
-    this.props.plumberConnectExit(this.props.node, this.props.exit);
+    this.props.plumberConnectExit(
+      this.props.node,
+      this.props.exit,
+      (activityId: string, recentMessagesId: string) => {
+        this.setState({ activityId, recentMessagesId });
+      }
+    );
   }
 
   private handleShowRecentMessages(): void {
@@ -216,21 +236,22 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
 
   private getSegmentCount(): JSX.Element {
     // Only exits with a destination have activity
-    if (this.props.exit.destination_uuid) {
-      const key = `count:${this.props.exit.uuid}:${this.props.exit.destination_uuid}`;
+    if (this.props.exit.destination_uuid && this.state.activityId) {
+      const key = `${this.props.exit.uuid}-label`;
       return (
-        <div style={{ position: 'relative' }}>
-          <Counter
-            key={key}
-            count={this.props.segmentCount}
-            containerStyle={styles.activity}
-            countStyle={styles.count}
-            keepVisible={false}
-            onMouseEnter={this.handleShowRecentMessages}
-            onMouseLeave={this.handleHideRecentMessages}
-          />
-          {this.getRecentMessages()}
-        </div>
+        <Portal id={this.state.activityId}>
+          <div style={{ position: 'relative' }}>
+            <Counter
+              key={key}
+              count={this.props.segmentCount}
+              containerStyle={styles.activity}
+              countStyle={styles.count}
+              keepVisible={false}
+              onMouseEnter={this.handleShowRecentMessages}
+              onMouseLeave={this.handleHideRecentMessages}
+            />
+          </div>
+        </Portal>
       );
     }
     return null;
@@ -258,8 +279,13 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
 
       return { name, localized };
     } else {
+      const names: string[] = [];
+      this.props.categories.forEach((cat: Category) => {
+        names.push(cat.name);
+      });
+
       return {
-        name: this.props.categories.map((category: Category) => category.name).join(', ')
+        name: names.join(', ')
       };
     }
   }
@@ -278,20 +304,22 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
       }
 
       return (
-        <div className={recentStyles.join(' ')}>
-          <div className={styles.title}>{title}</div>
-          {recentMessages.map((recentMessage: RecentMessage, idx: number) => (
-            <div key={'recent_' + idx} className={styles.message}>
-              <div className={styles.text}>{recentMessage.text}</div>
-              <div className={styles.sent}>{recentMessage.sent.toLocaleString()}</div>
-            </div>
-          ))}
-          {this.state.recentMessages === null ? (
-            <div className={styles.loading}>
-              <Loading size={10} units={6} color="#999999" />
-            </div>
-          ) : null}
-        </div>
+        <Portal id={this.state.recentMessagesId}>
+          <div className={recentStyles.join(' ')}>
+            <div className={styles.title}>{title}</div>
+            {recentMessages.map((recentMessage: RecentMessage, idx: number) => (
+              <div key={'recent_' + idx} className={styles.message}>
+                <div className={styles.text}>{recentMessage.text}</div>
+                <div className={styles.sent}>{moment.utc(recentMessage.sent).fromNow()}</div>
+              </div>
+            ))}
+            {this.state.recentMessages === null ? (
+              <div className={styles.loading}>
+                <Loading size={10} units={6} color="#999999" />
+              </div>
+            ) : null}
+          </div>
+        </Portal>
       );
     }
     return null;
@@ -305,12 +333,13 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
     const dragNodeClasses = cx(styles.endpoint, connected);
     const confirmDelete =
       this.state.confirmDelete && this.props.exit.hasOwnProperty('destination_uuid');
-    const confirm: JSX.Element = confirmDelete ? (
-      <div
-        className={styles.confirm_x + ' fe-x'}
-        {...createClickHandler(this.onDisconnect, () => this.props.dragging)}
-      />
-    ) : null;
+    const confirm: JSX.Element =
+      confirmDelete && this.context.config.mutable ? (
+        <div
+          className={styles.confirm_x + ' fe-x'}
+          {...createClickHandler(this.onDisconnect, () => this.props.dragging)}
+        />
+      ) : null;
     const exitClasses: string = cx({
       [styles.exit]: true,
       'plumb-exit': true,
@@ -319,25 +348,33 @@ export class ExitComp extends React.PureComponent<ExitProps, ExitState> {
       [styles.missing_localization]: name && this.props.translating && !localized,
       [styles.confirm_delete]: confirmDelete
     });
+
     const activity = this.getSegmentCount();
+    const recents = this.getRecentMessages();
+
+    const events = this.context.config.mutable
+      ? createClickHandler(
+          this.handleClick,
+          () => {
+            return this.props.dragging;
+          },
+          this.handleMouseDown
+        )
+      : {};
+
     return (
       <div className={exitClasses}>
         {name ? <div className={nameStyle}>{name}</div> : null}
         <div
           ref={(ref: HTMLDivElement) => (this.ele = ref)}
-          {...createClickHandler(
-            this.handleClick,
-            () => {
-              return this.props.dragging;
-            },
-            this.handleMouseDown
-          )}
+          {...events}
           id={`${this.props.node.uuid}:${this.props.exit.uuid}`}
           className={dragNodeClasses}
         >
           {confirm}
         </div>
         {activity}
+        {recents}
         {renderIf(this.state.showDragHelper)(<DragHelper />)}
       </div>
     );

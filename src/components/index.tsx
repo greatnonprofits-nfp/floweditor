@@ -9,9 +9,10 @@ import ConnectedLanguageSelector from 'components/languageselector/LanguageSelec
 import Loading from 'components/loading/Loading';
 import Modal from 'components/modal/Modal';
 import { RevisionExplorer } from 'components/revisions/RevisionExplorer';
+import { IssuesTab, IssueDetail } from 'components/issues/IssuesTab';
 import ConfigProvider from 'config';
 import { fakePropType } from 'config/ConfigProvider';
-import { FlowDefinition, FlowEditorConfig } from 'flowTypes';
+import { FlowDefinition, FlowEditorConfig, FlowMetadata, AnyAction } from 'flowTypes';
 import * as React from 'react';
 import { connect, Provider as ReduxProvider } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,10 +30,14 @@ import {
   LoadFlowDefinition,
   loadFlowDefinition,
   MergeEditorState,
-  mergeEditorState
+  mergeEditorState,
+  onOpenNodeEditor,
+  OnOpenNodeEditor,
+  handleLanguageChange,
+  HandleLanguageChange
 } from 'store/thunks';
 import { ACTIVITY_INTERVAL, downloadJSON, renderIf } from 'utils';
-import { fetchFunctions } from 'utils/completion';
+import { PopTabType } from 'config/interfaces';
 
 const { default: PageVisibility } = require('react-page-visibility');
 
@@ -42,33 +47,43 @@ export interface FlowEditorContainerProps {
 
 export interface FlowEditorStoreProps {
   assetStore: AssetStore;
+  baseLanguage: Asset;
   language: Asset;
   languages: Assets;
   simulating: boolean;
   translating: boolean;
   fetchingFlow: boolean;
   definition: FlowDefinition;
-  dependencies: FlowDefinition[];
+  metadata: FlowMetadata;
   fetchFlow: FetchFlow;
   loadFlowDefinition: LoadFlowDefinition;
   createNewRevision: CreateNewRevision;
   mergeEditorState: MergeEditorState;
+  onOpenNodeEditor: OnOpenNodeEditor;
+  handleLanguageChange: HandleLanguageChange;
   nodes: RenderNodeMap;
   modalMessage: ModalMessage;
   saving: boolean;
+  scrollToNode: string;
+  scrollToAction: string;
+  popped: string;
 }
 
 const hotStore = createStore();
 
+class ComponentToPrint extends React.Component {
+  render() {
+    return <ConnectedFlowEditor />;
+  }
+}
+
 // Root container, wires up context-providers
 export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ config }) => {
-  fetchFunctions(config.endpoints);
-
   const componentRef = React.useRef();
 
   return (
     <ConfigProvider config={{ ...config }}>
-      <ReduxProvider store={hotStore}>
+      <ReduxProvider store={hotStore as any}>
         <React.Fragment>
           {/* For Print the content in PDF */}
           <h1 className="flowName">{config.flowName}</h1>
@@ -89,7 +104,7 @@ export const FlowEditorContainer: React.SFC<FlowEditorContainerProps> = ({ confi
             content={() => componentRef.current}
             copyStyles
           />
-          <ConnectedFlowEditor ref={componentRef} />
+          <ComponentToPrint ref={componentRef} />
         </React.Fragment>
       </ReduxProvider>
     </ConfigProvider>
@@ -182,6 +197,53 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
     ) : null;
   }
 
+  private handleLanguageSetting(issueDetail: IssueDetail): void {
+    if (issueDetail.language) {
+      this.props.handleLanguageChange(issueDetail.language);
+    } else {
+      this.props.handleLanguageChange(this.props.baseLanguage);
+    }
+  }
+
+  public handleOpenIssue(issueDetail: IssueDetail): void {
+    this.handleLanguageSetting(issueDetail);
+    this.props.onOpenNodeEditor({
+      originalNode: issueDetail.renderObjects.renderNode,
+      originalAction: issueDetail.renderObjects.renderAction
+        ? (issueDetail.renderObjects.renderAction.action as AnyAction)
+        : null
+    });
+  }
+
+  public handleScrollToIssue(issueDetail: IssueDetail): void {
+    this.handleLanguageSetting(issueDetail);
+    const issue = issueDetail.issues[0];
+    if (
+      this.props.scrollToNode === issue.node_uuid &&
+      this.props.scrollToAction === issue.action_uuid
+    ) {
+      this.props.mergeEditorState({
+        scrollToNode: null,
+        scrollToAction: null
+      });
+    }
+
+    window.setTimeout(() => {
+      this.props.mergeEditorState({
+        scrollToNode: issue.node_uuid,
+        scrollToAction: issue.action_uuid
+      });
+    }, 0);
+  }
+
+  private handleTabPopped(visible: boolean, tab: PopTabType): void {
+    if (visible) {
+      this.props.mergeEditorState({ popped: tab });
+    } else {
+      this.props.mergeEditorState({ popped: null });
+    }
+  }
+
   public render(): JSX.Element {
     return (
       <PageVisibility onChange={this.handleVisibilityChanged}>
@@ -204,11 +266,25 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
             )}
 
             <RevisionExplorer
-              simulating={this.props.simulating}
               loadFlowDefinition={this.props.loadFlowDefinition}
               createNewRevision={this.props.createNewRevision}
               assetStore={this.props.assetStore}
+              onToggled={this.handleTabPopped}
+              popped={this.props.popped}
             />
+
+            {renderIf(this.props.metadata.issues.length > 0)(
+              <IssuesTab
+                issues={this.props.metadata.issues}
+                onIssueClicked={this.handleScrollToIssue}
+                onIssueOpened={this.handleOpenIssue}
+                languages={this.props.languages ? this.props.languages.items : {}}
+                nodes={this.props.nodes}
+                onToggled={this.handleTabPopped}
+                popped={this.props.popped}
+              />
+            )}
+            <div id="portal-root" />
           </div>
         </div>
       </PageVisibility>
@@ -217,12 +293,24 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
 }
 
 const mapStateToProps = ({
-  flowContext: { definition, dependencies, nodes, assetStore },
-  editorState: { translating, language, fetchingFlow, simulating, modalMessage, saving }
+  flowContext: { definition, metadata, nodes, assetStore, baseLanguage },
+  editorState: {
+    translating,
+    language,
+    fetchingFlow,
+    simulating,
+    modalMessage,
+    saving,
+    scrollToAction,
+    scrollToNode,
+    popped
+  }
 }: AppState) => {
   const languages = assetStore ? assetStore.languages : null;
 
   return {
+    popped,
+    baseLanguage,
     modalMessage,
     saving,
     simulating,
@@ -231,9 +319,11 @@ const mapStateToProps = ({
     language,
     fetchingFlow,
     definition,
-    dependencies,
+    metadata,
     nodes,
-    languages
+    languages,
+    scrollToAction,
+    scrollToNode
   };
 };
 
@@ -243,7 +333,9 @@ const mapDispatchToProps = (dispatch: DispatchWithState) =>
       fetchFlow,
       loadFlowDefinition,
       createNewRevision,
-      mergeEditorState
+      mergeEditorState,
+      onOpenNodeEditor,
+      handleLanguageChange
     },
     dispatch
   );
