@@ -10,8 +10,8 @@
   cursor: pointer;
 
   border-radius: 4px;
-  background: $button_dark;
-  background-image: linear-gradient(to bottom, $button_light, $button_dark);
+  background: $ccl_green;
+  background-image: linear-gradient(to bottom, $ccl_green, $ccl_green);
   color: #ffffff;
   padding: 8px 16px 8px 16px;
   text-decoration: none;
@@ -31,15 +31,15 @@
   }
 
   &:hover {
-    background: $button_hover;
-    background-image: linear-gradient(to bottom, $button_hover, $button_light);
+    background: $ccl_green_dark;
+    background-image: linear-gradient(to bottom, $ccl_green_dark, $ccl_green_dark);
     text-decoration: none;
   }
 
   &.primary {
     color: #fff;
     &.active {
-      background: darken($button_dark, 2%) !important;
+      background: darken($ccl_green_dark, 2%) !important;
     }
   }
 
