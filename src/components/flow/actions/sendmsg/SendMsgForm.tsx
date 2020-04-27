@@ -45,11 +45,7 @@ import { Trans } from 'react-i18next';
 
 const MAX_ATTACHMENTS = 3;
 
-const TYPE_OPTIONS: SelectOption[] = [
-  { value: 'image', label: 'Image URL' },
-  { value: 'audio', label: 'Audio URL' },
-  { value: 'video', label: 'Video URL' }
-];
+const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', label: 'Image URL' }];
 
 const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
 
@@ -237,6 +233,10 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     const csrf = getCookie('csrftoken');
     const headers = csrf ? { 'X-CSRFToken': csrf } : {};
 
+    if (!this.isAttachmentsValid(files)) {
+      return null;
+    }
+
     const data = new FormData();
     data.append('file', files[0]);
     axios
@@ -250,6 +250,39 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       .catch(error => {
         console.log(error);
       });
+  }
+
+  private isAttachmentsValid(files: FileList) {
+    let title = '';
+    let message = '';
+    let isValid = true;
+    const file = files[0];
+    const fileName = file.name
+      .split('.')
+      .pop()
+      .toLowerCase();
+
+    if (!['bmp', 'gif', 'png', 'jpg', 'jpeg'].includes(fileName)) {
+      title = 'Invalid Attachment';
+      message = 'Attachments must be an image.';
+      isValid = false;
+    } else if (file.size > 512000) {
+      title = 'File Size Exceeded';
+      message =
+        'The file size should be less than 500kB for images. Please choose another file and try again.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: title,
+          body: message
+        },
+        saving: false
+      });
+    }
+    return isValid;
   }
 
   private renderAttachment(index: number, attachment: Attachment): JSX.Element {
