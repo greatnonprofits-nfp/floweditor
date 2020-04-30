@@ -45,7 +45,11 @@ import { Trans } from 'react-i18next';
 
 const MAX_ATTACHMENTS = 3;
 
-const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', label: 'Image URL' }];
+const TYPE_OPTIONS: SelectOption[] = [
+  { value: 'image', label: 'Image URL' },
+  { value: 'audio', label: 'Audio URL' },
+  { value: 'video', label: 'Video URL' }
+];
 
 const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
 
@@ -257,19 +261,24 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     let message = '';
     let isValid = true;
     const file = files[0];
-    const fileName = file.name
-      .split('.')
-      .pop()
-      .toLowerCase();
+    const fileType = file.type.split('/')[0];
+    const fileEncoding = file.type.split('/')[1];
 
-    if (!['bmp', 'gif', 'png', 'jpg', 'jpeg'].includes(fileName)) {
+    if (!['audio', 'video', 'image'].includes(fileType)) {
       title = 'Invalid Attachment';
-      message = 'Attachments must be an image.';
+      message = 'Attachments must be either video, audio, or an image.';
       isValid = false;
-    } else if (file.size > 512000) {
+    } else if (
+      fileType === 'audio' &&
+      !['mp3', 'm4a', 'x-m4a', 'wav', 'ogg', 'oga'].includes(fileEncoding)
+    ) {
+      title = 'Invalid Format';
+      message = 'Audio attachments must be encoded as mp3, m4a, wav, ogg or oga files.';
+      isValid = false;
+    } else if ((fileType === 'image' && file.size > 512000) || file.size > 20971520) {
       title = 'File Size Exceeded';
       message =
-        'The file size should be less than 500kB for images. Please choose another file and try again.';
+        'The file size should be less than 500kB for images and less than 20MB for audio and video files. Please choose another file and try again.';
       isValid = false;
     }
 
