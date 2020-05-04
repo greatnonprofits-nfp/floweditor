@@ -366,6 +366,7 @@ export interface SendEmail extends Action {
   subject: string;
   body: string;
   addresses: string[];
+  attachments?: string[];
 }
 
 export interface SetRunResult extends Action {
