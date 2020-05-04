@@ -1,8 +1,8 @@
 {
-  "name": "@nyaruka/flow-editor",
+  "name": "@greatnonprofits-nfp/flow-editor",
   "license": "AGPL-3.0",
-  "repository": "git://github.com/nyaruka/floweditor.git",
-  "version": "1.8.9",
+  "repository": "git://github.com/greatnonprofits-nfp/floweditor.git",
+  "version": "1.8.11",
   "description": "'Standalone flow editing tool designed for use within the RapidPro suite of messaging tools but can be adopted for use outside of that ecosystem.'",
   "browser": "umd/flow-editor.min.js",
   "unpkg": "umd/flow-editor.min.js",
@@ -13,8 +13,11 @@
   ],
   "private": false,
   "dependencies": {
+    "@types/react-tooltip": "3.11.0",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "react-to-print": "2.5.0",
+    "react-tooltip": "3.11.2"
   },
   "scripts": {
     "lambda:serve": "netlify-lambda serve lambda -p 6000",
@@ -117,6 +120,7 @@
     "identity-obj-proxy": "3.0.0",
     "immutability-helper": "2.7.1",
     "jest-dom": "^3.4.0",
+    "js-levenshtein": "1.1.6",
     "jsplumb": "^2.9.3",
     "lint-staged": "8.1.7",
     "local-storage": "1.4.2",

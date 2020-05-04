@@ -452,6 +452,10 @@ export const guessNodeType = (node: FlowNode) => {
         return Types.split_by_webhook;
       }
 
+      if (node.actions[0].type === Types.call_lookup) {
+        return Types.split_by_lookup;
+      }
+
       if (node.actions[0].type === Types.transfer_airtime) {
         return Types.split_by_airtime;
       }

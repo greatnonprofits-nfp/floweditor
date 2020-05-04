@@ -30,7 +30,10 @@ export const config: FlowEditorConfig = {
     editor: '/flow/editor',
     activity: '',
     simulateStart: '',
-    simulateResume: ''
+    simulateResume: '',
+    lookups: '',
+    giftcard: '',
+    link: ''
   }
 };
 

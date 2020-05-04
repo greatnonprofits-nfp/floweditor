@@ -91,6 +91,21 @@ exports[`AddURNForm renders 1`] = `
                 Call a webhook
               </option>
               <option
+                value="call_lookup"
+              >
+                Call Lookup
+              </option>
+              <option
+                value="call_giftcard"
+              >
+                Call Giftcard
+              </option>
+              <option
+                value="call_shorten_url"
+              >
+                Shorten Trackable Link
+              </option>
+              <option
                 value="call_resthook"
               >
                 Call Zapier

@@ -237,6 +237,10 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     const csrf = getCookie('csrftoken');
     const headers = csrf ? { 'X-CSRFToken': csrf } : {};
 
+    if (!this.isAttachmentsValid(files)) {
+      return null;
+    }
+
     const data = new FormData();
     data.append('file', files[0]);
     axios
@@ -250,6 +254,44 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       .catch(error => {
         console.log(error);
       });
+  }
+
+  private isAttachmentsValid(files: FileList) {
+    let title = '';
+    let message = '';
+    let isValid = true;
+    const file = files[0];
+    const fileType = file.type.split('/')[0];
+    const fileEncoding = file.type.split('/')[1];
+
+    if (!['audio', 'video', 'image'].includes(fileType)) {
+      title = 'Invalid Attachment';
+      message = 'Attachments must be either video, audio, or an image.';
+      isValid = false;
+    } else if (
+      fileType === 'audio' &&
+      !['mp3', 'm4a', 'x-m4a', 'wav', 'ogg', 'oga'].includes(fileEncoding)
+    ) {
+      title = 'Invalid Format';
+      message = 'Audio attachments must be encoded as mp3, m4a, wav, ogg or oga files.';
+      isValid = false;
+    } else if ((fileType === 'image' && file.size > 512000) || file.size > 20971520) {
+      title = 'File Size Exceeded';
+      message =
+        'The file size should be less than 500kB for images and less than 20MB for audio and video files. Please choose another file and try again.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: title,
+          body: message
+        },
+        saving: false
+      });
+    }
+    return isValid;
   }
 
   private renderAttachment(index: number, attachment: Attachment): JSX.Element {

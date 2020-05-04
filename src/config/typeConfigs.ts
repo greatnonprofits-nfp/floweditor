@@ -4,6 +4,7 @@ import AddURNComp from 'components/flow/actions/addurn/AddURN';
 import AddURNForm from 'components/flow/actions/addurn/AddURNForm';
 import CallResthookComp from 'components/flow/actions/callresthook/CallResthook';
 import CallWebhookComp from 'components/flow/actions/callwebhook/CallWebhook';
+import CallLookupComp from 'components/flow/actions/calllookup/CallLookup';
 import AddGroupsForm from 'components/flow/actions/changegroups/addgroups/AddGroupsForm';
 import ChangeGroupsComp from 'components/flow/actions/changegroups/ChangeGroups';
 import RemoveGroupsForm from 'components/flow/actions/changegroups/removegroups/RemoveGroupsForm';
@@ -42,6 +43,7 @@ import ResultRouterForm from 'components/flow/routers/result/ResultRouterForm';
 import SubflowRouterForm from 'components/flow/routers/subflow/SubflowRouterForm';
 import WaitRouterForm from 'components/flow/routers/wait/WaitRouterForm';
 import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm';
+import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
 import {
   FlowTypes,
   HIDDEN,
@@ -51,6 +53,7 @@ import {
   Type,
   Types,
   VOICE,
+  MESSAGE,
   FeatureFilter
 } from 'config/interfaces';
 import { HintTypes, RouterTypes, FlowEditorConfig, SendMsg } from 'flowTypes';
@@ -59,6 +62,10 @@ import CallClassifierComp from 'components/flow/actions/callclassifier/CallClass
 import ClassifyRouterForm from 'components/flow/routers/classify/ClassifyRouterForm';
 import i18n from 'config/i18n';
 import SchemeRouterForm from 'components/flow/routers/scheme/SchemeRouterForm';
+import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
+import { GiftcardComp } from 'components/flow/actions/giftcard';
+import ShortenUrlComp from 'components/flow/actions/shortenurl/ShortenUrl';
+import ShortenUrlForm from 'components/flow/routers/shortenurl/ShortenUrlForm';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -292,7 +299,6 @@ export const typeConfigList: Type[] = [
     form: SetRunResultForm,
     component: SetRunResultComp
   },
-
   {
     type: Types.play_audio,
     name: i18n.t('actions.play_audio.name', 'Play Recording'),
@@ -301,7 +307,6 @@ export const typeConfigList: Type[] = [
     component: PlayAudioComp,
     visibility: VOICE
   },
-
   {
     type: Types.call_webhook,
     name: i18n.t('actions.call_webhook.name', 'Call Webhook'),
@@ -312,6 +317,39 @@ export const typeConfigList: Type[] = [
     component: CallWebhookComp,
     aliases: [Types.split_by_webhook],
     visibility: ONLINE
+  },
+  {
+    type: Types.call_lookup,
+    name: i18n.t('actions.call_lookup.name', 'Call Lookup'),
+    description: i18n.t('actions.call_lookup.description', 'Call Lookup'),
+    form: LookupRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: CallLookupComp,
+    aliases: [Types.split_by_lookup],
+    visibility: MESSAGE
+  },
+  {
+    type: Types.call_giftcard,
+    name: i18n.t('actions.call_giftcard.name', 'Call Giftcard'),
+    description: i18n.t('actions.call_giftcard.description', 'Call Giftcard'),
+    form: GiftCardRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: GiftcardComp,
+    aliases: [Types.split_by_giftcard],
+    visibility: MESSAGE
+  },
+  {
+    type: Types.call_shorten_url,
+    name: i18n.t('actions.call_shorten_url.name', 'Shorten Trackable Link'),
+    description: i18n.t('actions.call_shorten_url.description', 'Shorten Trackable Link'),
+    form: ShortenUrlForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: ShortenUrlComp,
+    aliases: [Types.split_by_shorten_url],
+    visibility: MESSAGE
   },
   {
     type: Types.call_resthook,

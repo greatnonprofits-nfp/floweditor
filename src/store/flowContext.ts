@@ -77,8 +77,10 @@ export enum AssetType {
   Field = 'field',
   Flow = 'flow',
   Global = 'global',
+  GiftCard = 'giftcard',
   Group = 'group',
   Label = 'label',
+  Lookup = 'lookup',
   Language = 'language',
   Remove = 'remove',
   Resthook = 'resthook',
@@ -86,6 +88,7 @@ export enum AssetType {
   Revision = 'revision',
   Scheme = 'scheme',
   Template = 'template',
+  TrackableLink = 'shorten_url',
   URN = 'urn'
 }
 

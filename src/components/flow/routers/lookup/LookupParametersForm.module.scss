@@ -1,0 +1,25 @@
+.lookup_parameters {
+  margin: 15px 0;
+  .header,
+  .footer {
+    margin: 10px 0;
+  }
+
+  .header,
+  .lookup_row {
+    display: grid;
+    grid-template-columns: repeat(3, 4fr) 1fr;
+    grid-column-gap: 10px;
+    margin-bottom: 5px;
+
+    .delete {
+      align-self: center;
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+
+  .footer {
+    cursor: pointer;
+  }
+}

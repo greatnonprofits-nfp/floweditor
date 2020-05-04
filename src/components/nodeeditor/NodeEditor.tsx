@@ -80,6 +80,8 @@ export interface FormProps {
   typeConfig?: Type;
   onTypeChange?(config: Type): void;
   onClose?(canceled: boolean): void;
+
+  mergeEditorState?: MergeEditorState;
 }
 
 /* export interface LocalizationProps {
@@ -180,6 +182,7 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
         helpArticles: this.props.helpArticles,
         issues: this.props.issues.filter((issue: FlowIssue) => !issue.language),
         typeConfig: this.props.typeConfig,
+        mergeEditorState: this.props.mergeEditorState,
         onTypeChange: this.props.handleTypeConfigChange,
         onClose: this.close
       };

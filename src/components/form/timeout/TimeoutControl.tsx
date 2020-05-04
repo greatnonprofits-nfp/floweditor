@@ -8,6 +8,10 @@ import { small } from 'utils/reactselect';
 import styles from './TimeoutControl.module.scss';
 
 export const TIMEOUT_OPTIONS = [
+  { value: 10, label: '10 seconds' },
+  { value: 20, label: '20 seconds' },
+  { value: 30, label: '30 seconds' },
+  { value: 45, label: '45 seconds' },
   { value: 60, label: '1 minute' },
   { value: 120, label: '2 minutes' },
   { value: 180, label: '3 minutes' },
@@ -15,6 +19,7 @@ export const TIMEOUT_OPTIONS = [
   { value: 300, label: '5 minutes' },
   { value: 600, label: '10 minutes' },
   { value: 900, label: '15 minutes' },
+  { value: 1800, label: '30 minutes' },
   { value: 3600, label: '1 hours' },
   { value: 7200, label: '2 hours' },
   { value: 10800, label: '3 hours' },
@@ -27,7 +32,7 @@ export const TIMEOUT_OPTIONS = [
   { value: 604800, label: '1 week' }
 ];
 
-export const DEFAULT_TIMEOUT = TIMEOUT_OPTIONS[4];
+export const DEFAULT_TIMEOUT = TIMEOUT_OPTIONS[8];
 
 export const ellipsize = (str: string) => `${str}...`;
 

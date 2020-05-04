@@ -3,6 +3,7 @@ import * as React from 'react';
 import Select, { StylesConfig } from 'react-select';
 import { hasErrors } from 'components/flow/actions/helpers';
 import { large, getErroredSelect } from 'utils/reactselect';
+import styles from '../FormElement.module.scss';
 
 interface SelectElementProps extends FormElementProps {
   onChange?(value: any, action?: any): void;
@@ -13,6 +14,9 @@ interface SelectElementProps extends FormElementProps {
   styles?: StylesConfig;
   clearable?: boolean;
   multi?: boolean;
+  getOptionLabel?: (item: any) => string;
+  getOptionValue?: (item: any) => string;
+  className?: string;
 }
 
 export interface SelectOption {
@@ -32,7 +36,11 @@ export default class SelectElement extends React.Component<SelectElementProps> {
 
   public render(): JSX.Element {
     return (
-      <FormElement name={this.props.name} entry={this.props.entry}>
+      <FormElement
+        name={this.props.name}
+        entry={this.props.entry}
+        __className={this.props.className && styles[this.props.className]}
+      >
         <Select
           isDisabled={this.props.onChange === undefined}
           placeholder={this.props.placeholder}
@@ -46,6 +54,8 @@ export default class SelectElement extends React.Component<SelectElementProps> {
           isClearable={this.props.clearable}
           options={this.props.options}
           isMulti={this.props.multi}
+          getOptionLabel={this.props.getOptionLabel}
+          getOptionValue={this.props.getOptionValue}
         />
       </FormElement>
     );

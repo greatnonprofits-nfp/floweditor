@@ -6,6 +6,12 @@ $reset_color: #666;
   position: fixed;
   right: 0;
   z-index: $z_simulator;
+
+  @media print {
+    & {
+      display: none;
+    }
+  }
 }
 
 .simulator.sim_hidden {

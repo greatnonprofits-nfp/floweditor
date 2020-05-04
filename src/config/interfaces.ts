@@ -10,6 +10,7 @@ export enum Types {
   add_contact_urn = 'add_contact_urn',
   add_contact_groups = 'add_contact_groups',
   add_input_labels = 'add_input_labels',
+  call_giftcard = 'call_giftcard',
   remove_contact_groups = 'remove_contact_groups',
   set_contact_channel = 'set_contact_channel',
   set_contact_field = 'set_contact_field',
@@ -19,6 +20,8 @@ export enum Types {
   call_classifier = 'call_classifier',
   call_resthook = 'call_resthook',
   call_webhook = 'call_webhook',
+  call_lookup = 'call_lookup',
+  call_shorten_url = 'call_shorten_url',
   send_msg = 'send_msg',
   send_email = 'send_email',
   send_broadcast = 'send_broadcast',
@@ -37,6 +40,9 @@ export enum Types {
   split_by_scheme = 'split_by_scheme',
   split_by_subflow = 'split_by_subflow',
   split_by_webhook = 'split_by_webhook',
+  split_by_giftcard = 'split_by_giftcard',
+  split_by_lookup = 'split_by_lookup',
+  split_by_shorten_url = 'split_by_shorten_url',
   wait_for_response = 'wait_for_response',
   wait_for_menu = 'wait_for_menu',
   wait_for_digits = 'wait_for_digits',
@@ -133,3 +139,4 @@ export const VOICE = [FlowTypes.VOICE];
 export const SURVEY = [FlowTypes.SURVEY];
 export const TEXT_TYPES = [FlowTypes.MESSAGE, FlowTypes.SURVEY];
 export const ONLINE = [FlowTypes.MESSAGE, FlowTypes.VOICE];
+export const MESSAGE = [FlowTypes.MESSAGE];

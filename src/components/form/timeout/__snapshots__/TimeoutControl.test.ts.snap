@@ -27,6 +27,22 @@ exports[`TimeoutControl handles initial values 1`] = `
       options={
         Array [
           Object {
+            "label": "10 seconds",
+            "value": 10,
+          },
+          Object {
+            "label": "20 seconds",
+            "value": 20,
+          },
+          Object {
+            "label": "30 seconds",
+            "value": 30,
+          },
+          Object {
+            "label": "45 seconds",
+            "value": 45,
+          },
+          Object {
             "label": "1 minute",
             "value": 60,
           },
@@ -53,6 +69,10 @@ exports[`TimeoutControl handles initial values 1`] = `
           Object {
             "label": "15 minutes",
             "value": 900,
+          },
+          Object {
+            "label": "30 minutes",
+            "value": 1800,
           },
           Object {
             "label": "1 hours",

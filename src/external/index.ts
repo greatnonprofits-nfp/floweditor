@@ -266,6 +266,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         items: {},
         id: 'iso'
       },
+      shorten_url: {
+        endpoint: getURL(endpoints.link),
+        type: AssetType.TrackableLink,
+        id: 'id',
+        items: {}
+      },
       flows: {
         endpoint: getURL(endpoints.flows),
         type: AssetType.Flow,
@@ -281,6 +287,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         endpoint: getURL(endpoints.globals),
         type: AssetType.Global,
         id: 'key',
+        items: {}
+      },
+      giftcard: {
+        endpoint: getURL(endpoints.giftcard),
+        type: AssetType.GiftCard,
+        id: 'id',
         items: {}
       },
       groups: {
@@ -313,6 +325,12 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         endpoint: getURL(endpoints.resthooks),
         type: AssetType.Resthook,
         id: 'resthook',
+        items: {}
+      },
+      lookups: {
+        endpoint: getURL(endpoints.lookups),
+        type: AssetType.Lookup,
+        id: 'id',
         items: {}
       },
       templates: {

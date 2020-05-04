@@ -3,6 +3,7 @@ import { Types } from 'config/interfaces';
 import {
   CallResthook,
   CallWebhook,
+  CallLookup,
   Category,
   Exit,
   FlowNode,
@@ -50,9 +51,10 @@ export const getResultName = (node: FlowNode) => {
     if (
       action.type === Types.call_webhook ||
       action.type === Types.call_resthook ||
+      action.type === Types.call_lookup ||
       action.type === Types.transfer_airtime
     ) {
-      const resultAction = action as CallWebhook | CallResthook | TransferAirtime;
+      const resultAction = action as CallWebhook | CallResthook | CallLookup | TransferAirtime;
       return resultAction.result_name;
     }
   }
