@@ -27,6 +27,46 @@ const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
 const MAX_ATTACHMENTS = 3;
 
+const UNSUPPORTED_EMAIL_ATTACHMENTS = [
+  'ade',
+  'adp',
+  'apk',
+  'bat',
+  'chm',
+  'cmd',
+  'com',
+  'cpl',
+  'dll',
+  'dmg',
+  'exe',
+  'hta',
+  'ins',
+  'isp',
+  'jar',
+  'js',
+  'jse',
+  'lib',
+  'lnk',
+  'mde',
+  'msc',
+  'msi',
+  'msp',
+  'mst',
+  'nshpif',
+  'scr',
+  'sct',
+  'shb',
+  'sys',
+  'vb',
+  'vbe',
+  'vbs',
+  'vxd',
+  'wsc',
+  'wsf',
+  'wsh',
+  'cab'
+];
+
 const TYPE_OPTIONS: SelectOption[] = [
   { value: 'image', label: 'Image URL' },
   { value: 'audio', label: 'Audio URL' },
@@ -292,6 +332,10 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     const csrf = getCookie('csrftoken');
     const headers = csrf ? { 'X-CSRFToken': csrf } : {};
 
+    if (!this.isAttachmentsValid(files)) {
+      return null;
+    }
+
     const data = new FormData();
     data.append('file', files[0]);
     axios
@@ -305,6 +349,37 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
       .catch(error => {
         console.log(error);
       });
+  }
+
+  private isAttachmentsValid(files: FileList) {
+    let title = '';
+    let message = '';
+    let isValid = true;
+    const file = files[0];
+    const fileExtension = file.name.split('.').pop();
+
+    if (UNSUPPORTED_EMAIL_ATTACHMENTS.includes(fileExtension)) {
+      title = 'Invalid Format';
+      message =
+        'This file type is not supported for security reasons. If you still wish to send, please convert this file to an allowable type.';
+      isValid = false;
+    } else if (file.size > 26214400) {
+      title = 'File Size Exceeded';
+      message =
+        'The file size should be less than 25MB for files. Please choose another file and try again.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: title,
+          body: message
+        },
+        saving: false
+      });
+    }
+    return isValid;
   }
 
   public handleAttachmentRemoved(index: number): void {
