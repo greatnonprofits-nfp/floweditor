@@ -67,6 +67,7 @@ export enum Operators {
   has_date_eq = 'has_date_eq',
   has_date_gt = 'has_date_gt',
   has_time = 'has_time',
+  has_image = 'has_image',
   has_number = 'has_number',
   has_number_between = 'has_number_between',
   has_number_lt = 'has_number_lt',
