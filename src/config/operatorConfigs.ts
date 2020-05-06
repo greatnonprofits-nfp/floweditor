@@ -54,6 +54,12 @@ export const operatorConfigList: Operator[] = [
     visibility: TEXT_TYPES
   },
   {
+    type: Operators.has_image,
+    verboseName: i18n.t('operators.has_image', 'has an image'),
+    operands: 0,
+    categoryName: i18n.t('operators.has_image_category', 'Has an image')
+  },
+  {
     type: Operators.has_number,
     verboseName: i18n.t('operators.has_number', 'has a number'),
     operands: 0,
