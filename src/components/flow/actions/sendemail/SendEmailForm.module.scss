@@ -11,6 +11,7 @@
     margin-bottom: 8px;
     display: flex;
     align-items: center;
+    min-height: 28px;
   
     .upload {
       	vertical-align: super;
@@ -32,17 +33,25 @@
 		margin-bottom: -15px;
 		width: 329px;
 		margin-right: 10px;
-      	input {
-			vertical-align: top;
-			height: 28px !important;
-			margin-top: -11px;
-			width: 100%;
-			font-size: 12px;
-      	}
+      input {
+        vertical-align: top;
+        height: 28px !important;
+        margin-top: -5px;
+        width: 100%;
+        font-size: 12px;
+      }
+      [class*='Pill_pill'] {
+        margin-bottom: 5px;
+      }
     }
   
     .remove {
-		vertical-align: super;
-		display: inline-block;
+		  vertical-align: super;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .loader {
+      margin: auto;
     }
   }

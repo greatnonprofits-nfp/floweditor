@@ -22,11 +22,13 @@ import { small } from 'utils/reactselect';
 import { initializeForm, stateToAction } from './helpers';
 import styles from './SendEmailForm.module.scss';
 import { renderIssues } from '../helpers';
+import Loading from 'components/loading/Loading';
 
 const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
 const MAX_ATTACHMENTS = 3;
 
+// eslint-disable-next-line
 const UNSUPPORTED_EMAIL_ATTACHMENTS = [
   'ade',
   'adp',
@@ -67,11 +69,7 @@ const UNSUPPORTED_EMAIL_ATTACHMENTS = [
   'cab'
 ];
 
-const TYPE_OPTIONS: SelectOption[] = [
-  { value: 'image', label: 'Image URL' },
-  { value: 'audio', label: 'Audio URL' },
-  { value: 'video', label: 'Video URL' }
-];
+const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', label: 'File URL' }];
 
 const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
 
@@ -82,6 +80,8 @@ const getAttachmentTypeOption = (type: string): SelectOption => {
 export interface Attachment {
   type: string;
   url: string;
+  size?: number;
+  verified?: boolean;
   uploaded?: boolean;
 }
 
@@ -90,6 +90,8 @@ export interface SendEmailFormState extends FormState {
   subject: StringEntry;
   body: StringEntry;
   attachments: Attachment[];
+  attachmentsValidated?: boolean;
+  pending?: number;
 }
 
 export default class SendEmailForm extends React.Component<ActionFormProps, SendEmailFormState> {
@@ -145,6 +147,12 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
   }
 
   public handleSave(): void {
+    // check is attachments is not valid to prevent updating
+    if (!this.state.attachmentsValidated) {
+      this.validateAllAttachments(this.handleSave);
+      return;
+    }
+
     // validate in case they never updated an empty field
     const valid = this.handleUpdate(
       {
@@ -199,6 +207,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         </p>
         {attachments}
         {emptyOption}
+        {this.renderPending()}
         <input
           style={{
             display: 'none'
@@ -211,6 +220,37 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         />
       </>
     );
+  }
+
+  private renderPending() {
+    if (this.state.pending && this.state.pending !== 0) {
+      return (
+        <div className={styles.url_attachment}>
+          <div style={{ margin: 'auto' }}>
+            <Loading units={5} color="#3498db" size={7} />
+          </div>
+        </div>
+      );
+    }
+    return <></>;
+  }
+
+  private increasePending() {
+    const counter = this.state.pending;
+    if (isFinite(counter)) {
+      this.setState({ pending: counter + 1 });
+    } else {
+      this.setState({ pending: 1 });
+    }
+  }
+
+  private decreasePending() {
+    const counter = this.state.pending;
+    if (isFinite(counter) && counter !== 0) {
+      this.setState({ pending: counter - 1 });
+    } else {
+      this.setState({ pending: 1 });
+    }
   }
 
   private renderUpload(index: number, attachment: Attachment): JSX.Element {
@@ -301,7 +341,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
                 name="url"
                 onChange={(value: string) => {
                   attachments = mutate(attachments, {
-                    [index]: { $set: { type: attachment.type, url: value } }
+                    [index]: { $set: { type: attachment.type, url: value, verified: false } }
                   });
                   this.setState({ attachments });
                 }}
@@ -338,16 +378,26 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
 
     const data = new FormData();
     data.append('file', files[0]);
+    this.increasePending();
     axios
       .post(this.context.config.endpoints.attachments, data, { headers })
       .then(response => {
         attachments = mutate(attachments, {
-          $push: [{ type: response.data.type, url: response.data.url, uploaded: true }]
+          $push: [
+            {
+              type: response.data.type,
+              url: response.data.url,
+              size: files[0].size,
+              uploaded: true
+            }
+          ]
         });
         this.setState({ attachments });
+        this.decreasePending();
       })
       .catch(error => {
         console.log(error);
+        this.decreasePending();
       });
   }
 
@@ -356,9 +406,9 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     let message = '';
     let isValid = true;
     const file = files[0];
-    const fileExtension = file.name.split('.').pop();
+    const fileExtension = file.type.split('/')[0];
 
-    if (UNSUPPORTED_EMAIL_ATTACHMENTS.includes(fileExtension)) {
+    if (!['audio', 'video', 'image'].includes(fileExtension)) {
       title = 'Invalid Format';
       message =
         'This file type is not supported for security reasons. If you still wish to send, please convert this file to an allowable type.';
@@ -382,6 +432,116 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     return isValid;
   }
 
+  public validateUrlAttachment(index: number): any {
+    let attachmentsList = this.state.attachments;
+
+    // if we have a csrf in our cookie, pass it along as a header
+    const csrf = getCookie('csrftoken');
+    const headers = csrf ? { 'X-CSRFToken': csrf } : {};
+    const data = new FormData();
+    data.append('attachment_url', attachmentsList[index].url);
+
+    interface ValidationResponse {
+      valid: boolean;
+      type?: string;
+      size?: number;
+      error?: string;
+    }
+
+    this.increasePending();
+    const validationPromise = axios
+      .post(this.context.config.endpoints.attachments_validation, data, { headers })
+      .then(response => {
+        let validationErrorTitle = 'Attachment url error.';
+        let validationErrorText = '';
+        let isInvalid = false;
+
+        if (response.status === 200) {
+          const data = response.data as ValidationResponse;
+          if (data.valid) {
+            const attachments: any = mutate(attachmentsList, {
+              [index]: { $merge: { size: data.size, verified: true } }
+            });
+            this.setState({ attachments });
+          } else {
+            isInvalid = true;
+            validationErrorText = data.error;
+          }
+        } else {
+          isInvalid = true;
+          validationErrorText = response.data.error
+            ? response.data.error
+            : "Can't access attachment url.";
+        }
+
+        if (isInvalid) {
+          this.props.mergeEditorState({
+            modalMessage: {
+              title: validationErrorTitle,
+              body: validationErrorText
+            },
+            saving: false
+          });
+        }
+        this.decreasePending();
+      })
+      .catch(() => {
+        this.decreasePending();
+        this.props.mergeEditorState({
+          modalMessage: {
+            title: 'Attachment url error.',
+            body: "Can't access attachment url."
+          },
+          saving: false
+        });
+      });
+
+    return validationPromise;
+  }
+
+  private validateAllAttachments(callback: any) {
+    let isValid = true;
+    let totalSize = 0;
+    let validationPromises: Promise<any>[] = [];
+
+    // validate url attachments;
+    this.state.attachments.forEach((attachment, index) => {
+      if (!attachment.uploaded && !attachment.verified) {
+        validationPromises.push(this.validateUrlAttachment(index));
+      }
+    });
+
+    Promise.all(validationPromises).then(() => {
+      for (let attachment of this.state.attachments) {
+        if (!(attachment.uploaded || attachment.verified)) {
+          isValid = false;
+          break;
+        }
+        totalSize += attachment.size ? attachment.size : 0;
+      }
+
+      if (totalSize > 26214400) {
+        isValid = false;
+        this.props.mergeEditorState({
+          modalMessage: {
+            title: 'Attachments Size Exceeded',
+            body: 'Total size of attachments should be less than 25MB.'
+          },
+          saving: false
+        });
+      }
+
+      if (isValid) {
+        this.setState({ attachmentsValidated: true, pending: 0 });
+        if (callback) {
+          callback();
+        }
+      } else {
+        this.setState({ attachmentsValidated: false, pending: 0 });
+      }
+    });
+  }
+
   public handleAttachmentRemoved(index: number): void {
     // we found a match, merge us in
     const updated: any = mutate(this.state.attachments, {
@@ -395,7 +555,8 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     const attachments: Tab = {
       name: 'Attachments',
       body: this.renderAttachments(),
-      checked: this.state.attachments.length > 0
+      checked: this.state.attachments.length > 0,
+      hasErrors: !this.state.attachmentsValidated
     };
     const tabs = [attachments];
     return (
