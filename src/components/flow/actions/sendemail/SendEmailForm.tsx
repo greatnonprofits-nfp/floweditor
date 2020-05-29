@@ -28,7 +28,6 @@ const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
 const MAX_ATTACHMENTS = 3;
 
-// eslint-disable-next-line
 const UNSUPPORTED_EMAIL_ATTACHMENTS = [
   'ade',
   'adp',
@@ -408,7 +407,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     const file = files[0];
     const fileExtension = file.type.split('/')[0];
 
-    if (!['audio', 'video', 'image'].includes(fileExtension)) {
+    if (UNSUPPORTED_EMAIL_ATTACHMENTS.includes(fileExtension)) {
       title = 'Invalid Format';
       message =
         'This file type is not supported for security reasons. If you still wish to send, please convert this file to an allowable type.';
