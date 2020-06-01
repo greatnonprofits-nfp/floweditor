@@ -1,4 +1,4 @@
-import { StylesConfig } from 'react-select/lib/styles';
+import { StylesConfig } from 'react-select';
 
 export const large = {
   placeholder: (styles: StylesConfig, state: any) => {
@@ -74,7 +74,8 @@ export const small = {
     maxHeight: '28px',
     minHeight: '28px',
     fontSize: '12px',
-    lineHeight: '12px'
+    lineHeight: '12px',
+    marginBottom: '-10px'
   }),
   menuList: (styles: StylesConfig) => ({
     ...styles,
@@ -101,7 +102,8 @@ export const small = {
   }),
   input: (styles: StylesConfig) => ({
     ...styles,
-    margin: 0,
+    marginLeft: '-2px',
+    marginTop: '0px',
     caretColor: '#999',
     boxShadow: 'none',
     border: 'none',

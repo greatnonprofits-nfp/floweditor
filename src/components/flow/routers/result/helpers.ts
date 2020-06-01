@@ -6,24 +6,35 @@ import {
   resolveRoutes
 } from 'components/flow/routers/helpers';
 import { SelectOption } from 'components/form/select/SelectElement';
-import { DEFAULT_OPERAND } from 'components/nodeeditor/constants';
 import { Types } from 'config/interfaces';
+import { getType } from 'config/typeConfigs';
 import { Router, RouterTypes, SwitchRouter } from 'flowTypes';
-import { AssetStore, AssetType, RenderNode } from 'store/flowContext';
+import { AssetStore, RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 
 import { ResultRouterFormState } from './ResultRouterForm';
 
 export const FIELD_NUMBER_OPTIONS: SelectOption[] = [
-  { value: '1', label: 'first' },
-  { value: '2', label: 'second' },
-  { value: '3', label: 'third' },
-  { value: '4', label: 'fourth' },
-  { value: '5', label: 'fifth' },
-  { value: '6', label: 'sixth' },
-  { value: '7', label: 'seventh' },
-  { value: '8', label: 'eighth' },
-  { value: '9', label: 'ninth' }
+  { value: '0', label: 'first' },
+  { value: '1', label: 'second' },
+  { value: '2', label: 'third' },
+  { value: '3', label: 'fourth' },
+  { value: '4', label: 'fifth' },
+  { value: '5', label: 'sixth' },
+  { value: '6', label: 'seventh' },
+  { value: '7', label: 'eighth' },
+  { value: '8', label: 'ninth' },
+  { value: '9', label: 'tenth' },
+  { value: '10', label: '11th' },
+  { value: '11', label: '12th' },
+  { value: '12', label: '13th' },
+  { value: '13', label: '14th' },
+  { value: '14', label: '15th' },
+  { value: '15', label: '16th' },
+  { value: '16', label: '17th' },
+  { value: '17', label: '18th' },
+  { value: '18', label: '19th' },
+  { value: '19', label: '20th' }
 ];
 
 export const getFieldOption = (value: number): SelectOption => {
@@ -54,9 +65,11 @@ export const nodeToState = (
   let delimiter = ' ';
   let shouldDelimit = false;
 
+  const type = getType(settings.originalNode);
+
   if (
-    (settings.originalNode && settings.originalNode.ui.type === Types.split_by_run_result) ||
-    settings.originalNode.ui.type === Types.split_by_run_result_delimited
+    (settings.originalNode && type === Types.split_by_run_result) ||
+    type === Types.split_by_run_result_delimited
   ) {
     const router = settings.originalNode.node.router as SwitchRouter;
 
@@ -76,7 +89,7 @@ export const nodeToState = (
           : null;
     }
 
-    if (settings.originalNode.ui.type === Types.split_by_run_result_delimited) {
+    if (type === Types.split_by_run_result_delimited) {
       fieldNumber = config.index;
       delimiter = config.delimiter;
       shouldDelimit = true;
@@ -110,15 +123,9 @@ export const stateToNode = (
   }
 
   let nodeType = Types.split_by_run_result;
-  let operand = DEFAULT_OPERAND;
+
   const asset = state.result.value;
-  if (asset.type === AssetType.URN) {
-    operand = `@(format_urn(contact.urns.${asset.id}))`;
-  } else if (asset.type === AssetType.Field) {
-    operand = `@contact.fields.${asset.id}`;
-  } else {
-    operand = `@contact.${asset.id}`;
-  }
+  let operand = `@results.${asset.id}`;
 
   const config: any = {
     operand: {
@@ -132,6 +139,7 @@ export const stateToNode = (
   if (state.shouldDelimit) {
     config.index = state.fieldNumber;
     config.delimiter = state.delimiter;
+    operand = `@(field(results.${asset.id}, ${state.fieldNumber}, "${state.delimiter}"))`;
     nodeType = Types.split_by_run_result_delimited;
   }
 

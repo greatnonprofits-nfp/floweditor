@@ -30,9 +30,20 @@ exports[`AddLabelsComp should display labels on action 1`] = `
     Feedback
   </div>
   <div
+    className="node_asset"
+    key="label-3"
+  >
+    <span
+      className="node_label fe-label"
+    />
+    Needs Attention
+  </div>
+  <div
     key="ellipses"
   >
-    ...
+    +
+    2
+     more
   </div>
 </Fragment>
 `;

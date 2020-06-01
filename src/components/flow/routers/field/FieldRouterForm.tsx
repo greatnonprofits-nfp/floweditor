@@ -1,6 +1,6 @@
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
+import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { sortFieldsAndProperties } from 'components/flow/actions/updatecontact/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import CaseList, { CaseProps } from 'components/flow/routers/caselist/CaseList';
@@ -16,6 +16,7 @@ import { small } from 'utils/reactselect';
 
 import styles from './FieldRouterForm.module.scss';
 import { getRoutableFields, nodeToState, stateToNode } from './helpers';
+import i18n from 'config/i18n';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -77,8 +78,11 @@ export default class FieldRouterForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
@@ -109,6 +113,7 @@ export default class FieldRouterForm extends React.Component<
           onCasesUpdated={this.handleCasesUpdated}
         />
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

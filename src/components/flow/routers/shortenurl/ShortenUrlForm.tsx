@@ -79,7 +79,7 @@ export default class ShortenUrlForm extends React.Component<RouterFormProps, Sho
           searchable={true}
           onChange={this.handleShortenUrlUpdate}
         />
-        {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {createResultNameInput(this.state.resultName, this.handleUpdateResultName, true)}
       </Dialog>
     );
   }

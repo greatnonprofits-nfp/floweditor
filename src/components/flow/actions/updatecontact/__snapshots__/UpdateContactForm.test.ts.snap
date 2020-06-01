@@ -1,400 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UpdateContactForm render initial for channel 1`] = `
-<Dialog
-  buttons={
-    Object {
-      "primary": Object {
-        "name": "Ok",
-        "onClick": [Function],
-      },
-      "secondary": Object {
-        "name": "Cancel",
-        "onClick": [Function],
-      },
-    }
-  }
-  headerClass="set_contact_field"
-  title="Update Contact"
->
-  <TypeList
-    __className=""
-    initialType={
-      Object {
-        "aliases": Array [
-          "set_contact_name",
-          "set_contact_language",
-          "set_contact_channel",
-        ],
-        "component": [Function],
-        "description": "Update the contact",
-        "form": [Function],
-        "name": "Update Contact",
-        "type": "set_contact_field",
-      }
-    }
-    onChange={[MockFunction]}
-  />
-  <p>
-    Select what to update
-  </p>
-  <AssetSelector
-    additionalOptions={
-      Array [
-        Object {
-          "id": "name",
-          "name": "Name",
-          "type": "property",
-        },
-        Object {
-          "id": "language",
-          "name": "Language",
-          "type": "property",
-        },
-        Object {
-          "id": "channel",
-          "name": "Channel",
-          "type": "property",
-        },
-      ]
-    }
-    createAssetFromInput={[Function]}
-    createPrefix="Create Contact Field: "
-    entry={
-      Object {
-        "value": Object {
-          "id": "channel",
-          "name": "Channel",
-          "type": "property",
-        },
-      }
-    }
-    name="Contact Field"
-    onAssetCreated={[Function]}
-    onChange={[Function]}
-    searchable={true}
-    sortFunction={[Function]}
-  />
-  <div
-    className="value"
-  >
-    <AssetSelector
-      entry={
-        Object {
-          "value": Object {
-            "id": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
-            "name": "Twilio Channel",
-            "type": "language",
-          },
-        }
-      }
-      key="select_channel"
-      name="Channel"
-      onChange={[Function]}
-      placeholder="Select the channel to use for this contact"
-      searchable={true}
-      valueClearable={true}
-    />
-  </div>
-</Dialog>
-`;
-
-exports[`UpdateContactForm render initial for field 1`] = `
-<Dialog
-  buttons={
-    Object {
-      "primary": Object {
-        "name": "Ok",
-        "onClick": [Function],
-      },
-      "secondary": Object {
-        "name": "Cancel",
-        "onClick": [Function],
-      },
-    }
-  }
-  headerClass="set_contact_field"
-  title="Update Contact"
->
-  <TypeList
-    __className=""
-    initialType={
-      Object {
-        "aliases": Array [
-          "set_contact_name",
-          "set_contact_language",
-          "set_contact_channel",
-        ],
-        "component": [Function],
-        "description": "Update the contact",
-        "form": [Function],
-        "name": "Update Contact",
-        "type": "set_contact_field",
-      }
-    }
-    onChange={[MockFunction]}
-  />
-  <p>
-    Select what to update
-  </p>
-  <AssetSelector
-    additionalOptions={
-      Array [
-        Object {
-          "id": "name",
-          "name": "Name",
-          "type": "property",
-        },
-        Object {
-          "id": "language",
-          "name": "Language",
-          "type": "property",
-        },
-        Object {
-          "id": "channel",
-          "name": "Channel",
-          "type": "property",
-        },
-      ]
-    }
-    createAssetFromInput={[Function]}
-    createPrefix="Create Contact Field: "
-    entry={
-      Object {
-        "value": Object {
-          "id": "age",
-          "name": "Age",
-          "type": "field",
-        },
-      }
-    }
-    name="Contact Field"
-    onAssetCreated={[Function]}
-    onChange={[Function]}
-    searchable={true}
-    sortFunction={[Function]}
-  />
-  <div
-    className="value"
-  >
-    <Connect(TextInputElement)
-      autocomplete={true}
-      entry={
-        Object {
-          "value": "25",
-        }
-      }
-      focus={true}
-      name="Field Value"
-      onChange={[Function]}
-      onFieldFailures={[Function]}
-      placeholder="Enter a new value for Age"
-    />
-  </div>
-</Dialog>
-`;
-
-exports[`UpdateContactForm render initial for language 1`] = `
-<Dialog
-  buttons={
-    Object {
-      "primary": Object {
-        "name": "Ok",
-        "onClick": [Function],
-      },
-      "secondary": Object {
-        "name": "Cancel",
-        "onClick": [Function],
-      },
-    }
-  }
-  headerClass="set_contact_field"
-  title="Update Contact"
->
-  <TypeList
-    __className=""
-    initialType={
-      Object {
-        "aliases": Array [
-          "set_contact_name",
-          "set_contact_language",
-          "set_contact_channel",
-        ],
-        "component": [Function],
-        "description": "Update the contact",
-        "form": [Function],
-        "name": "Update Contact",
-        "type": "set_contact_field",
-      }
-    }
-    onChange={[MockFunction]}
-  />
-  <p>
-    Select what to update
-  </p>
-  <AssetSelector
-    additionalOptions={
-      Array [
-        Object {
-          "id": "name",
-          "name": "Name",
-          "type": "property",
-        },
-        Object {
-          "id": "language",
-          "name": "Language",
-          "type": "property",
-        },
-        Object {
-          "id": "channel",
-          "name": "Channel",
-          "type": "property",
-        },
-      ]
-    }
-    createAssetFromInput={[Function]}
-    createPrefix="Create Contact Field: "
-    entry={
-      Object {
-        "value": Object {
-          "id": "language",
-          "name": "Language",
-          "type": "property",
-        },
-      }
-    }
-    name="Contact Field"
-    onAssetCreated={[Function]}
-    onChange={[Function]}
-    searchable={true}
-    sortFunction={[Function]}
-  />
-  <div
-    className="value"
-  >
-    <AssetSelector
-      assets={
-        Object {
-          "items": Object {},
-          "type": "language",
-        }
-      }
-      entry={
-        Object {
-          "value": Object {
-            "id": "eng",
-            "name": "eng",
-            "type": "language",
-          },
-        }
-      }
-      key="select_language"
-      name="Language"
-      onChange={[Function]}
-      placeholder="Select the language to use for this contact"
-      searchable={true}
-      shouldExclude={[Function]}
-      valueClearable={true}
-    />
-  </div>
-</Dialog>
-`;
-
-exports[`UpdateContactForm render initial for name 1`] = `
-<Dialog
-  buttons={
-    Object {
-      "primary": Object {
-        "name": "Ok",
-        "onClick": [Function],
-      },
-      "secondary": Object {
-        "name": "Cancel",
-        "onClick": [Function],
-      },
-    }
-  }
-  headerClass="set_contact_field"
-  title="Update Contact"
->
-  <TypeList
-    __className=""
-    initialType={
-      Object {
-        "aliases": Array [
-          "set_contact_name",
-          "set_contact_language",
-          "set_contact_channel",
-        ],
-        "component": [Function],
-        "description": "Update the contact",
-        "form": [Function],
-        "name": "Update Contact",
-        "type": "set_contact_field",
-      }
-    }
-    onChange={[MockFunction]}
-  />
-  <p>
-    Select what to update
-  </p>
-  <AssetSelector
-    additionalOptions={
-      Array [
-        Object {
-          "id": "name",
-          "name": "Name",
-          "type": "property",
-        },
-        Object {
-          "id": "language",
-          "name": "Language",
-          "type": "property",
-        },
-        Object {
-          "id": "channel",
-          "name": "Channel",
-          "type": "property",
-        },
-      ]
-    }
-    createAssetFromInput={[Function]}
-    createPrefix="Create Contact Field: "
-    entry={
-      Object {
-        "value": Object {
-          "id": "name",
-          "name": "Name",
-          "type": "property",
-        },
-      }
-    }
-    name="Contact Field"
-    onAssetCreated={[Function]}
-    onChange={[Function]}
-    searchable={true}
-    sortFunction={[Function]}
-  />
-  <div
-    className="value"
-  >
-    <Connect(TextInputElement)
-      autocomplete={true}
-      entry={
-        Object {
-          "value": "Jane Goodall",
-        }
-      }
-      focus={true}
-      name="Name"
-      onChange={[Function]}
-      onFieldFailures={[Function]}
-      placeholder="Enter a new name for the contact"
-    />
-  </div>
-</Dialog>
-`;
-
 exports[`UpdateContactForm render should render an empty form with different action 1`] = `
 <Dialog
   buttons={
@@ -453,6 +58,12 @@ exports[`UpdateContactForm render should render an empty form with different act
         },
       ]
     }
+    assets={
+      Object {
+        "items": Object {},
+        "type": "field",
+      }
+    }
     createAssetFromInput={[Function]}
     createPrefix="Create Contact Field: "
     entry={
@@ -483,7 +94,6 @@ exports[`UpdateContactForm render should render an empty form with different act
       focus={true}
       name="Name"
       onChange={[Function]}
-      onFieldFailures={[Function]}
       placeholder="Enter a new name for the contact"
     />
   </div>
@@ -548,6 +158,12 @@ exports[`UpdateContactForm render should render an empty form with no action 1`]
         },
       ]
     }
+    assets={
+      Object {
+        "items": Object {},
+        "type": "field",
+      }
+    }
     createAssetFromInput={[Function]}
     createPrefix="Create Contact Field: "
     entry={
@@ -578,7 +194,6 @@ exports[`UpdateContactForm render should render an empty form with no action 1`]
       focus={true}
       name="Name"
       onChange={[Function]}
-      onFieldFailures={[Function]}
       placeholder="Enter a new name for the contact"
     />
   </div>
@@ -624,7 +239,7 @@ Array [
       "uuid": "channel_id",
     },
     "type": "set_contact_channel",
-    "uuid": "e0bc3776-792f-49d2-b4be-48be2cf8159a",
+    "uuid": "e67ce051-f3e4-4c42-807b-e393df5fa382",
   },
   [Function],
 ]
@@ -635,7 +250,7 @@ Array [
   Object {
     "name": "Rowan Seymour",
     "type": "set_contact_name",
-    "uuid": "42ebf1d0-a43e-4ba6-9577-c863b20c88c4",
+    "uuid": "2dc85899-0577-4f1b-a620-f12094e34b5e",
   },
   [Function],
 ]
@@ -676,7 +291,7 @@ Array [
       "name": "Birthday",
     },
     "type": "set_contact_field",
-    "uuid": "70ac6ea6-803a-4c33-81c7-dc26803c313f",
+    "uuid": "42ebf1d0-a43e-4ba6-9577-c863b20c88c4",
     "value": "12/25/00",
   },
   [Function],
@@ -715,7 +330,7 @@ Array [
   Object {
     "language": undefined,
     "type": "set_contact_language",
-    "uuid": "e67ce051-f3e4-4c42-807b-e393df5fa382",
+    "uuid": "70ac6ea6-803a-4c33-81c7-dc26803c313f",
   },
   [Function],
 ]
@@ -757,7 +372,7 @@ Array [
   Object {
     "name": "Rowan Seymour",
     "type": "set_contact_name",
-    "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+    "uuid": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
   },
   [Function],
 ]
@@ -795,7 +410,7 @@ Array [
   Object {
     "name": "Rowan Seymour",
     "type": "set_contact_name",
-    "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+    "uuid": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
   },
   [Function],
 ]
@@ -833,7 +448,7 @@ Array [
   Object {
     "name": "Rowan Seymour",
     "type": "set_contact_name",
-    "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+    "uuid": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
   },
   [Function],
 ]
@@ -871,7 +486,7 @@ Array [
   Object {
     "name": "Rowan Seymour",
     "type": "set_contact_name",
-    "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+    "uuid": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
   },
   [Function],
 ]

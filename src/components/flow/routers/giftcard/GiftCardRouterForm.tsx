@@ -3,6 +3,7 @@ import { FormState, StringEntry, AssetEntry, mergeForm } from 'store/nodeEditor'
 import { RouterFormProps } from 'components/flow/props';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import TypeList from 'components/nodeeditor/TypeList';
+import HelpIcon from 'components/helpicon/HelpIcon';
 import { createResultNameInput } from '../widgets';
 import { nodeToState, stateToNode } from './helpers';
 import {
@@ -16,6 +17,7 @@ import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
+import variables from 'variables.module.scss';
 
 export interface GiftCardRouterFormState extends FormState {
   giftcardDb: AssetEntry;
@@ -27,6 +29,12 @@ const GIFTCARD_OPTIONS: { [key: string]: SelectOption } = {
   GIFTCARD_ASSIGNING: { value: 'GIFTCARD_ASSIGNING', label: 'Assign Gift Card' },
   GIFTCARD_CHECK: { value: 'GIFTCARD_CHECK', label: 'Check Status' }
 };
+
+const customStyles: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'flex-end'
+};
+const customMargin: React.CSSProperties = { marginBottom: '6px' };
 
 class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRouterFormState> {
   constructor(props: RouterFormProps) {
@@ -85,14 +93,6 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
     return (
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
-        <SelectElement
-          name="giftcardType"
-          options={Object.values(GIFTCARD_OPTIONS)}
-          onChange={this.handleUpdateAssignChange}
-          entry={{
-            value: entry
-          }}
-        />
         <p>Select which collection would you like to query the Gift Card</p>
         <AssetSelector
           assets={this.props.assetStore.giftcard}
@@ -100,12 +100,36 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           name="giftcardDb"
           onChange={this.handleGiftcardChanged}
         />
+        <div style={customStyles}>
+          <SelectElement
+            name="giftcardType"
+            options={Object.values(GIFTCARD_OPTIONS)}
+            onChange={this.handleUpdateAssignChange}
+            entry={{
+              value: entry
+            }}
+            className="giftcard-type"
+          />
+          <div style={customMargin}>
+            <HelpIcon iconColor={variables.orange} iconSize="18px" dataFor="giftcardType">
+              <p>
+                Assign Gift Card: This option will reserve a gift card for the contact, saving their
+                phone number and returning information needed to redeem the gift card
+                electronically.
+              </p>
+              <p>
+                Check Status: This option will return the number of Gift Cards that are unassigned
+                in your database.
+              </p>
+            </HelpIcon>
+          </div>
+        </div>
+
         {createResultNameInput(
           this.state.resultName,
           this.handleUpdateResultName,
-          `On the Call Giftcard modal, we should probably display similar note shown on the legacy flow editor (but indicate @webhook.result):
-          
-          The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.`
+          false,
+          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
         )}
       </Dialog>
     );

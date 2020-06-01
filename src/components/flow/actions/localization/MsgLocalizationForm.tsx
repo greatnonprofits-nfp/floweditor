@@ -1,30 +1,30 @@
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
 import styles from 'components/flow/actions/action/Action.module.scss';
-import { hasErrors } from 'components/flow/actions/helpers';
 import { determineTypeConfig } from 'components/flow/helpers';
 import { LocalizationFormProps } from 'components/flow/props';
 import MultiChoiceInput from 'components/form/multichoice/MultiChoice';
 import TextInputElement from 'components/form/textinput/TextInputElement';
 import UploadButton from 'components/uploadbutton/UploadButton';
 import { fakePropType } from 'config/ConfigProvider';
-import { SendMsg } from 'flowTypes';
+import { SendMsg, MsgTemplating } from 'flowTypes';
 import * as React from 'react';
-import {
-  FormState,
-  mergeForm,
-  StringArrayEntry,
-  StringEntry,
-  ValidationFailure
-} from 'store/nodeEditor';
+import mutate from 'immutability-helper';
+import { FormState, mergeForm, StringArrayEntry, StringEntry } from 'store/nodeEditor';
 import { MaxOfTenItems, validate } from 'store/validators';
 
 import { initializeLocalizedForm } from './helpers';
+import i18n from 'config/i18n';
+import { Trans } from 'react-i18next';
+import { range } from 'utils';
+import { renderIssues } from '../helpers';
 
 export interface MsgLocalizationFormState extends FormState {
   message: StringEntry;
   quickReplies: StringArrayEntry;
   audio: StringEntry;
+  templateVariables: StringEntry[];
+  templating: MsgTemplating;
 }
 
 export default class MsgLocalizationForm extends React.Component<
@@ -77,11 +77,12 @@ export default class MsgLocalizationForm extends React.Component<
 
     const updated = mergeForm(this.state, updates);
     this.setState(updated);
+
     return updated.valid;
   }
 
   private handleSave(): void {
-    const { message: text, quickReplies, audio } = this.state;
+    const { message: text, quickReplies, audio, templateVariables } = this.state;
 
     // make sure we are valid for saving, only quick replies can be invalid
     const typeConfig = determineTypeConfig(this.props.nodeSettings);
@@ -96,7 +97,7 @@ export default class MsgLocalizationForm extends React.Component<
         translations.text = text.value;
       }
 
-      if (quickReplies.value) {
+      if (quickReplies.value && quickReplies.value.length > 0) {
         translations.quick_replies = quickReplies.value;
       }
 
@@ -104,12 +105,25 @@ export default class MsgLocalizationForm extends React.Component<
         translations.audio_url = audio.value;
       }
 
-      this.props.updateLocalizations(this.props.language.id, [
+      const localizations = [
         {
           uuid: this.props.nodeSettings.originalAction!.uuid,
           translations
         }
-      ]);
+      ];
+
+      // if we have template variables, they show up on their own key
+      const hasTemplateVariables = templateVariables.find(
+        (entry: StringEntry) => entry.value.length > 0
+      );
+      if (hasTemplateVariables) {
+        localizations.push({
+          uuid: this.state.templating.uuid,
+          translations: { variables: templateVariables.map((entry: StringEntry) => entry.value) }
+        });
+      }
+
+      this.props.updateLocalizations(this.props.language.id, localizations);
 
       // notify our modal we are done
       this.props.onClose(false);
@@ -118,8 +132,11 @@ export default class MsgLocalizationForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
@@ -153,17 +170,61 @@ export default class MsgLocalizationForm extends React.Component<
     });
   }
 
-  public handleQuickReplyFieldFailures(persistantFailures: ValidationFailure[]): void {
-    const quickReplies = { ...this.state.quickReplies, persistantFailures };
-    this.setState({
-      quickReplies,
-      valid: this.state.valid && !hasErrors(quickReplies)
-    });
+  private handleTemplateVariableChanged(updatedText: string, num: number): void {
+    const entry = validate(`Variable ${num + 1}`, updatedText, []);
+
+    const templateVariables = mutate(this.state.templateVariables, {
+      $merge: { [num]: entry }
+    }) as StringEntry[];
+
+    this.setState({ templateVariables });
   }
 
   public render(): JSX.Element {
     const typeConfig = determineTypeConfig(this.props.nodeSettings);
     const tabs: Tab[] = [];
+
+    if (this.state.templating && typeConfig.localizeableKeys!.indexOf('templating') > -1) {
+      const hasLocalizedValue = !!this.state.templateVariables.find(
+        (entry: StringEntry) => entry.value.length > 0
+      );
+
+      tabs.push({
+        name: 'WhatsApp',
+        body: (
+          <>
+            <p>
+              {i18n.t(
+                'forms.send_msg.whatsapp_warning',
+                'Sending messages over a WhatsApp channel requires that a template be used if you have not received a message from a contact in the last 24 hours. Setting a template to use over WhatsApp is especially important for the first message in your flow.'
+              )}
+            </p>
+            {this.state.templating && this.state.templating.variables.length > 0 ? (
+              <>
+                {range(0, this.state.templating.variables.length).map((num: number) => {
+                  const entry = this.state.templateVariables[num] || { value: '' };
+                  return (
+                    <div className={styles.variable} key={'tr_arg_' + num}>
+                      <TextInputElement
+                        name={`Variable ${num + 1}`}
+                        showLabel={false}
+                        placeholder={`${this.props.language.name} Variable ${num + 1}`}
+                        onChange={(updatedText: string) => {
+                          this.handleTemplateVariableChanged(updatedText, num);
+                        }}
+                        entry={entry}
+                        autocomplete={true}
+                      />
+                    </div>
+                  );
+                })}
+              </>
+            ) : null}
+          </>
+        ),
+        checked: hasLocalizedValue
+      });
+    }
 
     if (typeConfig.localizeableKeys!.indexOf('quick_replies') > -1) {
       tabs.push({
@@ -172,14 +233,21 @@ export default class MsgLocalizationForm extends React.Component<
           <>
             <MultiChoiceInput
               name="Quick Reply"
-              helpText={`Add a new ${this.props.language.name} Quick Reply and press enter.`}
+              helpText={
+                <Trans
+                  i18nKey="forms.send_msg.localized_quick_replies"
+                  values={{ language: this.props.language.name }}
+                >
+                  Add a new [[language]] Quick Reply and press enter.
+                </Trans>
+              }
               items={this.state.quickReplies}
               onRemoved={this.handleRemoveQuickReply}
               onItemAdded={this.handleAddQuickReply}
-              onFieldErrors={this.handleQuickReplyFieldFailures}
             />
           </>
-        )
+        ),
+        checked: this.state.quickReplies.value.length > 0
       });
     }
 
@@ -216,19 +284,13 @@ export default class MsgLocalizationForm extends React.Component<
           onChange={this.handleMessageUpdate}
           entry={this.state.message}
           placeholder={`${this.props.language.name} Translation`}
-          onFieldFailures={(persistantFailures: ValidationFailure[]) => {
-            const text = { ...this.state.message, persistantFailures };
-            this.setState({
-              message: text,
-              valid: this.state.valid && !hasErrors(text)
-            });
-          }}
           autocomplete={true}
           focus={true}
           textarea={true}
         />
 
         {audioButton}
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

@@ -1,6 +1,6 @@
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
+import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import CaseList, { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import { createResultNameInput } from 'components/flow/routers/widgets';
@@ -23,6 +23,7 @@ import {
   stateToNode
 } from './helpers';
 import styles from './ResultRouterForm.module.scss';
+import i18n from 'config/i18n';
 
 export interface ResultRouterFormState extends FormState {
   result: AssetEntry;
@@ -82,8 +83,11 @@ export default class ResultRouterForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: 'Ok', onClick: this.handleSave },
-      secondary: { name: 'Cancel', onClick: () => this.props.onClose(true) }
+      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      secondary: {
+        name: i18n.t('buttons.cancel', 'Cancel'),
+        onClick: () => this.props.onClose(true)
+      }
     };
   }
 
@@ -101,7 +105,7 @@ export default class ResultRouterForm extends React.Component<
 
   private renderField(): JSX.Element {
     return (
-      <>
+      <div className={styles.non_delimited}>
         <div className={styles.lead_in}>If the flow result</div>
         <div className={styles.result_select}>
           <AssetSelector
@@ -114,13 +118,13 @@ export default class ResultRouterForm extends React.Component<
             onChange={this.handleResultChanged}
           />
         </div>
-      </>
+      </div>
     );
   }
 
   private renderFieldDelimited(): JSX.Element {
     return (
-      <>
+      <div className={styles.delimited}>
         <div className={styles.lead_in}>If the</div>
         <div className={styles.field_number}>
           <SelectElement
@@ -153,7 +157,7 @@ export default class ResultRouterForm extends React.Component<
             options={DELIMITER_OPTIONS}
           />
         </div>
-      </>
+      </div>
     );
   }
 
@@ -192,6 +196,7 @@ export default class ResultRouterForm extends React.Component<
           onCasesUpdated={this.handleCasesUpdated}
         />
         {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {renderIssues(this.props)}
       </Dialog>
     );
   }

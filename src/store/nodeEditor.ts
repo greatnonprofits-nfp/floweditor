@@ -22,7 +22,6 @@ export interface ValidationFailure {
 export interface FormEntry {
   value: any;
   validationFailures?: ValidationFailure[];
-  persistantFailures?: ValidationFailure[];
 }
 
 export interface SelectOptionEntry extends FormEntry {
@@ -51,6 +50,10 @@ export interface AssetEntry extends FormEntry {
 
 export interface AssetArrayEntry extends FormEntry {
   value: Asset[] | null;
+}
+
+export interface SelectOptionArrayEntry extends FormEntry {
+  value: SelectOption[] | null;
 }
 
 export const mergeForm = (

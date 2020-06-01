@@ -12,16 +12,16 @@ $action_padding: 10px;
 $node_spacing: 13;
 
 :export {
-    grid_size: $grid_size;
+  grid_size: $grid_size;
 }
 :export {
-    node_spacing: $node_spacing;
+  node_spacing: $node_spacing;
 }
 :export {
-    node_padding: $node_padding;
+  node_padding: $node_padding;
 }
 :export {
-    background-size: $node_spacing;
+  background-size: $node_spacing;
 }
 
 // generic colors
@@ -45,7 +45,7 @@ $connector_hover_color: $lime;
 $removal_confirmation: $red;
 $path_color: #fff;
 $text_color: #666;
-$borders: rgba(224, 224, 224, 0.6);
+$borders: #f3f3f3;
 $active_color: $blue_bold;
 $activity_color: $light_gray_2;
 $terminal_color: $red;
@@ -80,20 +80,25 @@ $button_hover: lighten($blue, 5%);
 $button_disabled: #ddd;
 
 // z index ordering
+$z_plumb_sources: 1;
 $z_connectors: 100;
 $z_nodes: 150;
-$z_endpoints: 200;
-$z_nodes_hover: 250;
+$z_plumb_arrows: 200;
 $z_counters: 225;
 $z_sticky: 240;
+$z_connectors_hover: 160;
+$z_endpoints: 275;
 $z_group_drag_anchor: 300;
 $z_editor_menu: 400;
 $z_footer: 900;
 $z_simulator_tab: 1000;
 $z_simulator: 1000;
-$z_recent_messages: 1005;
+$z_issues: 1000;
+$z_activity: 1010;
+$z_recent_messages: 1015;
 $z_revision_mask: 1020;
 $z_revision_explorer: 1021;
+$z_pop_tabs: 1021;
 $z_dragging: 1500;
 $z_saving: 1900;
 $z_modal: 2000;

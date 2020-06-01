@@ -4,6 +4,7 @@ import { DefaultExitNames } from 'components/flow/routers/constants';
 import { getSwitchRouter } from 'components/flow/routers/helpers';
 import { GROUPS_OPERAND } from 'components/nodeeditor/constants';
 import { FlowTypes, Types } from 'config/interfaces';
+import { getType } from 'config/typeConfigs';
 import { getActivity } from 'external';
 import {
   AddLabels,
@@ -21,11 +22,19 @@ import {
   SwitchRouter,
   UIMetaData,
   Wait,
-  WaitTypes
+  WaitTypes,
+  SendMsg
 } from 'flowTypes';
 import Localization, { LocalizedObject } from 'services/Localization';
-import { Activity, EditorState } from 'store/editor';
-import { Asset, AssetMap, AssetType, RenderNode, RenderNodeMap } from 'store/flowContext';
+import { Activity, EditorState, Warnings } from 'store/editor';
+import {
+  Asset,
+  AssetMap,
+  AssetType,
+  RenderNode,
+  RenderNodeMap,
+  AssetStore
+} from 'store/flowContext';
 import { addResult } from 'store/mutators';
 import { DispatchWithState, GetState, mergeEditorState } from 'store/thunks';
 import { createUUID, snakify } from 'utils';
@@ -93,10 +102,10 @@ export const hasWait = (renderNode: RenderNode): boolean => {
 };
 
 export const hasLoopSplit = (renderNode: RenderNode): boolean => {
+  const type = getType(renderNode);
+
   return (
-    hasWait(renderNode) ||
-    renderNode.ui.type === Types.split_by_expression ||
-    renderNode.ui.type === Types.split_by_subflow
+    hasWait(renderNode) || type === Types.split_by_expression || type === Types.split_by_subflow
   );
 };
 
@@ -172,6 +181,15 @@ export const getLocalizations = (
 
   if (action) {
     localizations.push(Localization.translate(action, language, translations));
+    // check for localized template variables]
+    if (action.type === Types.send_msg) {
+      const sendMsgAction = action as SendMsg;
+      if (sendMsgAction.templating) {
+        localizations.push(
+          Localization.translate(sendMsgAction.templating, language, translations)
+        );
+      }
+    }
   }
 
   // Account for localized categories
@@ -409,6 +427,7 @@ export interface FlowComponents {
   fields: AssetMap;
   labels: AssetMap;
   results: AssetMap;
+  warnings: Warnings;
 }
 
 export const isGroupAction = (actionType: string) => {
@@ -494,8 +513,13 @@ export const assetMapToList = (assets: AssetMap): any[] => {
 /**
  * Processes an initial FlowDefinition for details necessary for the editor
  */
-export const getFlowComponents = ({ nodes, _ui }: FlowDefinition): FlowComponents => {
+export const getFlowComponents = (
+  definition: FlowDefinition,
+  assetStore: AssetStore
+): FlowComponents => {
   const renderNodeMap: RenderNodeMap = {};
+  const warnings: Warnings = {};
+  const { nodes, _ui } = definition;
 
   // initialize our nodes
   const pointerMap: { [uuid: string]: { [uuid: string]: string } } = {};
@@ -511,19 +535,22 @@ export const getFlowComponents = ({ nodes, _ui }: FlowDefinition): FlowComponent
     }
 
     const ui = _ui.nodes[node.uuid];
-    renderNodeMap[node.uuid] = {
+    const renderNode = {
       node,
       ui,
       inboundConnections: {}
     };
+    renderNodeMap[node.uuid] = renderNode;
 
     const resultName = getResultName(node);
     if (resultName) {
       results = addResult(resultName, results, { nodeUUID: node.uuid });
     }
 
+    const type = getType(renderNode);
+
     // if we are split by group, look at our categories for groups
-    if (ui.type === Types.split_by_groups) {
+    if (type === Types.split_by_groups) {
       const router = getSwitchRouter(node);
 
       for (const kase of router.cases) {
@@ -609,7 +636,7 @@ export const getFlowComponents = ({ nodes, _ui }: FlowDefinition): FlowComponent
     renderNodeMap[nodeUUID].inboundConnections = pointerMap[nodeUUID];
   }
 
-  return { renderNodeMap, groups, fields, labels, results };
+  return { renderNodeMap, groups, fields, labels, results, warnings };
 };
 
 /**

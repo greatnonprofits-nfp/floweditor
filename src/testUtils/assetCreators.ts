@@ -1,13 +1,13 @@
 import { languageToAsset } from 'components/flow/actions/updatecontact/helpers';
 import { determineTypeConfig } from 'components/flow/helpers';
-import { ActionFormProps, RouterFormProps } from 'components/flow/props';
+import { ActionFormProps, LocalizationFormProps, RouterFormProps } from 'components/flow/props';
 import { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import { DefaultExitNames } from 'components/flow/routers/constants';
 import { ResolvedRoutes, resolveRoutes } from 'components/flow/routers/helpers';
 import { Methods } from 'components/flow/routers/webhook/helpers';
-import { DEFAULT_OPERAND, GROUPS_OPERAND } from 'components/nodeeditor/constants';
+import { DEFAULT_OPERAND, GROUPS_OPERAND, SCHEMES_OPERAND } from 'components/nodeeditor/constants';
 import { Operators, Types } from 'config/interfaces';
-import { getTypeConfig } from 'config/typeConfigs';
+import { getTypeConfig, Scheme } from 'config/typeConfigs';
 import {
   AnyAction,
   BroadcastMsg,
@@ -44,10 +44,13 @@ import {
   UINode,
   Wait,
   WaitTypes,
-  WebhookExitNames
+  WebhookExitNames,
+  HintTypes
 } from 'flowTypes';
-import { Assets, AssetType, RenderNode } from 'store/flowContext';
+import Localization from 'services/Localization';
+import { Asset, Assets, AssetType, RenderNode } from 'store/flowContext';
 import { assetListToMap } from 'store/helpers';
+import { EMPTY_TEST_ASSETS } from 'test/utils';
 import { mock } from 'testUtils';
 import * as utils from 'utils';
 
@@ -170,29 +173,28 @@ export const createCallWebhookAction = ({
 
 export const createStartSessionAction = ({
   uuid = utils.createUUID(),
-  groups = [
-    { uuid: utils.createUUID(), name: 'Cat Fanciers' },
-    { uuid: utils.createUUID(), name: 'Cat Facts' }
-  ],
+  groups = [{ uuid: utils.createUUID(), name: 'Cat Fanciers' }],
   contacts = [
-    { uuid: utils.createUUID(), name: 'Kellan Alexander' },
     { uuid: utils.createUUID(), name: 'Norbert Kwizera' },
     { uuid: utils.createUUID(), name: 'Rowan Seymour' }
   ],
   flow = {
     uuid: 'flow_uuid',
     name: 'Flow to Start'
-  }
+  },
+  create_contact = false
 }: {
   uuid?: string;
   groups?: Group[];
   contacts?: Contact[];
   flow?: Flow;
+  create_contact?: boolean;
 } = {}): StartSession => ({
   uuid,
   groups,
   contacts,
   flow,
+  create_contact,
   type: Types.start_session
 });
 
@@ -336,7 +338,10 @@ export const createSetRunResultAction = ({
   type: Types.set_run_result
 });
 
-export const createWebhookNode = (action: CallWebhook | CallResthook | TransferAirtime) => {
+export const createWebhookNode = (
+  action: CallWebhook | CallResthook | TransferAirtime,
+  useCategoryTest: boolean
+) => {
   const { categories, exits } = createCategories([
     WebhookExitNames.Success,
     WebhookExitNames.Failure
@@ -345,18 +350,23 @@ export const createWebhookNode = (action: CallWebhook | CallResthook | TransferA
   const cases: Case[] = [
     {
       uuid: utils.createUUID(),
-      type: Operators.has_only_text,
+      type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
       arguments: [WebhookExitNames.Success],
       category_uuid: categories[0].uuid
     }
   ];
+
+  let operand = '@results.' + utils.snakify(action.result_name);
+  if (!useCategoryTest) {
+    operand += '.category';
+  }
 
   return {
     uuid: utils.createUUID(),
     actions: [action],
     router: {
       type: RouterTypes.switch,
-      operand: `@results.${utils.snakify(action.result_name)}.category`,
+      operand: operand,
       cases,
       categories,
       default_category_uuid: categories[categories.length - 1].uuid
@@ -374,28 +384,79 @@ export const createWebhookRouterNode = (): FlowNode => {
     method: Methods.GET,
     result_name: 'Response'
   };
-  return createWebhookNode(action);
+  return createWebhookNode(action, false);
+};
+
+export const getLocalizationFormProps = (
+  action: AnyAction,
+  lang?: Asset,
+  translations?: { [uuid: string]: any }
+): LocalizationFormProps => {
+  const language = lang || { id: 'eng', name: 'English', type: AssetType.Language };
+  return {
+    language,
+    onClose: jest.fn(),
+    updateLocalizations: jest.fn(),
+    issues: [],
+    helpArticles: {},
+    nodeSettings: {
+      originalNode: createRenderNode({
+        actions: [action],
+        uuid: utils.createUUID(),
+        router: null,
+        exits: [{ uuid: utils.createUUID() }],
+        ui: {
+          position: { left: 0, top: 0 },
+          type: Types.execute_actions
+        }
+      }),
+      originalAction: action,
+      localizations: [Localization.translate(action, language, translations)]
+    }
+  };
 };
 
 export const getActionFormProps = (action: AnyAction): ActionFormProps => ({
-  assetStore: { languages: { items: {}, type: AssetType.Language } },
+  assetStore: {
+    channels: { items: {}, type: AssetType.Channel },
+    fields: { items: {}, type: AssetType.Field },
+    languages: { items: {}, type: AssetType.Language },
+    labels: { items: {}, type: AssetType.Label },
+    results: { items: {}, type: AssetType.Result },
+    flows: { items: {}, type: AssetType.Flow },
+    recipients: { items: {}, type: AssetType.Contact || AssetType.Group || AssetType.URN }
+  },
+  helpArticles: {},
+  completionSchema: { root: [], types: [] },
   addAsset: jest.fn(),
   updateAction: jest.fn(),
   onClose: jest.fn(),
   onTypeChange: jest.fn(),
+  issues: [],
   typeConfig: getTypeConfig(action.type),
   nodeSettings: {
-    originalNode: null,
+    originalNode: createRenderNode({
+      actions: [action],
+      uuid: utils.createUUID(),
+      router: null,
+      exits: [{ uuid: utils.createUUID() }],
+      ui: {
+        position: { left: 0, top: 0 },
+        type: Types.execute_actions
+      }
+    }),
     originalAction: action
   }
 });
 
 export const getRouterFormProps = (renderNode: RenderNode): RouterFormProps => ({
+  helpArticles: {},
   updateRouter: jest.fn(),
   onClose: jest.fn(),
   onTypeChange: jest.fn(),
+  issues: [],
   typeConfig: determineTypeConfig({ originalNode: renderNode }),
-  assetStore: {},
+  assetStore: EMPTY_TEST_ASSETS,
   nodeSettings: {
     originalNode: renderNode,
     originalAction: null
@@ -477,6 +538,13 @@ export const createRoutes = (categories: string[], hasTimeout: boolean = false):
   return resolveRoutes(cases, hasTimeout, null);
 };
 
+export const createWaitRouter = (hintType: HintTypes, resultName: string = 'Result Name') => {
+  const originalNode = createMatchRouter([]);
+  originalNode.node.router.wait = { type: WaitTypes.msg, hint: { type: hintType } };
+  originalNode.node.router.result_name = resultName;
+  return originalNode;
+};
+
 export const createMatchRouter = (matches: string[], hasTimeout: boolean = false): RenderNode => {
   const { exits, categories, cases, timeoutCategory } = createRoutes(matches, hasTimeout);
 
@@ -496,13 +564,36 @@ export const createMatchRouter = (matches: string[], hasTimeout: boolean = false
       categories,
       cases,
       wait,
-      default_category_uuid: categories[categories.length - 1].uuid
+      default_category_uuid: categories[categories.length - 1].uuid,
+      result_name: ''
     } as SwitchRouter,
     ui: {
       type: Types.wait_for_response,
       position: { left: 0, top: 0 }
     }
   });
+};
+
+export const createSchemeRouter = (schemes: Scheme[]): RenderNode => {
+  const matchRouter = createMatchRouter(schemes.map((scheme: Scheme) => scheme.scheme));
+
+  const router = matchRouter.node.router as SwitchRouter;
+
+  // switch our operators to be consistent with scheme routers
+  // set our operand and type for scheme matching
+  delete router['wait'];
+  router.cases.forEach((kase: Case) => {
+    kase.type = Operators.has_only_phrase;
+    const category = router.categories.find(
+      (category: Category) => category.uuid === kase.category_uuid
+    );
+    category.name = schemes.find((scheme: Scheme) => scheme.scheme === kase.arguments[0]).name;
+  });
+
+  router.operand = SCHEMES_OPERAND;
+  matchRouter.ui.type = Types.split_by_scheme;
+
+  return matchRouter;
 };
 
 export const createSwitchRouter = ({
@@ -649,7 +740,7 @@ export const createSubflowNode = (
 
 export const createAirtimeTransferNode = (transferAirtimeAction: TransferAirtime): RenderNode => {
   return {
-    node: createWebhookNode(transferAirtimeAction),
+    node: createWebhookNode(transferAirtimeAction, true),
     ui: { position: { left: 0, top: 0 }, type: Types.split_by_airtime },
     inboundConnections: {}
   };
@@ -657,7 +748,7 @@ export const createAirtimeTransferNode = (transferAirtimeAction: TransferAirtime
 
 export const createResthookNode = (callResthookAction: CallResthook): RenderNode => {
   return {
-    node: createWebhookNode(callResthookAction),
+    node: createWebhookNode(callResthookAction, false),
     ui: { position: { left: 0, top: 0 }, type: Types.split_by_resthook },
     inboundConnections: {}
   };
@@ -748,7 +839,10 @@ export const SubscribersGroup = {
 
 export const ColorFlowAsset = {
   name: 'Favorite Color',
-  uuid: '9a93ede6-078f-44c9-ad0a-133793be5d56'
+  uuid: '9a93ede6-078f-44c9-ad0a-133793be5d56',
+  content: {
+    parent_refs: ['colors']
+  }
 };
 
 export const ResthookAsset = {

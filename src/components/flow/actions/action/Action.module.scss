@@ -1,4 +1,4 @@
-@import "variables.module.scss";
+@import 'variables.module.scss';
 
 .action {
   position: relative;
@@ -50,10 +50,15 @@
     padding: $action_padding;
   }
 
+  &.call_classifier {
+    padding: $action_padding;
+    width: inherit;
+  }
+
   &.send_broadcast,
   &.start_session {
     padding: 0px;
-    width: $node_min_width;
+    width: $node_min_width + px;
   }
 
   &.missing {
@@ -68,6 +73,12 @@
   }
   .body {
     background: #fff !important;
+  }
+}
+
+.immutable {
+  .overlay {
+    display: block;
   }
 }
 

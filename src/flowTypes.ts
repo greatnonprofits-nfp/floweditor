@@ -1,6 +1,9 @@
 import { Methods } from 'components/flow/routers/webhook/helpers';
 import { FlowTypes, Operators, Types } from 'config/interfaces';
 
+// we don't concern ourselves with patch versions
+export const SPEC_VERSION = '13.1';
+
 export interface Languages {
   [iso: string]: string;
 }
@@ -23,6 +26,7 @@ export interface Endpoints {
   lookups: string;
   recents: string;
   fields: string;
+  globals: string;
   giftcard: string;
   link: string;
   groups: string;
@@ -32,9 +36,11 @@ export interface Endpoints {
   activity: string;
   labels: string;
   channels: string;
+  classifiers: string;
   environment: string;
   languages: string;
   templates: string;
+  completion: string;
   functions: string;
   simulateStart: string;
   simulateResume: string;
@@ -46,23 +52,85 @@ export interface FlowEditorConfig {
   endpoints: Endpoints;
   flow: string;
   flowType: FlowTypes;
-  flowName: string;
+  flowName?: string;
   showTemplates?: boolean;
   showDownload?: boolean;
+  mutable?: boolean;
   debug?: boolean;
   path?: string;
   headers?: any;
   onLoad?: () => void;
   onActivityClicked?: (uuid: string) => void;
 
+  // help links
+  help: { [key: string]: string };
+
   // whether to force a save on load
   forceSaveOnLoad?: boolean;
+
+  filters?: string[];
 }
 
 export interface LocalizationMap {
   [lang: string]: {
     [uuid: string]: any;
   };
+}
+
+export interface Result {
+  key: string;
+  name: string;
+  categories: string[];
+  node_uuids: string[];
+}
+
+export enum DependencyType {
+  channel = 'channel',
+  classifier = 'classifier',
+  contact = 'contact',
+  field = 'field',
+  flow = 'flow',
+  group = 'group',
+  label = 'label',
+  template = 'template'
+}
+
+export interface Dependency {
+  uuid?: string;
+  key?: string;
+  name: string;
+  type: DependencyType;
+  missing?: boolean;
+  nodes: { [uuid: string]: string[] };
+}
+
+export interface FlowMetadata {
+  dependencies: Dependency[];
+  waiting_exit_uuids: string[];
+  results: Result[];
+  parent_refs: string[];
+  issues: FlowIssue[];
+}
+
+export enum FlowIssueType {
+  MISSING_DEPENDENCY = 'missing_dependency',
+  LEGACY_EXTRA = 'legacy_extra',
+  INVALID_REGEX = 'invalid_regex'
+}
+
+export interface FlowIssue {
+  type: FlowIssueType;
+  node_uuid: string;
+  action_uuid: string;
+  description: string;
+  dependency?: Dependency;
+  language?: string;
+  regex?: string;
+}
+
+export interface FlowDetails {
+  definition: FlowDefinition;
+  metadata: FlowMetadata;
 }
 
 export interface FlowDefinition {
@@ -72,6 +140,7 @@ export interface FlowDefinition {
   nodes: FlowNode[];
   uuid: string;
   revision: number;
+  spec_version: string;
   _ui: UIMetaData;
 }
 
@@ -253,6 +322,7 @@ export interface MsgTemplate {
 }
 
 export interface MsgTemplating {
+  uuid: string;
   template: MsgTemplate;
   variables: string[];
 }
@@ -262,6 +332,7 @@ export interface SendMsg extends Action {
   all_urns?: boolean;
   quick_replies?: string[];
   attachments?: string[];
+  topic?: string;
   templating?: MsgTemplating;
 }
 
@@ -295,6 +366,7 @@ export interface SendEmail extends Action {
   subject: string;
   body: string;
   addresses: string[];
+  attachments?: string[];
 }
 
 export interface SetRunResult extends Action {
@@ -307,8 +379,19 @@ export interface Headers {
   [name: string]: string;
 }
 
+export interface Classifier {
+  uuid: string;
+  name: string;
+}
+
 export interface TransferAirtime extends Action {
   amounts: { [name: string]: number };
+  result_name: string;
+}
+
+export interface CallClassifier extends Action {
+  classifier: Classifier;
+  input: string;
   result_name: string;
 }
 
@@ -382,11 +465,13 @@ export interface StartFlow extends Action {
 
 export interface StartSession extends RecipientsAction {
   flow: Flow;
+  create_contact?: boolean;
+  contact_query?: string;
 }
 
 export interface UIMetaData {
   nodes: { [key: string]: UINode };
-  languages: Array<{ [iso: string]: string }>;
+  languages: { [iso: string]: string }[];
 }
 
 export interface FlowPosition {
@@ -433,6 +518,7 @@ export type AnyAction =
   | SendMsg
   | SetPreferredChannel
   | SendEmail
+  | CallClassifier
   | CallWebhook
   | CallLookup
   | CallGiftcard

@@ -20,18 +20,29 @@ exports[`MsgLocalizationForm inits inits with initial values 1`] = `
       Object {
         "body": <React.Fragment>
           <MultiChoiceInput
-            helpText="Add a new Spanish Quick Reply and press enter."
+            helpText={
+              <Trans
+                i18nKey="forms.send_msg.localized_quick_replies"
+                values={
+                  Object {
+                    "language": "Spanish",
+                  }
+                }
+              >
+                Add a new [[language]] Quick Reply and press enter.
+              </Trans>
+            }
             items={
               Object {
                 "value": Array [],
               }
             }
             name="Quick Reply"
-            onFieldErrors={[Function]}
             onItemAdded={[Function]}
             onRemoved={[Function]}
           />
         </React.Fragment>,
+        "checked": false,
         "name": "Quick Replies",
       },
     ]
@@ -58,7 +69,6 @@ exports[`MsgLocalizationForm inits inits with initial values 1`] = `
     focus={true}
     name="Message"
     onChange={[Function]}
-    onFieldFailures={[Function]}
     placeholder="Spanish Translation"
     showLabel={false}
     textarea={true}
@@ -86,18 +96,29 @@ exports[`MsgLocalizationForm render should render 1`] = `
       Object {
         "body": <React.Fragment>
           <MultiChoiceInput
-            helpText="Add a new Spanish Quick Reply and press enter."
+            helpText={
+              <Trans
+                i18nKey="forms.send_msg.localized_quick_replies"
+                values={
+                  Object {
+                    "language": "Spanish",
+                  }
+                }
+              >
+                Add a new [[language]] Quick Reply and press enter.
+              </Trans>
+            }
             items={
               Object {
                 "value": Array [],
               }
             }
             name="Quick Reply"
-            onFieldErrors={[Function]}
             onItemAdded={[Function]}
             onRemoved={[Function]}
           />
         </React.Fragment>,
+        "checked": false,
         "name": "Quick Replies",
       },
     ]
@@ -124,12 +145,41 @@ exports[`MsgLocalizationForm render should render 1`] = `
     focus={true}
     name="Message"
     onChange={[Function]}
-    onFieldFailures={[Function]}
     placeholder="Spanish Translation"
     showLabel={false}
     textarea={true}
   />
 </Dialog>
+`;
+
+exports[`MsgLocalizationForm updates should ignore empty quick replies 1`] = `
+Object {
+  "audio": Object {
+    "value": null,
+  },
+  "message": Object {
+    "value": "",
+  },
+  "quickReplies": Object {
+    "validationFailures": Array [],
+    "value": Array [],
+  },
+  "templateVariables": Array [],
+  "templating": null,
+  "valid": true,
+}
+`;
+
+exports[`MsgLocalizationForm updates should ignore empty quick replies 2`] = `
+Array [
+  "spa",
+  Array [
+    Object {
+      "translations": Object {},
+      "uuid": "b1f332f3-bdd3-4891-aec5-1843a712dbf1",
+    },
+  ],
+]
 `;
 
 exports[`MsgLocalizationForm updates should save changes 1`] = `
@@ -149,6 +199,8 @@ Object {
       "blue",
     ],
   },
+  "templateVariables": Array [],
+  "templating": null,
   "valid": true,
 }
 `;

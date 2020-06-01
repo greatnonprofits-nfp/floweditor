@@ -6,6 +6,7 @@ import { createRandomNode } from 'testUtils/assetCreators';
 import { createUUID } from 'utils';
 
 const baseProps: NodeProps = {
+  languages: {},
   nodeUUID: createUUID(),
   startingNode: true,
   onlyNode: true,
@@ -35,7 +36,8 @@ const baseProps: NodeProps = {
   onAddToNode: jest.fn(),
   onOpenNodeEditor: jest.fn(),
   removeNode: jest.fn(),
-  mergeEditorState: jest.fn()
+  mergeEditorState: jest.fn(),
+  issues: []
 };
 
 describe(NodeComp.name, () => {

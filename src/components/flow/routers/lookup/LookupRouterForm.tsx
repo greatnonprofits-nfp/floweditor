@@ -156,7 +156,8 @@ export default class LookupRouterForm extends React.Component<
         {createResultNameInput(
           this.state.resultName,
           this.handleUpdateResultName,
-          'By naming the result, you can reference it later using @webhook.result_field_name. Where field name means the name of the column that you want collect the information.'
+          false,
+          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
         )}
       </Dialog>
     );
