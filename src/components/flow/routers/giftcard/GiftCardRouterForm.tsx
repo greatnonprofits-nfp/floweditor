@@ -57,7 +57,7 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
 
   private handleUpdateResultName = (value: string): void => {
     const updates: Partial<GiftCardRouterFormState> = {
-      resultName: validate('resultName', value, [Alphanumeric, StartIsNonNumeric, Required])
+      resultName: validate('Result Name', value, [Alphanumeric, StartIsNonNumeric, Required])
     };
 
     const updated = mergeForm(this.state, updates);
