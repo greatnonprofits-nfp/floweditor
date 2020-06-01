@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
-import { hasErrors } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
@@ -29,11 +28,12 @@ export default class ShortenUrlForm extends React.Component<RouterFormProps, Sho
   }
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric]);
-    this.setState({
-      resultName,
-      valid: this.state.valid && !hasErrors(resultName)
-    });
+    const updates: Partial<ShortenUrlFormState> = {
+      resultName: validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
   }
 
   private handleShortenUrlUpdate(selected: Asset[], submitting = false): boolean {

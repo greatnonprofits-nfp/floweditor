@@ -93,11 +93,12 @@ export default class LookupRouterForm extends React.Component<
   };
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric]);
-    this.setState({
-      resultName,
-      valid: this.state.valid && !hasErrors(resultName)
-    });
+    const updates: Partial<LookupRouterFormState> = {
+      resultName: validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
   }
 
   private handleDbUpdate(selected: Asset[], submitting = false): boolean {
@@ -153,7 +154,12 @@ export default class LookupRouterForm extends React.Component<
             />
           </LookQueryContext.Provider>
         )}
-        {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {createResultNameInput(
+          this.state.resultName,
+          this.handleUpdateResultName,
+          false,
+          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
+        )}
       </Dialog>
     );
   }

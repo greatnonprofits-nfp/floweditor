@@ -5,6 +5,7 @@ Array [
   Object {
     "activity": "",
     "attachments": "/assets/attachments.json",
+    "attachments_validation": "/assets/attachments_validation.json",
     "channels": "/assets/channels.json",
     "classifiers": "/assets/classifiers.json",
     "completion": "/assets/completion.json",

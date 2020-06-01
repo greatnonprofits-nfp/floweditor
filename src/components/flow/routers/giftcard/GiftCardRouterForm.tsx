@@ -13,7 +13,6 @@ import {
   shouldRequireIf,
   Required
 } from 'store/validators';
-import { hasErrors } from 'components/flow/actions/helpers';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { Asset } from 'store/flowContext';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
@@ -57,12 +56,12 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
   };
 
   private handleUpdateResultName = (value: string): void => {
-    const resultName = validate('resultName', value, [Alphanumeric, StartIsNonNumeric, Required]);
+    const updates: Partial<GiftCardRouterFormState> = {
+      resultName: validate('Result Name', value, [Alphanumeric, StartIsNonNumeric, Required])
+    };
 
-    this.setState({
-      resultName,
-      valid: this.state.valid && !hasErrors(resultName)
-    });
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
   };
 
   public handleGiftcardChanged = (selected: Asset[], submitting = false): boolean => {
@@ -125,7 +124,12 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           </div>
         </div>
 
-        {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {createResultNameInput(
+          this.state.resultName,
+          this.handleUpdateResultName,
+          false,
+          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
+        )}
       </Dialog>
     );
   }

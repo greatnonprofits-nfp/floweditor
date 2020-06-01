@@ -16,6 +16,7 @@ export const initializeForm = (settings: NodeEditorSettings): SendEmailFormState
       const attachment = {
         type,
         url: attachmentString.substring(splitPoint + 1),
+        verified: true,
         uploaded: type.indexOf('/') > -1
       };
 
