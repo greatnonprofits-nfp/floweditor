@@ -153,7 +153,12 @@ export default class LookupRouterForm extends React.Component<
             />
           </LookQueryContext.Provider>
         )}
-        {createResultNameInput(this.state.resultName, this.handleUpdateResultName)}
+        {createResultNameInput(
+          this.state.resultName,
+          this.handleUpdateResultName,
+          false,
+          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
+        )}
       </Dialog>
     );
   }
