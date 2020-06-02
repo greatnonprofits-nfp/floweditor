@@ -1,4 +1,12 @@
-import { HIDDEN, Operator, OperatorMap, Operators, TEXT_TYPES, ONLINE } from 'config/interfaces';
+import {
+  HIDDEN,
+  Operator,
+  OperatorMap,
+  Operators,
+  TEXT_TYPES,
+  ONLINE,
+  MESSAGE
+} from 'config/interfaces';
 import i18n from 'config/i18n';
 
 export const intentOperatorList: Operator[] = [
@@ -57,7 +65,8 @@ export const operatorConfigList: Operator[] = [
     type: Operators.has_image,
     verboseName: i18n.t('operators.has_image', 'has an image'),
     operands: 0,
-    categoryName: i18n.t('operators.has_image_category', 'Has an image')
+    categoryName: i18n.t('operators.has_image_category', 'Has an image'),
+    visibility: MESSAGE
   },
   {
     type: Operators.has_number,
