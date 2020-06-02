@@ -405,7 +405,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     let message = '';
     let isValid = true;
     const file = files[0];
-    const fileExtension = file.type.split('/')[0];
+    const fileExtension = file.name.split('.').pop();
 
     if (UNSUPPORTED_EMAIL_ATTACHMENTS.includes(fileExtension)) {
       title = 'Invalid Format';
@@ -439,6 +439,16 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     const headers = csrf ? { 'X-CSRFToken': csrf } : {};
     const data = new FormData();
     data.append('attachment_url', attachmentsList[index].url);
+
+    // skip validation if instead of url we have flow variable
+    let flowVariableRegex = /^@[\w.]+$/;
+    if (attachmentsList[index].url.match(flowVariableRegex)) {
+      const attachments: any = mutate(attachmentsList, {
+        [index]: { $merge: { size: 0, verified: true } }
+      });
+      this.setState({ attachments });
+      return;
+    }
 
     interface ValidationResponse {
       valid: boolean;
@@ -537,6 +547,8 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         }
       } else {
         this.setState({ attachmentsValidated: false, pending: 0 });
+        /* clear file input to be able select another file */
+        this.filePicker.value = '';
       }
     });
   }
