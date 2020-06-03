@@ -393,10 +393,16 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         });
         this.setState({ attachments });
         this.decreasePending();
+
+        /* clear file input to be able select another file */
+        this.filePicker.value = '';
       })
       .catch(error => {
         console.log(error);
         this.decreasePending();
+
+        /* clear file input to be able select another file */
+        this.filePicker.value = '';
       });
   }
 
@@ -568,8 +574,6 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         }
       } else {
         this.setState({ attachmentsValidated: false, pending: 0 });
-        /* clear file input to be able select another file */
-        this.filePicker.value = '';
       }
     });
   }
