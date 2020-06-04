@@ -40,15 +40,29 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
     super(props);
     this.state = nodeToState(this.props.nodeSettings);
   }
-  private handleSave = () => {
-    if (this.state.valid) {
+
+  private handleSave = (): void => {
+    // validate in case they never updated an empty field
+    const updates: Partial<GiftCardRouterFormState> = {
+      giftcardDb: validate('Giftcard Database', this.state.giftcardDb.value, [Required]),
+      resultName: validate('Result Name', this.state.resultName.value, [
+        Alphanumeric,
+        StartIsNonNumeric,
+        Required
+      ])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
+
+    if (this.state.valid && updated.valid) {
       this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
       this.props.onClose(false);
     }
   };
 
   private handleUpdateAssignChange = (value: SelectOption, submitting = false): void => {
-    const giftcardType = validate('giftcardType', value.value, [shouldRequireIf(submitting)]);
+    const giftcardType = validate('Giftcard Type', value.value, [shouldRequireIf(submitting)]);
 
     this.setState({
       giftcardType: giftcardType
@@ -66,7 +80,10 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
 
   public handleGiftcardChanged = (selected: Asset[], submitting = false): boolean => {
     const updates: Partial<GiftCardRouterFormState> = {
-      giftcardDb: validate('giftcardDb', selected[0], [Required, shouldRequireIf(submitting)])
+      giftcardDb: validate('Giftcard Database', selected[0], [
+        Required,
+        shouldRequireIf(submitting)
+      ])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -96,12 +113,12 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
         <AssetSelector
           assets={this.props.assetStore.giftcard}
           entry={this.state.giftcardDb}
-          name="giftcardDb"
+          name="Giftcard Database"
           onChange={this.handleGiftcardChanged}
         />
         <div style={customStyles}>
           <SelectElement
-            name="giftcardType"
+            name="Giftcard Type"
             options={Object.values(GIFTCARD_OPTIONS)}
             onChange={this.handleUpdateAssignChange}
             entry={{

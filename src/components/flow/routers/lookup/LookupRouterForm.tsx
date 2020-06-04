@@ -103,7 +103,7 @@ export default class LookupRouterForm extends React.Component<
 
   private handleDbUpdate(selected: Asset[], submitting = false): boolean {
     const updates: Partial<LookupRouterFormState> = {
-      lookupDb: validate('LookupDb', selected[0], [shouldRequireIf(submitting)])
+      lookupDb: validate('Lookup Database', selected[0], [shouldRequireIf(submitting)])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -112,7 +112,20 @@ export default class LookupRouterForm extends React.Component<
   }
 
   private handleSave(): void {
-    if (this.state.valid) {
+    // validate in case they never updated an empty field
+    const updates: Partial<LookupRouterFormState> = {
+      lookupDb: validate('Lookup Database', this.state.lookupDb.value, [Required]),
+      resultName: validate('Result Name', this.state.resultName.value, [
+        Alphanumeric,
+        StartIsNonNumeric,
+        Required
+      ])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
+
+    if (this.state.valid && updated.valid) {
       this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
       this.props.onClose(false);
     }
@@ -134,7 +147,7 @@ export default class LookupRouterForm extends React.Component<
         <div>Make some queries for lookup...</div>
 
         <AssetSelector
-          name="LookupDb"
+          name="Lookup Database"
           placeholder="Select the lookup collection"
           assets={this.props.assetStore.lookups}
           entry={this.state.lookupDb}
