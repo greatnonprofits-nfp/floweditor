@@ -151,6 +151,13 @@ export const Required: ValidatorFunc = (name: string, input: FormInput) => {
     if (input.length === 0) {
       return { value: input, failures: [{ message: `${name} are required` }] };
     }
+  } else if (typeof input === 'object' && 'id' in input) {
+    if (input.id === '') {
+      return {
+        value: input,
+        failures: [{ message: `${name} is required` }]
+      };
+    }
   }
   return { failures: [], value: input };
 };

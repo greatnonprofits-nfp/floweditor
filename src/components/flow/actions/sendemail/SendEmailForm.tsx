@@ -393,10 +393,16 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         });
         this.setState({ attachments });
         this.decreasePending();
+
+        /* clear file input to be able select another file */
+        this.filePicker.value = '';
       })
       .catch(error => {
         console.log(error);
         this.decreasePending();
+
+        /* clear file input to be able select another file */
+        this.filePicker.value = '';
       });
   }
 
@@ -468,10 +474,14 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         if (response.status === 200) {
           const data = response.data as ValidationResponse;
           if (data.valid) {
-            const attachments: any = mutate(attachmentsList, {
-              [index]: { $merge: { size: data.size, verified: true } }
-            });
-            this.setState({ attachments });
+            /* Data in the state that should be changed after all validation promises resolved */
+            /* We are changing state in validateAllAttachments method to prevent concurrency issues. */
+            const postValidationChanges = {
+              attachmentIndex: index,
+              size: data.size,
+              verified: true
+            };
+            return postValidationChanges;
           } else {
             isInvalid = true;
             validationErrorText = data.error;
@@ -520,7 +530,24 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
       }
     });
 
-    Promise.all(validationPromises).then(() => {
+    Promise.all(validationPromises).then(validationResults => {
+      /* State updating with data from validateUrlAttachment */
+      for (let validationResult of validationResults) {
+        let attachments: any = this.state.attachments;
+        if (validationResult !== undefined) {
+          attachments = mutate(attachments, {
+            [validationResult.attachmentIndex]: {
+              $merge: {
+                size: validationResult.size,
+                verified: validationResult.verified
+              }
+            }
+          });
+        }
+        this.setState({ attachments });
+      }
+
+      /* General validation of all attachments */
       for (let attachment of this.state.attachments) {
         if (!(attachment.uploaded || attachment.verified)) {
           isValid = false;
@@ -547,8 +574,6 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         }
       } else {
         this.setState({ attachmentsValidated: false, pending: 0 });
-        /* clear file input to be able select another file */
-        this.filePicker.value = '';
       }
     });
   }
