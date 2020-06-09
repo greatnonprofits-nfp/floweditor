@@ -66,6 +66,7 @@ export const LookupParameterField = ({
         entry={query.value}
         name="value"
         onChange={value => updateQuery({ ...query, value: { value } })}
+        autocomplete={true}
       />
       <div className={styles.delete} onClick={props.onDelete}>
         <span className="fe-x" />
