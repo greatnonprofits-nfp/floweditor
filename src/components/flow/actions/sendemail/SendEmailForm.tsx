@@ -204,6 +204,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
             { count: MAX_ATTACHMENTS }
           )}
         </p>
+        <p>{i18n.t('forms.send_email.attachments.warning')}</p>
         {attachments}
         {emptyOption}
         {this.renderPending()}
@@ -379,7 +380,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     data.append('file', files[0]);
     this.increasePending();
     axios
-      .post(this.context.config.endpoints.attachments, data, { headers })
+      .post(this.context.config.endpoints.attachments, data, { headers, timeout: 0 })
       .then(response => {
         attachments = mutate(attachments, {
           $push: [

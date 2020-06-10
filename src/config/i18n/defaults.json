@@ -206,7 +206,10 @@
       "recipient_placeholder": "To",
       "recipient_prompt": "Enter email address",
       "subject_name": "Subject",
-      "subject_placeholder": "Subject"
+      "subject_placeholder": "Subject",
+      "attachments": {
+        "warning": "Warning: The combined size of all attachments should not exceed 25MB. If you need to send larger files, we suggest sending links to those files in the body of the email."
+      }
     },
     "send_message": {
       "facebook": {
