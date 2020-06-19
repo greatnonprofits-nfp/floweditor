@@ -155,7 +155,9 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     });
 
     this.Plumber.bind('connectionDrag', (event: ConnectionEvent) => {
-      this.props.onConnectionDrag(event, this.context.config.flowType);
+      if (this.context.config.mutable) {
+        this.props.onConnectionDrag(event, this.context.config.flowType);
+      }
     });
 
     this.Plumber.bind('connectionDragStop', (event: ConnectionEvent) =>
@@ -166,7 +168,11 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       (event: ConnectionEvent) => !this.props.editorState.translating && this.context.config.mutable
     );
     this.Plumber.bind('beforeDetach', (event: ConnectionEvent) => true);
-    this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => this.onBeforeConnectorDrop(event));
+    this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => {
+      if (this.context.config.mutable) {
+        this.onBeforeConnectorDrop(event);
+      }
+    });
 
     let offset = { left: 0, top: 0 };
 
@@ -289,7 +295,13 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       return {
         uuid,
         ele: (selected: boolean) => (
-          <Sticky key={uuid} uuid={uuid} sticky={stickyMap[uuid]} selected={selected} />
+          <Sticky
+            key={uuid}
+            uuid={uuid}
+            sticky={stickyMap[uuid]}
+            selected={selected}
+            mutable={this.context.config.mutable}
+          />
         ),
         position: stickyMap[uuid].position
       };
@@ -353,6 +365,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
   }
 
   private onDoubleClick(event: React.MouseEvent<HTMLDivElement>): void {
+    if (!this.context.config.mutable) return;
     if (this.isClickOnCanvas(event)) {
       const { left, top } = snapToGrid(
         event.pageX - this.props.editorState.containerOffset.left - 100 + NODE_PADDING,

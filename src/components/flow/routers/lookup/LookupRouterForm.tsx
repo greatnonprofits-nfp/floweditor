@@ -171,7 +171,7 @@ export default class LookupRouterForm extends React.Component<
           this.state.resultName,
           this.handleUpdateResultName,
           false,
-          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
+          'The lookup will return responses in JSON format. Please use @webhook.result on the flow steps as a reference for each property.'
         )}
       </Dialog>
     );

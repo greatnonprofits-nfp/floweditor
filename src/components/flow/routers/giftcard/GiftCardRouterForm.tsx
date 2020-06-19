@@ -145,7 +145,7 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           this.state.resultName,
           this.handleUpdateResultName,
           false,
-          'The Parse API responds with JSON, each property will be added to the flow like @webhook.result would be added for all future steps.'
+          'The giftcard will return responses in JSON format. Please use @webhook.result on the flow steps as a reference for each property.'
         )}
       </Dialog>
     );
