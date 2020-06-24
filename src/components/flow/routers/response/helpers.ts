@@ -13,12 +13,19 @@ import { Router, RouterTypes, SwitchRouter, Wait, WaitTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 
+interface ConfigRouter {
+  spell_checker?: boolean;
+  spelling_correction_sensitivity?: string;
+}
+
 export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormState => {
   let initialCases: CaseProps[] = [];
 
   // TODO: work out an incremental result name
   let resultName: StringEntry = { value: 'Result' };
   let timeout = 0;
+  let enabledSpell = false;
+  let spellSensitivity = '70';
 
   if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
@@ -30,6 +37,11 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
       resultName = { value: router.result_name || '' };
     }
 
+    if (router.config && router.config.spell_checker) {
+      enabledSpell = router.config.spell_checker;
+      spellSensitivity = router.config.spelling_correction_sensitivity;
+    }
+
     if (settings.originalNode.node.router.wait && settings.originalNode.node.router.wait.timeout) {
       timeout = settings.originalNode.node.router.wait.timeout.seconds || 0;
     }
@@ -39,6 +51,8 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
     cases: initialCases,
     resultName,
     timeout,
+    enabledSpell,
+    spellSensitivity,
     valid: true
   };
 };
@@ -66,6 +80,12 @@ export const stateToNode = (
     };
   }
 
+  const config: ConfigRouter = {};
+  if (state.enabledSpell) {
+    config.spell_checker = state.enabledSpell;
+    config.spelling_correction_sensitivity = state.spellSensitivity;
+  }
+
   const router: SwitchRouter = {
     type: RouterTypes.switch,
     default_category_uuid: defaultCategory,
@@ -73,6 +93,7 @@ export const stateToNode = (
     categories,
     operand: DEFAULT_OPERAND,
     wait,
+    config,
     ...optionalRouter
   };
 

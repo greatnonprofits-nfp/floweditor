@@ -1,5 +1,6 @@
 import { react as bindCallbacks } from 'auto-bind';
 import * as React from 'react';
+import i18n from 'config/i18n';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
 import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
@@ -11,7 +12,7 @@ import TypeList from 'components/nodeeditor/TypeList';
 import { FormState, StringEntry } from 'store/nodeEditor';
 import { Alphanumeric, StartIsNonNumeric, validate } from 'store/validators';
 import { WAIT_LABEL } from 'components/flow/routers/constants';
-import i18n from 'config/i18n';
+import { SpellChecker } from 'components/spellchecker/SpellChecker';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -26,6 +27,8 @@ export interface ResponseRouterFormState extends FormState {
   cases: CaseProps[];
   resultName: StringEntry;
   timeout: number;
+  enabledSpell: boolean;
+  spellSensitivity: string;
 }
 
 export const leadInSpecId = 'lead-in';
@@ -78,6 +81,14 @@ export default class ResponseRouterForm extends React.Component<
     };
   }
 
+  private onEnabledChange(): void {
+    this.setState(prevState => ({ enabledSpell: !prevState.enabledSpell }));
+  }
+
+  private onSensitivityChange(event: React.FormEvent<HTMLInputElement>): void {
+    this.setState({ spellSensitivity: event.currentTarget.value });
+  }
+
   public renderEdit(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
@@ -91,6 +102,12 @@ export default class ResponseRouterForm extends React.Component<
         }
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
+        <SpellChecker
+          enabledSpell={this.state.enabledSpell}
+          onEnabledChange={this.onEnabledChange}
+          spellSensitivity={this.state.spellSensitivity}
+          onSensitivityChange={this.onSensitivityChange}
+        />
         <div>{WAIT_LABEL}</div>
         <CaseList
           data-spec="cases"
