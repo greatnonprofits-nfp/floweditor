@@ -170,7 +170,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     this.Plumber.bind('beforeDetach', (event: ConnectionEvent) => true);
     this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => {
       if (this.context.config.mutable) {
-        this.onBeforeConnectorDrop(event);
+        return this.onBeforeConnectorDrop(event);
       }
     });
 
