@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from 'config/i18n';
 import CheckboxElement from '../form/checkbox/CheckboxElement';
 import HelpIcon from '../helpicon/HelpIcon';
 import styles from './SpellChecker.module.scss';
@@ -28,23 +29,15 @@ export class SpellChecker extends React.Component<SpellCheckerProps> {
             dataFor="enableSpell"
             bigTooltip
           >
+            <p>{i18n.t('spell_checker.main_description')}</p>
             <p>
-              This feature will automatically correct typos and misspellings by users in multiple
-              languages. The language for the spell checker is based on the language set for the
-              user. Corrections occur before the categorization rules. For example, if user types
-              “thankks” it would be corrected to “thanks.” The word “thanks” would then be used for
-              the categorization. The corrected text is available as a flow variable with
-              @flow.variable.corrected
-            </p>
-            <p>
-              We encourage you to test misspellings in order to tune the sensitivity for your use
-              case. For more information and a list of languages, see our{' '}
+              {i18n.t('spell_checker.detail_link') + ' '}
               <a
                 rel="noopener noreferrer"
                 target="_blank"
                 href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
               >
-                help page
+                {i18n.t('help page')}
               </a>
               .
             </p>
@@ -60,21 +53,15 @@ export class SpellChecker extends React.Component<SpellCheckerProps> {
                 dataFor="spellSensitivity"
                 bigTooltip
               >
+                <p>{i18n.t('spell_checker.sensitivity_description')}</p>
                 <p>
-                  This slider bar enables you to control the sensitivity of the correction. Like all
-                  spell checkers, it does not always make the correction you would want it to make.
-                  The higher the sensitivity, the more corrections will be made. Lower sensitivity
-                  will only make more obvious corrections.
-                </p>
-                <p>
-                  We encourage you to test misspellings in order to tune the sensitivity for your
-                  usecase. For more information and a list of languages, see our{' '}
+                  {i18n.t('spell_checker.detail_link') + ' '}
                   <a
                     rel="noopener noreferrer"
                     target="_blank"
                     href="https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/language-support"
                   >
-                    help page
+                    {i18n.t('help page')}
                   </a>
                   .
                 </p>
