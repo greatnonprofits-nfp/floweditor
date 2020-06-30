@@ -262,7 +262,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     let isValid = true;
     const file = files[0];
     const fileType = file.type.split('/')[0];
-    const fileEncoding = file.type.split('/')[1];
+    const fileEncoding = file.name.split('.').pop();
 
     if (!['audio', 'video', 'image'].includes(fileType)) {
       title = 'Invalid Attachment';
