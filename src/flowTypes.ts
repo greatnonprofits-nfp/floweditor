@@ -204,6 +204,7 @@ export interface SwitchRouter extends Router {
   cases: Case[];
   operand: string;
   default_category_uuid: string;
+  config?: any;
 }
 
 export enum WaitTypes {
