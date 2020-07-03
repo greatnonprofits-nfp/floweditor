@@ -372,7 +372,7 @@
     "session_triggered": "Started somebody else in \"[[flow]]\""
   },
   "spell_checker": {
-    "main_description": "This feature will automatically correct typos and misspellings by users in multiple languages. The language for the spell checker is based on the language set for the user. Corrections occur before the categorization rules. For example, if user types “thankks” it would be corrected to “thanks.” The word “thanks” would then be used for the categorization. The corrected text is available as a flow variable with @flow.variable.corrected",
+    "main_description": "This feature will automatically correct typos and misspellings by users in multiple languages. The language for the spell checker is based on the language set for the user. Corrections occur before the categorization rules. For example, if user types “thankks” it would be corrected to “thanks.” The word “thanks” would then be used for the categorization. The corrected text is available as a flow variable with @results.variable.corrected",
     "sensitivity_description": "This slider bar enables you to control the sensitivity of the correction. Like all spell checkers, it does not always make the correction you would want it to make. The higher the sensitivity, the more corrections will be made. Lower sensitivity will only make more obvious corrections.",
     "detail_link": "We encourage you to test misspellings in order to tune the sensitivity for your usecase. For more information and a list of languages, see our"
   },
