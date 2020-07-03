@@ -13,6 +13,7 @@ import { FormState, StringEntry } from 'store/nodeEditor';
 import { Alphanumeric, StartIsNonNumeric, validate } from 'store/validators';
 import { WAIT_LABEL } from 'components/flow/routers/constants';
 import { SpellChecker } from 'components/spellchecker/SpellChecker';
+import { fakePropType } from 'config/ConfigProvider';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -46,6 +47,10 @@ export default class ResponseRouterForm extends React.Component<
       include: [/^on/, /^handle/]
     });
   }
+
+  public static contextTypes = {
+    config: fakePropType
+  };
 
   private handleUpdateResultName(value: string): void {
     const resultName = validate('Result Name', value, [Alphanumeric, StartIsNonNumeric]);
@@ -89,6 +94,19 @@ export default class ResponseRouterForm extends React.Component<
     this.setState({ spellSensitivity: event.currentTarget.value });
   }
 
+  private renderSpellChecker(): JSX.Element {
+    if (!(this.context.config.filters || []).find((name: string) => name === 'spell_checker')) {
+      return (
+        <SpellChecker
+          enabledSpell={this.state.enabledSpell}
+          onEnabledChange={this.onEnabledChange}
+          spellSensitivity={this.state.spellSensitivity}
+          onSensitivityChange={this.onSensitivityChange}
+        />
+      );
+    }
+  }
+
   public renderEdit(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
@@ -102,12 +120,7 @@ export default class ResponseRouterForm extends React.Component<
         }
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
-        <SpellChecker
-          enabledSpell={this.state.enabledSpell}
-          onEnabledChange={this.onEnabledChange}
-          spellSensitivity={this.state.spellSensitivity}
-          onSensitivityChange={this.onSensitivityChange}
-        />
+        {this.renderSpellChecker()}
         <div>{WAIT_LABEL}</div>
         <CaseList
           data-spec="cases"
