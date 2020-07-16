@@ -68,7 +68,7 @@ export class SpellChecker extends React.Component<SpellCheckerProps> {
               </HelpIcon>
             </div>
             <div className={styles.inputWrap}>
-              <div>Low</div>
+              <div>High</div>
               <input
                 type="range"
                 min="70"
@@ -77,7 +77,7 @@ export class SpellChecker extends React.Component<SpellCheckerProps> {
                 onChange={this.props.onSensitivityChange}
                 className={styles.rangerInput}
               />
-              <div>High</div>
+              <div>Low</div>
             </div>
             <div className={styles.sensitivity}>
               {`${this.props.spellSensitivity}% confidence in corrections`}
