@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import {
   createCaseProps,
@@ -12,13 +13,74 @@ import { getType } from 'config/typeConfigs';
 import { Router, RouterTypes, SwitchRouter, Wait, WaitTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
+import { SelectOption } from 'components/form/select/SelectElement';
+
+export enum AutomatedTestCaseType {
+  AUTO_GENERATED,
+  USER_GENERATED
+}
+
+export interface AutomatedTestCase {
+  type: AutomatedTestCaseType;
+  testText: string;
+  actualCategory: string;
+  confirmedCategory: string;
+  categoriesMatch: boolean;
+  confirmed: boolean;
+}
 
 interface ConfigRouter {
   spell_checker?: boolean;
   spelling_correction_sensitivity?: string;
+  test_cases?: AutomatedTestCase[];
 }
 
-export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormState => {
+export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
+  let matches: string[] = [];
+  let args: string[] = [];
+  text = text.toLowerCase();
+  cases.forEach(item => {
+    let match = false;
+    let type = item.kase.type;
+    switch (type) {
+      case 'has_all_words':
+        args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
+        match = args.every(element => new RegExp('\\b(' + element + ')\\b').test(text));
+        break;
+      case 'has_any_word':
+        args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
+        match = args.some(element => new RegExp('\\b(' + element + ')\\b').test(text));
+        break;
+      default:
+        break;
+    }
+    if (match && item.categoryName !== '') {
+      matches.push(item.categoryName);
+    }
+  });
+  return matches;
+};
+
+export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] => {
+  let testCases: AutomatedTestCase[] = [];
+  cases.forEach(item => {
+    let testCase = {
+      type: AutomatedTestCaseType.AUTO_GENERATED,
+      testText: item.kase.arguments[0],
+      actualCategory: matchResponseTextWithCategory(item.kase.arguments[0], cases).join(','),
+      confirmedCategory: item.categoryName
+    };
+    if (testCase.confirmedCategory) {
+      testCases.push(testCase as AutomatedTestCase);
+    }
+  });
+  return testCases;
+};
+
+export const nodeToState = (
+  settings: NodeEditorSettings,
+  assetLanguages?: any
+): ResponseRouterFormState => {
   let initialCases: CaseProps[] = [];
 
   // TODO: work out an incremental result name
@@ -26,6 +88,8 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
   let timeout = 0;
   let enabledSpell = false;
   let spellSensitivity = '70';
+  let languages: SelectOption[] = [];
+  let testCases: AutomatedTestCase[] = [];
 
   if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
@@ -45,6 +109,17 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
     if (settings.originalNode.node.router.wait && settings.originalNode.node.router.wait.timeout) {
       timeout = settings.originalNode.node.router.wait.timeout.seconds || 0;
     }
+
+    Object.entries(assetLanguages.items).forEach(([_, item]) => {
+      // @ts-ignore
+      languages.push({ label: item.name, value: item.id });
+    });
+
+    if (router.config && router.config.test_cases) {
+      testCases = router.config.test_cases;
+    } else {
+      testCases = generateAutomatedTests(initialCases);
+    }
   }
 
   return {
@@ -53,7 +128,11 @@ export const nodeToState = (settings: NodeEditorSettings): ResponseRouterFormSta
     timeout,
     enabledSpell,
     spellSensitivity,
-    valid: true
+    valid: true,
+    testingLangs: languages,
+    testingLang: languages[0],
+    liveTestText: { value: '' },
+    automatedTestCases: testCases
   };
 };
 
@@ -84,6 +163,10 @@ export const stateToNode = (
   if (state.enabledSpell) {
     config.spell_checker = state.enabledSpell;
     config.spelling_correction_sensitivity = state.spellSensitivity;
+  }
+
+  if (state.automatedTestCases.length) {
+    config.test_cases = state.automatedTestCases;
   }
 
   const router: SwitchRouter = {
