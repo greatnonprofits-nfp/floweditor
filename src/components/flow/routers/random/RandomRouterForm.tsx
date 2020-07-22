@@ -11,11 +11,11 @@ import { Category } from 'flowTypes';
 import * as React from 'react';
 import { FormState, mergeForm, SelectOptionEntry, StringEntry } from 'store/nodeEditor';
 import { Alphanumeric, StartIsNonNumeric, validate } from 'store/validators';
-import { small } from 'utils/reactselect';
 
 import { BUCKET_OPTIONS, fillOutCategories, nodeToState, stateToNode } from './helpers';
 import styles from './RandomRouterForm.module.scss';
 import i18n from 'config/i18n';
+import { TembaSelectStyle } from 'temba/TembaSelect';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -53,7 +53,10 @@ export default class RandomRouterForm extends React.Component<
   };
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate('Result Name', value, [Alphanumeric, StartIsNonNumeric]);
+    const resultName = validate(i18n.t('forms.result_name', 'Result Name'), value, [
+      Alphanumeric,
+      StartIsNonNumeric
+    ]);
     this.setState({
       resultName,
       valid: this.state.valid && !hasErrors(resultName)
@@ -132,8 +135,9 @@ export default class RandomRouterForm extends React.Component<
         <div className={styles.lead_in}>Split them randomly into one of</div>
         <div className={styles.bucket_select}>
           <SelectElement
-            styles={small as any}
-            name="Buckets"
+            key="buckets_select"
+            style={TembaSelectStyle.small}
+            name={i18n.t('forms.buckets', 'Buckets')}
             entry={this.state.bucketChoice}
             onChange={this.handleBucketsChanged}
             options={OPTIONS}

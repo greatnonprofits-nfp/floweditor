@@ -75,7 +75,7 @@ Array [
     "localizeableKeys": Array [
       "text",
       "quick_replies",
-      "templating",
+      "templating.variables",
     ],
     "massageForDisplay": [Function],
     "name": "Send Message",
@@ -89,7 +89,7 @@ Array [
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
-      "exits",
+      "categories",
       "cases",
     ],
     "name": "Wait for Response",
@@ -244,6 +244,25 @@ Array [
     ],
     "name": "Start Somebody Else",
     "type": "start_session",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
+  Object {
+    "aliases": Array [
+      "split_by_ticket",
+    ],
+    "component": [Function],
+    "description": "Open a ticket with a human agent",
+    "filter": "ticketer",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Open Ticket",
+    "type": "open_ticket",
     "visibility": Array [
       "message",
       "voice",
@@ -497,6 +516,25 @@ Object {
       "-",
     ],
   },
+  "open_ticket": Object {
+    "aliases": Array [
+      "split_by_ticket",
+    ],
+    "component": [Function],
+    "description": "Open a ticket with a human agent",
+    "filter": "ticketer",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Open Ticket",
+    "type": "open_ticket",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
   "play_audio": Object {
     "component": [Function],
     "description": "Play a contact recording",
@@ -564,7 +602,7 @@ Object {
     "localizeableKeys": Array [
       "text",
       "quick_replies",
-      "templating",
+      "templating.variables",
     ],
     "massageForDisplay": [Function],
     "name": "Send Message",
@@ -776,6 +814,25 @@ Object {
     "name": "Enter a Flow",
     "type": "enter_flow",
   },
+  "split_by_ticket": Object {
+    "aliases": Array [
+      "split_by_ticket",
+    ],
+    "component": [Function],
+    "description": "Open a ticket with a human agent",
+    "filter": "ticketer",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Open Ticket",
+    "type": "open_ticket",
+    "visibility": Array [
+      "message",
+      "voice",
+    ],
+  },
   "split_by_webhook": Object {
     "aliases": Array [
       "split_by_webhook",
@@ -817,7 +874,7 @@ Object {
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
-      "exits",
+      "categories",
       "cases",
     ],
     "name": "Wait for Response",
@@ -921,7 +978,7 @@ Object {
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
-      "exits",
+      "categories",
       "cases",
     ],
     "name": "Wait for Response",

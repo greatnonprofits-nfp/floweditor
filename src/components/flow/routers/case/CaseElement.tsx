@@ -9,15 +9,15 @@ import { Operator, Operators } from 'config/interfaces';
 import { operatorConfigList } from 'config/operatorConfigs';
 import { Case } from 'flowTypes';
 import * as React from 'react';
-import Select from 'react-select';
 import { FormState, StringEntry, SelectOptionEntry } from 'store/nodeEditor';
-import { getSelectClass, hasErrorType } from 'utils';
-import { small } from 'utils/reactselect';
+import { hasErrorType } from 'utils';
 
 import styles from './CaseElement.module.scss';
 import { initializeForm, validateCase } from './helpers';
 import { Asset } from 'store/flowContext';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
+import i18n from 'config/i18n';
+import TembaSelect, { TembaSelectStyle } from 'temba/TembaSelect';
 
 export interface CaseElementProps {
   kase: Case;
@@ -328,7 +328,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
           return (
             <>
               <TextInputElement
-                name="arguments"
+                name={i18n.t('forms.arguments', 'arguments')}
                 onChange={this.handleMinChanged}
                 entry={this.state.min}
               />
@@ -336,7 +336,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
                 and
               </span>
               <TextInputElement
-                name="arguments"
+                name={i18n.t('forms.arguments', 'arguments')}
                 onChange={this.handleMaxChanged}
                 entry={this.state.max}
               />
@@ -362,8 +362,9 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
             <>
               <div style={{ width: '114px' }}>
                 <SelectElement
-                  styles={small as any}
-                  name="Intent"
+                  key="intent_select"
+                  style={TembaSelectStyle.small}
+                  name={i18n.t('forms.intent', 'Intent')}
                   entry={this.state.intent}
                   onChange={this.handleIntentChanged}
                   options={intents}
@@ -377,7 +378,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
               </span>
               <div style={{ width: '34px' }}>
                 <TextInputElement
-                  name="confidence"
+                  name={i18n.t('forms.confidence', 'confidence')}
                   onChange={this.handleConfidenceChanged}
                   entry={this.state.confidence}
                   placeholder=".9"
@@ -389,7 +390,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
           return (
             <>
               <TextInputElement
-                name="State"
+                name={i18n.t('forms.state', 'State')}
                 placeholder="State"
                 onChange={this.handleStateChanged}
                 entry={this.state.state}
@@ -398,8 +399,8 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
                 and
               </span>
               <TextInputElement
-                name="District"
-                placeholder="District"
+                name={i18n.t('forms.district', 'District')}
+                placeholder={i18n.t('forms.district', 'District')}
                 onChange={this.handleDistrictChanged}
                 entry={this.state.district}
               />
@@ -414,7 +415,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
             </span>
             <TextInputElement
               __className={styles.relative_date}
-              name="arguments"
+              name={i18n.t('forms.arguments', 'arguments')}
               onChange={this.handleArgumentChanged}
               entry={this.state.argument}
               autocomplete={false}
@@ -425,7 +426,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
       } else {
         return (
           <TextInputElement
-            name="arguments"
+            name={i18n.t('forms.arguments', 'arguments')}
             onChange={this.handleArgumentChanged}
             entry={this.state.argument}
             placeholder={this.state.operatorConfig.type === Operators.has_district ? 'State' : ''}
@@ -451,21 +452,16 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
           data-draggable={true}
         >
           <span className={`fe-chevrons-expand ${styles.dnd_icon}`} data-draggable={true} />
-          <div className={styles.choice + ' select-medium'}>
-            <Select
-              className={getSelectClass(0)}
-              styles={small as any}
-              data-spec="operator-list"
-              isClearable={false}
-              menuPlacement="auto"
+          <div className={styles.choice}>
+            <TembaSelect
+              name={i18n.t('forms.operator', 'operator')}
+              style={TembaSelectStyle.small}
               options={this.getOperators()}
-              getOptionLabel={(option: Operator) => option.verboseName}
-              getOptionValue={(option: Operator) => option.type}
-              isSearchable={false}
-              name="operator"
-              onChange={this.handleOperatorChanged as any}
+              nameKey="verboseName"
+              valueKey="type"
+              onChange={this.handleOperatorChanged}
               value={this.state.operatorConfig}
-            />
+            ></TembaSelect>
           </div>
           <div
             className={
@@ -479,7 +475,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
           </div>
           <div className={styles.category}>
             <TextInputElement
-              name="exitName"
+              name={i18n.t('forms.exit_name', 'Exit Name')}
               onChange={this.handleExitChanged}
               entry={this.state.categoryName}
               maxLength={36}

@@ -58,7 +58,7 @@ export const renderIssue = (
 
   if (issue.type === FlowIssueType.INVALID_REGEX) {
     message = (
-      <Trans i18nKey="issue.legacy_extra" values={{ regex: issue.regex }}>
+      <Trans i18nKey="issues.legacy_extra" values={{ regex: issue.regex }}>
         Invalid regular expression found: [[regex]]
       </Trans>
     );
@@ -66,7 +66,7 @@ export const renderIssue = (
 
   if (issue.type === FlowIssueType.LEGACY_EXTRA) {
     message = (
-      <Trans i18nKey="issue.legacy_extra">Expressions should not reference @legacy_extra</Trans>
+      <Trans i18nKey="issues.legacy_extra">Expressions should not reference @legacy_extra</Trans>
     );
   }
 
@@ -181,6 +181,13 @@ export const renderAsset = (asset: Asset, endpoints: Endpoints) => {
             {asset.name}
           </a>
         </>
+      );
+      break;
+    case AssetType.Ticketer:
+      assetBody = (
+        <Trans i18nKey="assets.ticketer" values={{ name: asset.name }}>
+          Using [[name]] service
+        </Trans>
       );
       break;
   }

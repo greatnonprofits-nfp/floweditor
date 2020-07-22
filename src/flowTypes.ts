@@ -34,6 +34,7 @@ export interface Endpoints {
   labels: string;
   channels: string;
   classifiers: string;
+  ticketers: string;
   environment: string;
   languages: string;
   templates: string;
@@ -57,6 +58,7 @@ export interface FlowEditorConfig {
   headers?: any;
   onLoad?: () => void;
   onActivityClicked?: (uuid: string) => void;
+  onChangeLanguage?: (code: string, name: string) => void;
 
   // help links
   help: { [key: string]: string };
@@ -379,6 +381,11 @@ export interface Classifier {
   name: string;
 }
 
+export interface Ticketer {
+  uuid: string;
+  name: string;
+}
+
 export interface TransferAirtime extends Action {
   amounts: { [name: string]: number };
   result_name: string;
@@ -403,6 +410,13 @@ export interface CallWebhook extends Action {
   headers?: Headers;
 }
 
+export interface OpenTicket extends Action {
+  ticketer: Ticketer;
+  subject: string;
+  body: string;
+  result_name: string;
+}
+
 export interface StartFlow extends Action {
   flow: Flow;
 }
@@ -416,6 +430,7 @@ export interface StartSession extends RecipientsAction {
 export interface UIMetaData {
   nodes: { [key: string]: UINode };
   languages: { [iso: string]: string }[];
+  translation_filters?: { categories: boolean; rules: boolean };
 }
 
 export interface FlowPosition {

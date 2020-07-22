@@ -7,11 +7,6 @@
 }
 
 :global {
-  ::-webkit-scrollbar {
-    width: 0px !important;
-    background: transparent !important;
-  }
-
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
@@ -27,14 +22,22 @@
 
     .ReactModal__Content {
       overflow: visible !important;
-      top: 50px !important;
+      top: 0px !important;
       background: none !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh !important;
     }
 
     &.ReactModal__Body--open {
       height: 100vh !important;
       overflow-y: hidden !important;
       margin: 0 0 5px !important;
+    }
+
+    .ReactModal__Content.ReactModal__Content--after-open {
+      margin-top: 0px !important;
     }
 
     .ReactModal__Overlay {

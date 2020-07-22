@@ -24,6 +24,7 @@ import {
 } from './helpers';
 import styles from './ResultRouterForm.module.scss';
 import i18n from 'config/i18n';
+import { TembaSelectStyle } from 'temba/TembaSelect';
 
 export interface ResultRouterFormState extends FormState {
   result: AssetEntry;
@@ -52,7 +53,10 @@ export default class ResultRouterForm extends React.Component<
   }
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate('Result Name', value, [Alphanumeric, StartIsNonNumeric]);
+    const resultName = validate(i18n.t('forms.result_name', 'Result Name'), value, [
+      Alphanumeric,
+      StartIsNonNumeric
+    ]);
     this.setState({
       resultName,
       valid: this.state.valid && !hasErrors(resultName)
@@ -61,7 +65,9 @@ export default class ResultRouterForm extends React.Component<
 
   private handleResultChanged(selected: Asset[], submitting = false): boolean {
     const updates: Partial<ResultRouterFormState> = {
-      result: validate('Result to split on', selected[0], [shouldRequireIf(submitting)])
+      result: validate(i18n.t('forms.result_to_split_on', 'Result to split on'), selected[0], [
+        shouldRequireIf(submitting)
+      ])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -111,7 +117,7 @@ export default class ResultRouterForm extends React.Component<
           <AssetSelector
             entry={this.state.result}
             styles={small as any}
-            name="Flow Result"
+            name={i18n.t('forms.flow_result', 'Flow Result')}
             placeholder="Select Result"
             searchable={false}
             assets={this.props.assetStore.results}
@@ -128,8 +134,9 @@ export default class ResultRouterForm extends React.Component<
         <div className={styles.lead_in}>If the</div>
         <div className={styles.field_number}>
           <SelectElement
-            styles={small as any}
-            name="Field Number"
+            key="field_number_select"
+            style={TembaSelectStyle.small}
+            name={i18n.t('forms.field_number', 'Field Number')}
             entry={{ value: getFieldOption(this.state.fieldNumber) }}
             onChange={this.handleFieldNumberChanged}
             options={FIELD_NUMBER_OPTIONS}
@@ -140,8 +147,8 @@ export default class ResultRouterForm extends React.Component<
           <AssetSelector
             entry={this.state.result}
             styles={small as any}
-            name="Flow Result"
-            placeholder="Select Result"
+            name={i18n.t('forms.flow_result', 'Flow Result')}
+            placeholder={i18n.t('forms.select_result', 'Select Result')}
             searchable={false}
             assets={this.props.assetStore.results}
             onChange={this.handleResultChanged}
@@ -150,8 +157,9 @@ export default class ResultRouterForm extends React.Component<
         <div className={styles.lead_in_sub}>delimited by</div>
         <div className={styles.delimiter}>
           <SelectElement
-            styles={small as any}
-            name="Delimiter"
+            key="delimiter_select"
+            style={TembaSelectStyle.small}
+            name={i18n.t('forms.delimiter', 'Delimiter')}
             entry={{ value: getDelimiterOption(this.state.delimiter) }}
             onChange={this.handleDelimiterChanged}
             options={DELIMITER_OPTIONS}
@@ -168,10 +176,13 @@ export default class ResultRouterForm extends React.Component<
       body: (
         <div className={styles.should_delimit}>
           <CheckboxElement
-            name="Delimit"
-            title="Delimit Result"
+            name={i18n.t('forms.delimit', 'Delimit')}
+            title={i18n.t('forms.delimit_result', 'Delimit Result')}
             checked={this.state.shouldDelimit}
-            description="Evaluate your rules against a delimited part of your result"
+            description={i18n.t(
+              'forms.delimit_result_description',
+              'Evaluate your rules against a delimited part of your result'
+            )}
             onChange={this.handleShouldDelimitChanged}
           />
         </div>

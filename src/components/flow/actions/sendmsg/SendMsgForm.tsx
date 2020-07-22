@@ -34,7 +34,6 @@ import {
 } from 'store/nodeEditor';
 import { MaxOfTenItems, Required, shouldRequireIf, validate } from 'store/validators';
 import { createUUID, range } from 'utils';
-import { small, large } from 'utils/reactselect';
 
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
@@ -42,13 +41,14 @@ import { FeatureFilter } from 'config/interfaces';
 
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
+import { TembaSelectStyle } from 'temba/TembaSelect';
 
 const MAX_ATTACHMENTS = 3;
 
 const TYPE_OPTIONS: SelectOption[] = [
-  { value: 'image', label: 'Image URL' },
-  { value: 'audio', label: 'Audio URL' },
-  { value: 'video', label: 'Video URL' }
+  { value: 'image', label: i18n.t('forms.image_url', 'Image URL') },
+  { value: 'audio', label: i18n.t('forms.audio_url', 'Audio URL') },
+  { value: 'video', label: i18n.t('forms.video_url', 'Video URL') }
 ];
 
 const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
@@ -111,7 +111,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
   ): boolean {
     const updates: Partial<SendMsgFormState> = {};
     if (keys.hasOwnProperty('text')) {
-      updates.message = validate('Message', keys.text, [shouldRequireIf(submitting)]);
+      updates.message = validate(i18n.t('forms.message', 'Message'), keys.text, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     if (keys.hasOwnProperty('sendAll')) {
@@ -119,7 +121,11 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     }
 
     if (keys.hasOwnProperty('quickReplies')) {
-      updates.quickReplies = validate('Quick Replies', keys.quickReplies, [MaxOfTenItems]);
+      updates.quickReplies = validate(
+        i18n.t('forms.quick_replies', 'Quick Replies'),
+        keys.quickReplies,
+        [MaxOfTenItems]
+      );
     }
 
     const updated = mergeForm(this.state, updates) as SendMsgFormState;
@@ -196,8 +202,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       >
         <div className={styles.type_choice}>
           <SelectElement
-            name="Type"
-            styles={small as any}
+            key={'attachment_type_' + index}
+            name={i18n.t('forms.type', 'Type')}
+            style={TembaSelectStyle.small}
             entry={{
               value: { label: attachment.type }
             }}
@@ -208,7 +215,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           <span className={styles.upload}>
             <Pill
               icon="fe-download"
-              text=" Download"
+              text="Download"
               large={true}
               onClick={() => {
                 window.open(attachment.url, '_blank');
@@ -217,7 +224,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             <div className={styles.remove_upload}>
               <Pill
                 icon="fe-x"
-                text=" Remove"
+                text="Remove"
                 large={true}
                 onClick={() => {
                   this.handleAttachmentRemoved(index);
@@ -261,8 +268,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       >
         <div className={styles.type_choice}>
           <SelectElement
-            styles={small as any}
-            name="Type Options"
+            key={'attachment_type_' + index}
+            style={TembaSelectStyle.small}
+            name={i18n.t('forms.type_options', 'Type Options')}
             placeholder="Add Attachment"
             entry={{
               value: index > -1 ? getAttachmentTypeOption(attachment.type) : null
@@ -295,7 +303,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             <div className={styles.url}>
               <TextInputElement
                 placeholder="URL"
-                name="url"
+                name={i18n.t('forms.url', 'URL')}
                 onChange={(value: string) => {
                   attachments = mutate(attachments, {
                     [index]: { $set: { type: attachment.type, url: value } }
@@ -337,7 +345,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       <>
         <p>
           {i18n.t(
-            'forms.send_msg.summary',
+            'forms.send_msg_summary',
             'Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
             { count: MAX_ATTACHMENTS }
           )}
@@ -406,18 +414,18 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       <>
         <p>
           {i18n.t(
-            'forms.send_msg.facebook.warning',
+            'forms.send_msg_facebook_warning',
             'Sending bulk messages over a Facebook channel requires that a topic be specified if the user has not sent a message in the last 24 hours. Setting a topic to use over Facebook is especially important for the first message in your flow.'
           )}
         </p>
         <SelectElement
-          styles={large as any}
-          name="MethodMap"
+          key={'fb_method_select'}
+          name={i18n.t('forms.method', 'Method')}
           entry={this.state.topic}
           onChange={this.handleTopicUpdate}
           options={TOPIC_OPTIONS}
           placeholder={i18n.t(
-            'forms.send_message.facebook.topic_placeholder',
+            'forms.send_msg_facebook_topic_placeholder',
             'Select a topic to use over Facebook'
           )}
           clearable={true}
@@ -435,12 +443,12 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       <>
         <p>
           {i18n.t(
-            'forms.send_msg.whatsapp_warning',
+            'forms.whatsapp_warning',
             'Sending messages over a WhatsApp channel requires that a template be used if you have not received a message from a contact in the last 24 hours. Setting a template to use over WhatsApp is especially important for the first message in your flow.'
           )}
         </p>
         <AssetSelector
-          name="Template"
+          name={i18n.t('forms.template', 'template')}
           noOptionsMessage="No templates found"
           assets={this.props.assetStore.templates}
           entry={this.state.template}
@@ -456,9 +464,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
               return (
                 <div className={styles.variable} key={'tr_arg_' + num}>
                   <TextInputElement
-                    name={`Variable ${num + 1}`}
+                    name={`${i18n.t('forms.variable', 'Variable')} ${num + 1}`}
                     showLabel={false}
-                    placeholder={`Variable ${num + 1}`}
+                    placeholder={`${i18n.t('forms.variable', 'Variable')} ${num + 1}`}
                     onChange={(updatedText: string) => {
                       this.handleTemplateVariableChanged(updatedText, num);
                     }}
@@ -517,17 +525,15 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         <>
           <p>
             {i18n.t(
-              'forms.send_msg.quick_replies',
+              'forms.quick_replies_summary',
               'Quick Replies are made into buttons for supported channels. For example, when asking a question, you might add a Quick Reply for "Yes" and one for "No".'
             )}
           </p>
 
           <MultiChoiceInput
-            name="Quick Reply"
+            name={i18n.t('forms.quick_reply', 'quick_reply')}
             helpText={
-              <Trans i18nKey="forms.send_msg.add_quick_reply">
-                Add a new Quick Reply and press enter.
-              </Trans>
+              <Trans i18nKey="forms.add_quick_reply">Add a new Quick Reply and press enter.</Trans>
             }
             items={this.state.quickReplies}
             entry={this.state.quickReplyEntry}
@@ -551,12 +557,12 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       name: 'Advanced',
       body: (
         <CheckboxElement
-          name="All Destinations"
+          name={i18n.t('forms.all_destinations', 'All Destinations')}
           title="All Destinations"
           labelClassName={styles.checkbox}
           checked={this.state.sendAll}
           description={i18n.t(
-            'forms.send_msg.all_destinations',
+            'forms.all_destinations',
             "Send a message to all destinations known for this contact. If you aren't sure what this means, leave it unchecked."
           )}
           onChange={this.handleSendAllUpdate}
@@ -595,7 +601,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <TextInputElement
-          name="Message"
+          name={i18n.t('forms.message', 'Message')}
           showLabel={false}
           count={Count.SMS}
           onChange={this.handleMessageUpdate}

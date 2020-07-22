@@ -1,11 +1,4 @@
-import {
-  FlowDefinition,
-  FlowNode,
-  UINode,
-  FlowMetadata,
-  FlowIssue,
-  FlowIssueType
-} from 'flowTypes';
+import { FlowDefinition, FlowNode, UINode, FlowMetadata, FlowIssue } from 'flowTypes';
 import { combineReducers, Action } from 'redux';
 import ActionTypes, {
   UpdateAssetsAction,
@@ -13,25 +6,19 @@ import ActionTypes, {
   UpdateContactFieldsAction,
   UpdateDefinitionAction,
   UpdateNodesAction,
-  UpdateMetadataAction
+  UpdateMetadataAction,
+  UpdateIssuesAction
 } from 'store/actionTypes';
 import Constants from 'store/constants';
 import { Type } from 'config/interfaces';
 
-/**
- * Some issues are ignored in the editor
- */
-const filterIssues = (metadata: FlowMetadata) => {
-  if (metadata && metadata.issues) {
-    metadata.issues = metadata.issues.filter(
-      (issue: FlowIssue) => issue.type !== FlowIssueType.LEGACY_EXTRA
-    );
-  }
-};
-
 // tslint:disable:no-shadowed-variable
 export interface RenderNodeMap {
   [uuid: string]: RenderNode;
+}
+
+export interface FlowIssueMap {
+  [uuid: string]: FlowIssue[];
 }
 
 export interface RenderNode {
@@ -86,6 +73,7 @@ export enum AssetType {
   Revision = 'revision',
   Scheme = 'scheme',
   Template = 'template',
+  Ticketer = 'ticketer',
   URN = 'urn'
 }
 
@@ -147,6 +135,7 @@ export interface FlowContext {
   contactFields: ContactFields;
   definition: FlowDefinition;
   nodes: { [uuid: string]: RenderNode };
+  issues: FlowIssueMap;
   assetStore: AssetStore;
 }
 
@@ -163,6 +152,7 @@ export const initialState: FlowContext = {
   },
   contactFields: {},
   nodes: {},
+  issues: {},
   assetStore: {}
 };
 
@@ -181,8 +171,14 @@ export const updateNodes = (nodes: RenderNodeMap): UpdateNodesAction => ({
   }
 });
 
+export const updateIssues = (issues: FlowIssueMap): UpdateIssuesAction => ({
+  type: Constants.UPDATE_ISSUES,
+  payload: {
+    issues
+  }
+});
+
 export const updateMetadata = (metadata: FlowMetadata): UpdateMetadataAction => {
-  filterIssues(metadata);
   return {
     type: Constants.UPDATE_METADATA,
     payload: {
@@ -234,6 +230,15 @@ export const nodes = (state: {} = initialState.nodes, action: ActionTypes) => {
   }
 };
 
+export const issues = (state: {} = initialState.issues, action: ActionTypes) => {
+  switch (action.type) {
+    case Constants.UPDATE_ISSUES:
+      return action.payload.issues;
+    default:
+      return state;
+  }
+};
+
 export const metadata = (state: FlowMetadata = initialState.metadata, action: ActionTypes) => {
   switch (action.type) {
     case Constants.UPDATE_METADATA:
@@ -277,6 +282,7 @@ export const contactFields = (
 export default combineReducers({
   definition,
   nodes,
+  issues,
   metadata,
   assetStore,
   baseLanguage,

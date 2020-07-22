@@ -59,6 +59,8 @@ import CallClassifierComp from 'components/flow/actions/callclassifier/CallClass
 import ClassifyRouterForm from 'components/flow/routers/classify/ClassifyRouterForm';
 import i18n from 'config/i18n';
 import SchemeRouterForm from 'components/flow/routers/scheme/SchemeRouterForm';
+import TicketRouterForm from 'components/flow/routers/ticket/TicketRouterForm';
+import OpenTicketComp from 'components/flow/actions/openticket/OpenTicket';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -136,6 +138,11 @@ export const SCHEMES: Scheme[] = [
     path: i18n.t('schemes.jiochat.path', 'Jiochat ID')
   },
   {
+    scheme: 'freshchat',
+    name: i18n.t('schemes.freschat.name', 'Freshchat'),
+    path: i18n.t('schemes.freshchat.path', 'Freshchat ID')
+  },
+  {
     scheme: 'mailto',
     name: i18n.t('schemes.email.name', 'Email'),
     path: i18n.t('schemes.email.path', 'Email Address'),
@@ -208,7 +215,7 @@ export const typeConfigList: Type[] = [
     description: i18n.t('actions.send_msg.description', 'Send the contact a message'),
     form: SendMsgForm,
     localization: MsgLocalizationForm,
-    localizeableKeys: ['text', 'quick_replies', 'templating'],
+    localizeableKeys: ['text', 'quick_replies', 'templating.variables'],
     component: SendMsgComp,
     massageForDisplay: (action: SendMsg) => {
       // quick replies are optional in the definition, make sure we have
@@ -222,7 +229,7 @@ export const typeConfigList: Type[] = [
     description: i18n.t('actions.wait_for_response.description', 'Wait for the contact to respond'),
     form: ResponseRouterForm,
     localization: RouterLocalizationForm,
-    localizeableKeys: ['exits', 'cases'],
+    localizeableKeys: ['categories', 'cases'],
     aliases: [RouterTypes.switch],
     visibility: TEXT_TYPES
   },
@@ -346,6 +353,18 @@ export const typeConfigList: Type[] = [
     visibility: ONLINE
   },
   {
+    type: Types.open_ticket,
+    name: i18n.t('actions.open_ticket.name', 'Open Ticket'),
+    description: i18n.t('actions.open_ticket.description', 'Open a ticket with a human agent'),
+    form: TicketRouterForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: OpenTicketComp,
+    aliases: [Types.split_by_ticket],
+    visibility: ONLINE,
+    filter: FeatureFilter.HAS_TICKETER
+  },
+  {
     type: Types.transfer_airtime,
     name: i18n.t('actions.transfer_airtime.name', 'Send Airtime'),
     description: i18n.t('actions.transfer_airtime.description', 'Send the contact airtime'),
@@ -451,7 +470,6 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     form: SchemeRouterForm
   }
-
   // {type: 'random', name: 'Random Split', description: 'Split them up randomly', form: RandomRouterForm}
 ];
 
