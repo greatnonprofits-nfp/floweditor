@@ -163,6 +163,16 @@
               }
             }
           }
+          .testCorrect {
+            .categoryName {
+              color: green;
+            }
+          }
+          .testFailed {
+            .categoryName {
+              color: tomato;
+            }
+          }
         }
       }
     }

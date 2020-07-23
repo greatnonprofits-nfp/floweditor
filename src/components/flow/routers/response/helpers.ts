@@ -61,15 +61,23 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
   return matches;
 };
 
+export const generateAutomatedTest = (
+  caseItem: CaseProps,
+  cases: CaseProps[]
+): AutomatedTestCase => {
+  let testCase = {
+    type: AutomatedTestCaseType.AUTO_GENERATED,
+    testText: caseItem.kase.arguments[0],
+    actualCategory: matchResponseTextWithCategory(caseItem.kase.arguments[0], cases).join(','),
+    confirmedCategory: caseItem.categoryName
+  };
+  return testCase as AutomatedTestCase;
+};
+
 export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] => {
   let testCases: AutomatedTestCase[] = [];
   cases.forEach(item => {
-    let testCase = {
-      type: AutomatedTestCaseType.AUTO_GENERATED,
-      testText: item.kase.arguments[0],
-      actualCategory: matchResponseTextWithCategory(item.kase.arguments[0], cases).join(','),
-      confirmedCategory: item.categoryName
-    };
+    let testCase = generateAutomatedTest(item, cases);
     if (testCase.confirmedCategory) {
       testCases.push(testCase as AutomatedTestCase);
     }
