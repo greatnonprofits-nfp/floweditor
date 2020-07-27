@@ -8,7 +8,7 @@ import {
 } from 'components/flow/routers/helpers';
 import { ResponseRouterFormState } from 'components/flow/routers/response/ResponseRouterForm';
 import { DEFAULT_OPERAND } from 'components/nodeeditor/constants';
-import { Types } from 'config/interfaces';
+import { Types, Operators } from 'config/interfaces';
 import { getType } from 'config/typeConfigs';
 import { Router, RouterTypes, SwitchRouter, Wait, WaitTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
@@ -19,6 +19,15 @@ export enum AutomatedTestCaseType {
   AUTO_GENERATED,
   USER_GENERATED
 }
+
+export const ALLOWED_AUTOMATED_TESTS = [
+  Operators.has_any_word,
+  Operators.has_all_words,
+  Operators.has_phrase,
+  Operators.has_only_phrase,
+  Operators.has_beginning,
+  Operators.has_pattern
+];
 
 export interface AutomatedTestCase {
   type: AutomatedTestCaseType;
@@ -38,18 +47,34 @@ interface ConfigRouter {
 export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
   let matches: string[] = [];
   let args: string[] = [];
+  let originalText = text;
   text = text.toLowerCase();
   cases.forEach(item => {
     let match = false;
     let type = item.kase.type;
     switch (type) {
+      case 'has_any_word':
+        args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
+        match = args.some(element => new RegExp('\\b(' + element + ')\\b').test(text));
+        break;
       case 'has_all_words':
         args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
         match = args.every(element => new RegExp('\\b(' + element + ')\\b').test(text));
         break;
-      case 'has_any_word':
-        args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
-        match = args.some(element => new RegExp('\\b(' + element + ')\\b').test(text));
+      case 'has_phrase':
+        match = new RegExp('.*(' + item.kase.arguments[0].toLowerCase() + ').*').test(text);
+        break;
+      case 'has_only_phrase':
+        match = new RegExp('^(' + item.kase.arguments[0].toLowerCase() + ')$').test(text);
+        break;
+      case 'has_beginning':
+        match = new RegExp('^(' + item.kase.arguments[0].toLowerCase() + ').*').test(text);
+        break;
+      case 'has_pattern':
+        try {
+          match = new RegExp(item.kase.arguments[0]).test(originalText);
+          // eslint-disable-next-line no-empty
+        } catch (error) {}
         break;
       default:
         break;
@@ -76,6 +101,10 @@ export const generateAutomatedTest = (
 
 export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] => {
   let testCases: AutomatedTestCase[] = [];
+  cases = cases.filter(
+    case_ =>
+      ALLOWED_AUTOMATED_TESTS.includes(case_.kase.type) && case_.kase.type !== Operators.has_pattern
+  );
   cases.forEach(item => {
     let testCase = generateAutomatedTest(item, cases);
     if (testCase.confirmedCategory) {
