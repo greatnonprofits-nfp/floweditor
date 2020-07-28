@@ -55,10 +55,12 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
     switch (type) {
       case 'has_any_word':
         args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
+        args = args.filter(arg => arg !== '');
         match = args.some(element => new RegExp('\\b(' + element + ')\\b').test(text));
         break;
       case 'has_all_words':
         args = item.kase.arguments[0].toLowerCase().split(/[^\w]+/);
+        args = args.filter(arg => arg !== '');
         match = args.every(element => new RegExp('\\b(' + element + ')\\b').test(text));
         break;
       case 'has_phrase':
@@ -93,7 +95,7 @@ export const generateAutomatedTest = (
   let testCase = {
     type: AutomatedTestCaseType.AUTO_GENERATED,
     testText: caseItem.kase.arguments[0],
-    actualCategory: matchResponseTextWithCategory(caseItem.kase.arguments[0], cases).join(','),
+    actualCategory: matchResponseTextWithCategory(caseItem.kase.arguments[0], cases).join(', '),
     confirmedCategory: caseItem.categoryName
   };
   return testCase as AutomatedTestCase;

@@ -123,12 +123,21 @@
       margin: 5px 0;
       .categoryName {
         margin: 2px;
+        [class*="Pill"] {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 90%;
+        }
       }
       .categoryMatched {
         margin: 2px;
         [class*="Pill"] {
           color: white;
           background-color: #289f9b;
+          border: 1px solid #289f9b;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 90%;
         }
       }
     }
@@ -145,13 +154,15 @@
         tbody {
           display: block;
           max-height: 360px;
-          overflow: scroll;
+          overflow: auto;
           tr {
             display:table;
             width:100%;
             table-layout:fixed;
             td {
               text-align: center;
+              text-overflow: ellipsis;
+              overflow: hidden;
               i {
                 cursor: pointer;
                 &:hover {
