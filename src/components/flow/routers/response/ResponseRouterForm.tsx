@@ -14,7 +14,8 @@ import {
   AutomatedTestCase,
   AutomatedTestCaseType,
   generateAutomatedTest,
-  ALLOWED_AUTOMATED_TESTS
+  ALLOWED_TESTS,
+  ALLOWED_AUTO_TESTS
 } from 'components/flow/routers/response/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import TimeoutControl from 'components/form/timeout/TimeoutControl';
@@ -222,10 +223,7 @@ export default class ResponseRouterForm extends React.Component<
       item => item.type === AutomatedTestCaseType.AUTO_GENERATED
     );
     let testCasesMap = Object.assign({}, ...testCases.map(item => ({ [item.testText]: item })));
-    let cases = this.state.cases.filter(
-      case_ =>
-        ALLOWED_AUTOMATED_TESTS.includes(case_.kase.type) && case_.kase.type !== 'has_pattern'
-    );
+    let cases = this.state.cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
     cases.forEach(item => {
       if (item.kase.arguments[0] === '') return;
       if (item.kase.arguments[0] in testCasesMap) {
@@ -287,9 +285,7 @@ export default class ResponseRouterForm extends React.Component<
     let matched = this.state.liveTestText
       ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.cases)
       : [];
-    let filteredCases = this.state.cases.filter(case_ =>
-      ALLOWED_AUTOMATED_TESTS.includes(case_.kase.type)
-    );
+    let filteredCases = this.state.cases.filter(case_ => ALLOWED_TESTS.includes(case_.kase.type));
     let cases = Object.assign(
       {},
       ...filteredCases.map(item => ({

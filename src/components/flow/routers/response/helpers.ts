@@ -20,14 +20,17 @@ export enum AutomatedTestCaseType {
   USER_GENERATED
 }
 
-export const ALLOWED_AUTOMATED_TESTS = [
+export const ALLOWED_USER_TESTS = [Operators.has_email, Operators.has_phone, Operators.has_pattern];
+
+export const ALLOWED_AUTO_TESTS = [
   Operators.has_any_word,
   Operators.has_all_words,
   Operators.has_phrase,
   Operators.has_only_phrase,
-  Operators.has_beginning,
-  Operators.has_pattern
+  Operators.has_beginning
 ];
+
+export const ALLOWED_TESTS = [...ALLOWED_USER_TESTS, ...ALLOWED_AUTO_TESTS];
 
 export interface AutomatedTestCase {
   type: AutomatedTestCaseType;
@@ -47,6 +50,8 @@ interface ConfigRouter {
 export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
   let matches: string[] = [];
   let args: string[] = [];
+  let emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+  let phoneRegExp = /\+(?:[0-9] ?){6,14}[0-9]/;
   let originalText = text;
   text = text.toLowerCase();
   cases.forEach(item => {
@@ -71,6 +76,14 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
         break;
       case 'has_beginning':
         match = new RegExp('^(' + item.kase.arguments[0].toLowerCase() + ').*').test(text);
+        break;
+      case 'has_email':
+        args = text.split(/[^\w@.]+/);
+        args = args.filter(arg => arg !== '');
+        match = args.some(word => emailRegExp.test(word));
+        break;
+      case 'has_phone':
+        match = phoneRegExp.test(text);
         break;
       case 'has_pattern':
         try {
@@ -103,10 +116,7 @@ export const generateAutomatedTest = (
 
 export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] => {
   let testCases: AutomatedTestCase[] = [];
-  cases = cases.filter(
-    case_ =>
-      ALLOWED_AUTOMATED_TESTS.includes(case_.kase.type) && case_.kase.type !== Operators.has_pattern
-  );
+  cases = cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
   cases.forEach(item => {
     let testCase = generateAutomatedTest(item, cases);
     if (testCase.confirmedCategory) {
