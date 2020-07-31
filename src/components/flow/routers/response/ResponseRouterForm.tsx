@@ -410,6 +410,14 @@ export default class ResponseRouterForm extends React.Component<
     const checked = this.state.automatedTestCases.every(
       item => item.confirmed && item.actualCategory === item.confirmedCategory
     );
+    let isTestingAvailable = this.state.cases.some(case_ => {
+      return (
+        ALLOWED_TESTS.includes(case_.kase.type) &&
+        ((case_.kase.arguments.length > 0 && case_.kase.arguments[0] !== '') ||
+          case_.kase.arguments.length === 0)
+      );
+    });
+    isTestingAvailable = isTestingAvailable || this.state.automatedTestCases.length > 0;
     const tabs = [
       {
         name: 'Testing',
@@ -424,7 +432,7 @@ export default class ResponseRouterForm extends React.Component<
         title={typeConfig.name}
         headerClass={typeConfig.type}
         buttons={this.getButtons()}
-        tabs={this.state.automatedTestCases.length > 0 ? tabs : []}
+        tabs={isTestingAvailable ? tabs : []}
         gutter={
           <TimeoutControl timeout={this.state.timeout} onChanged={this.handleUpdateTimeout} />
         }
