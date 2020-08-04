@@ -365,8 +365,16 @@ export default class ResponseRouterForm extends React.Component<
                         : styles.testFailed
                     }
                   >
-                    <td>{test.testText}</td>
-                    <td className={styles.categoryName}>{test.actualCategory}</td>
+                    <td>
+                      <p className={styles.text} title={test.testText}>
+                        {test.testText}
+                      </p>
+                    </td>
+                    <td className={styles.categoryName}>
+                      <p className={styles.text} title={test.actualCategory}>
+                        {test.actualCategory}
+                      </p>
+                    </td>
                     <td>
                       <CheckboxElement
                         name="checked"
@@ -374,7 +382,11 @@ export default class ResponseRouterForm extends React.Component<
                         onChange={value => this.onConfirmTestCaseClicked(index, value)}
                       />
                     </td>
-                    <td className={styles.categoryName}>{test.confirmedCategory}</td>
+                    <td className={styles.categoryName}>
+                      <p className={styles.text} title={test.confirmedCategory}>
+                        {test.confirmedCategory}
+                      </p>
+                    </td>
                     <td>
                       <i className="fe-x" onClick={() => this.onDeleteTestCaseClicked(index)}></i>
                     </td>

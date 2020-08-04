@@ -54,7 +54,7 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
   let phoneRegExp = /\+(?:[0-9] ?){6,14}[0-9]/;
   let originalText = text;
   text = text.toLowerCase();
-  cases.forEach(item => {
+  cases.some(item => {
     let match = false;
     let type = item.kase.type;
     switch (type) {
@@ -96,7 +96,10 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
     }
     if (match && item.categoryName !== '') {
       matches.push(item.categoryName);
+      // stop iterations to return first matched category
+      return true;
     }
+    return false;
   });
   return matches;
 };
