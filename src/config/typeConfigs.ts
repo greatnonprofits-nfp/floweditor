@@ -405,7 +405,7 @@ export const typeConfigList: Type[] = [
     form: WaitRouterForm,
     localization: RouterLocalizationForm,
     localizeableKeys: ['exits'],
-    visibility: SURVEY
+    visibility: TEXT_TYPES
   },
   {
     type: Types.wait_for_video,
