@@ -161,7 +161,10 @@ export default class ResponseRouterForm extends React.Component<
     let matched = this.state.liveTestText
       ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.cases)
       : [];
-    if (matched.length > 0) {
+    const testAlreadyExists = this.state.automatedTestCases.some(
+      item => item.testText.toLowerCase() === this.state.liveTestText.value.toLowerCase()
+    );
+    if (matched.length > 0 && !testAlreadyExists) {
       const updated: any = mutate(this.state.automatedTestCases, {
         $push: [
           {
