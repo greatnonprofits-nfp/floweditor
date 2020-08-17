@@ -336,6 +336,7 @@ export interface SendMsg extends Action {
   attachments?: string[];
   topic?: string;
   templating?: MsgTemplating;
+  receive_attachment?: string;
 }
 
 export interface SayMsg extends Action {

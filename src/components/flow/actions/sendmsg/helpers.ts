@@ -15,6 +15,8 @@ export const TOPIC_OPTIONS: SelectOption[] = [
   { value: 'agent', label: 'Agent' }
 ];
 
+export const RECEIVE_ATTACHMENT_OPTIONS: SelectOption[] = [{ value: 'image', label: 'Image' }];
+
 export const initializeForm = (
   settings: NodeEditorSettings,
   assetStore: AssetStore
@@ -63,7 +65,10 @@ export const initializeForm = (
       quickReplies: { value: action.quick_replies || [] },
       quickReplyEntry: { value: '' },
       sendAll: action.all_urns,
-      valid: true
+      valid: true,
+      receiveAttachment: {
+        value: RECEIVE_ATTACHMENT_OPTIONS.find(option => option.value === action.receive_attachment)
+      }
     };
   }
 
@@ -76,7 +81,8 @@ export const initializeForm = (
     quickReplies: { value: [] },
     quickReplyEntry: { value: '' },
     sendAll: false,
-    valid: false
+    valid: false,
+    receiveAttachment: { value: null }
   };
 };
 
@@ -125,6 +131,10 @@ export const stateToAction = (settings: NodeEditorSettings, state: SendMsgFormSt
 
   if (state.topic.value) {
     result.topic = state.topic.value.value;
+  }
+
+  if (state.receiveAttachment.value) {
+    result.receive_attachment = state.receiveAttachment.value.value;
   }
 
   return result;

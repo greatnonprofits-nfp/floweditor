@@ -7,7 +7,8 @@ import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import {
   initializeForm as stateToForm,
   stateToAction,
-  TOPIC_OPTIONS
+  TOPIC_OPTIONS,
+  RECEIVE_ATTACHMENT_OPTIONS
 } from 'components/flow/actions/sendmsg/helpers';
 import { ActionFormProps } from 'components/flow/props';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
@@ -73,6 +74,7 @@ export interface SendMsgFormState extends FormState {
   topic: SelectOptionEntry;
   templateVariables: StringEntry[];
   templateTranslation?: TemplateTranslation;
+  receiveAttachment?: SelectOptionEntry;
 }
 
 export default class SendMsgForm extends React.Component<ActionFormProps, SendMsgFormState> {
@@ -396,8 +398,29 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           type="file"
           onChange={e => this.handleUploadFile(e.target.files)}
         />
+        <span className={styles.span_separator}></span>
+        <p>
+          Receive attachment: <br />
+          Select a type of attachment to receive from a user as an answer choice. <br />
+          Note: only available for channels with file upload capabilities.
+        </p>
+        <div className={styles.type_choice}>
+          <SelectElement
+            styles={small as any}
+            name="ReceiveAttachment"
+            entry={this.state.receiveAttachment}
+            onChange={this.handleReceiveAttachmentUpdate}
+            options={RECEIVE_ATTACHMENT_OPTIONS}
+            placeholder="Receive Attachment"
+            clearable={true}
+          />
+        </div>
       </>
     );
+  }
+
+  private handleReceiveAttachmentUpdate(option: SelectOption) {
+    this.setState({ receiveAttachment: { value: option } });
   }
 
   private handleTemplateChanged(selected: Asset[]): void {
