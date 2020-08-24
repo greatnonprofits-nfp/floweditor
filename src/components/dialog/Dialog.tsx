@@ -221,7 +221,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
           </div>
         </div>
         <div className={this.props.noPadding ? '' : styles.content}>
-          {this.state.activeTab > -1
+          {this.state.activeTab > -1 && this.props.tabs && this.props.tabs.length > 0
             ? this.props.tabs![this.state.activeTab].body
             : this.props.children}
         </div>
