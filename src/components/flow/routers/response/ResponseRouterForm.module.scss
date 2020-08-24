@@ -1,0 +1,204 @@
+@import "variables.module.scss";
+
+.instructions {
+  margin: 0 15px;
+}
+
+.cases {
+  margin-bottom: 9px;
+}
+
+.save_link {
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 11px;
+}
+
+.save_as {
+  padding: 15px 15px 0px 15px;
+}
+
+.translating_operator_title {
+  font-weight: 400;
+  font-size: 18px;
+  margin: 0 9px 15px;
+}
+
+.translating_operator_instructions {
+  margin: 0 10px 15px;
+}
+
+.translating_operator_container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.translating_operator {
+  overflow: hidden;
+  width: 145px;
+  font-style: italic;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.translating_from {
+  background: $translation_bg;
+  border-radius: 5px;
+  padding: 9px;
+  border: 1px solid darken($translation_bg, 5%);
+  width: 156px;
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
+.translating_to {
+  width: 226px;
+  padding-right: 10px;
+}
+
+.title {
+  font-weight: 400;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.timeout_control {
+  padding-left: 15px;
+}
+
+.testingTab {
+  display: flex;
+  justify-content: space-around;
+  .liveTests, .automatedTests {
+    .header {
+      background-color: #4c7dad;
+      color: snow;
+      text-align: left;
+      padding: 5px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      height: 25px;
+      display: grid;
+      justify-items: center;
+      align-items: center;
+    }
+    .body {
+      height: 90%;
+      padding: 2px;
+      position: relative;
+      .buttons {
+        position: absolute;
+        bottom: 5px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        [class*="Button"] {
+          margin: 0 2px;
+          border: 1px solid #e6e6e6;
+          &:hover {
+            border: 1px solid #d9d9d9;
+          }
+        }
+      }
+    }
+    width: 49%;
+    height: 500px;
+  }
+  .liveTests {
+    width: 35%;
+    .languageSelect {
+      margin-top: 2px;
+      margin-bottom: 15px;
+    }
+    .testLine {
+      input {
+        padding: 6px 7px;
+        height: 28px !important;
+        font-size: 13px !important;
+        border: 1px solid #ccc;
+      }
+    }
+    .categoriesContainer{
+      margin: 5px 0;
+      .categoryName {
+        margin: 2px;
+        [class*="Pill"] {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 90%;
+        }
+      }
+      .categoryMatched {
+        margin: 2px;
+        [class*="Pill"] {
+          color: white;
+          background-color: #289f9b;
+          border: 1px solid #289f9b;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 90%;
+        }
+      }
+    }
+  }
+  .automatedTests {
+    width: 64%;
+    .body {
+      table {
+        thead {
+          display:table;
+          width:100%;
+          table-layout:fixed;
+        }
+        tbody {
+          display: block;
+          max-height: 360px;
+          overflow: auto;
+          tr {
+            display:table;
+            width:100%;
+            table-layout:fixed;
+            td {
+              text-align: center;
+              p {
+                margin: 0;
+                padding: 0;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                line-height: 1em;
+                max-height: 2em;
+              }
+              i {
+                cursor: pointer;
+                &:hover {
+                  text-shadow: 0 0 3px black;
+                }
+                &:active {
+                  text-shadow: 0 0 10px black;
+                }
+              }
+            }
+          }
+          .testCorrect {
+            .categoryName {
+              color: green;
+            }
+          }
+          .testFailed {
+            .categoryName {
+              color: tomato;
+            }
+          }
+        }
+      }
+    }
+  }
+}
