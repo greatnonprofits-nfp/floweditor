@@ -14,6 +14,8 @@ import { Router, RouterTypes, SwitchRouter, Wait, WaitTypes } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import { SelectOption } from 'components/form/select/SelectElement';
+import { getLocalizations } from 'store/helpers';
+import { RouterFormProps } from 'components/flow/props';
 
 export enum AutomatedTestCaseType {
   AUTO_GENERATED,
@@ -44,7 +46,7 @@ export interface AutomatedTestCase {
 interface ConfigRouter {
   spell_checker?: boolean;
   spelling_correction_sensitivity?: string;
-  test_cases?: AutomatedTestCase[];
+  test_cases?: { [lang: string]: AutomatedTestCase[] };
 }
 
 export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
@@ -131,10 +133,41 @@ export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] 
   return testCases;
 };
 
-export const nodeToState = (
-  settings: NodeEditorSettings,
-  assetLanguages?: any
-): ResponseRouterFormState => {
+export const getLocalizedCases = (cases: CaseProps[], props: RouterFormProps, isoLang: string) => {
+  if (isoLang === props.nodeSettings.defaultLanguage) {
+    return cases;
+  }
+  let localizations = getLocalizations(
+    props.nodeSettings.originalNode.node,
+    null,
+    props.assetStore.languages.items[isoLang],
+    props.nodeSettings.localization[isoLang]
+  );
+  // eslint-disable-next-line no-undef
+  let localizedCases = new Map();
+  localizations.forEach(localization => {
+    let localizedObj = localization.getObject();
+    if (
+      localizedObj.hasOwnProperty('uuid') &&
+      localizedObj.hasOwnProperty('type') &&
+      localizedObj.hasOwnProperty('category_uuid') &&
+      localizedObj.hasOwnProperty('arguments')
+    ) {
+      localizedCases.set(localizedObj.uuid, localizedObj);
+    }
+  });
+  /* copying of cases to prevent updating of original cases */
+  cases = JSON.parse(JSON.stringify(cases));
+  cases.forEach(case_ => {
+    let translatedKase = localizedCases.get(case_.kase.uuid);
+    if (translatedKase) {
+      case_.kase = translatedKase;
+    }
+  });
+  return cases;
+};
+
+export const nodeToState = (settings: NodeEditorSettings, props?: any): ResponseRouterFormState => {
   let initialCases: CaseProps[] = [];
 
   // TODO: work out an incremental result name
@@ -143,7 +176,9 @@ export const nodeToState = (
   let enabledSpell = false;
   let spellSensitivity = '70';
   let languages: SelectOption[] = [];
-  let testCases: AutomatedTestCase[] = [];
+  let localizedCases: CaseProps[] = [];
+  let currentLanguage: any = null;
+  let testCases: any = {};
 
   if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
@@ -164,16 +199,40 @@ export const nodeToState = (
       timeout = settings.originalNode.node.router.wait.timeout.seconds || 0;
     }
 
-    Object.entries(assetLanguages.items).forEach(([_, item]) => {
+    Object.entries(props.assetStore.languages.items).forEach(([_, item]) => {
       // @ts-ignore
       languages.push({ label: item.name, value: item.id });
+      // @ts-ignore
+      if (item.id === (settings.defaultLanguage || 'eng')) {
+        // @ts-ignore
+        currentLanguage = { label: item.name, value: item.id };
+      }
     });
 
+    localizedCases = getLocalizedCases(initialCases, props, currentLanguage.value);
+
+    console.log(router.config);
     if (router.config && router.config.test_cases) {
       testCases = router.config.test_cases;
+      languages.forEach(lang => {
+        if (!testCases[lang.value]) {
+          let cases = getLocalizedCases(initialCases, props, lang.value);
+          testCases[lang.value] = generateAutomatedTests(cases);
+        }
+      });
     } else {
-      testCases = generateAutomatedTests(initialCases);
+      testCases[currentLanguage.value] = generateAutomatedTests(localizedCases);
+      languages.forEach(lang => {
+        let cases = getLocalizedCases(initialCases, props, lang.value);
+        testCases[lang.value] = generateAutomatedTests(cases);
+      });
     }
+  }
+
+  if (!currentLanguage) {
+    currentLanguage = { label: 'English', value: settings.defaultLanguage || 'eng' };
+    testCases[currentLanguage.value] = [];
+    languages.push(currentLanguage);
   }
 
   return {
@@ -184,9 +243,10 @@ export const nodeToState = (
     spellSensitivity,
     valid: true,
     testingLangs: languages,
-    testingLang: languages[0],
+    testingLang: currentLanguage,
     liveTestText: { value: '' },
-    automatedTestCases: testCases
+    automatedTestCases: testCases,
+    localizedCases
   };
 };
 
@@ -219,7 +279,7 @@ export const stateToNode = (
     config.spelling_correction_sensitivity = state.spellSensitivity;
   }
 
-  if (state.automatedTestCases.length) {
+  if (state.automatedTestCases) {
     config.test_cases = state.automatedTestCases;
   }
 
