@@ -307,7 +307,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           <SelectElement
             styles={small as any}
             name="Type Options"
-            placeholder="Add Attachment"
+            placeholder="Send Attachment"
             entry={{
               value: index > -1 ? getAttachmentTypeOption(attachment.type) : null
             }}
@@ -380,6 +380,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     return (
       <>
         <p>
+          Send attachment: <br />
           {i18n.t(
             'forms.send_msg.summary',
             'Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
