@@ -178,7 +178,11 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
         addAsset: this.handleAddAsset,
         updateAction: this.updateAction,
         updateRouter: this.updateRouter,
-        nodeSettings: this.props.settings,
+        nodeSettings: {
+          localization: this.props.definition.localization,
+          defaultLanguage: this.props.definition.language,
+          ...this.props.settings
+        },
         helpArticles: this.props.helpArticles,
         issues: this.props.issues.filter((issue: FlowIssue) => !issue.language),
         typeConfig: this.props.typeConfig,

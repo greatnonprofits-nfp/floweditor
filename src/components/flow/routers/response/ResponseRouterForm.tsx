@@ -162,7 +162,7 @@ export default class ResponseRouterForm extends React.Component<
       ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.cases)
       : [];
     const testAlreadyExists = this.state.automatedTestCases.some(
-      item => item.testText.toLowerCase() === this.state.liveTestText.value.toLowerCase()
+      item => item.testText === this.state.liveTestText.value
     );
     if (matched.length > 0 && !testAlreadyExists) {
       const updated: any = mutate(this.state.automatedTestCases, {
@@ -171,7 +171,7 @@ export default class ResponseRouterForm extends React.Component<
             type: AutomatedTestCaseType.USER_GENERATED,
             testText: this.state.liveTestText.value,
             actualCategory: matched.join(', '),
-            confirmedCategory: '',
+            confirmedCategory: matched.join(', '),
             categoriesMatch: false,
             confirmed: false
           }
@@ -253,7 +253,9 @@ export default class ResponseRouterForm extends React.Component<
 
   private retestManualyGeneratedTests() {
     let alreadyCreatedManalTests = this.state.automatedTestCases.filter(
-      item => item.type === AutomatedTestCaseType.USER_GENERATED
+      item =>
+        item.type === AutomatedTestCaseType.USER_GENERATED &&
+        this.state.cases.some(case_ => case_.categoryName === item.confirmedCategory)
     );
     alreadyCreatedManalTests.forEach(item => {
       let matched = item.testText
@@ -438,7 +440,11 @@ export default class ResponseRouterForm extends React.Component<
         name: 'Testing',
         checked: checked,
         body: this.renderTestingTab(),
-        hasErrors: !checked
+        hasErrors: !checked,
+        nameStyle: checked ? '' : styles.testingTabNameError,
+        onClick: () => {
+          this.retestAutomatedTestCases();
+        }
       }
     ];
 

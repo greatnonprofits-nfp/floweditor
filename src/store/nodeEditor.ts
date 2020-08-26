@@ -161,6 +161,8 @@ export interface NodeEditorSettings {
   showAdvanced?: boolean;
   originalAction?: AnyAction;
   localizations?: LocalizedObject[];
+  localization?: any;
+  defaultLanguage?: string;
 }
 
 export interface NodeEditor {

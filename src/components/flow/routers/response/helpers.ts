@@ -69,7 +69,9 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
         match = args.every(element => new RegExp('\\b(' + element + ')\\b').test(text));
         break;
       case 'has_phrase':
-        match = new RegExp('.*(' + item.kase.arguments[0].toLowerCase() + ').*').test(text);
+        match = new RegExp('(^|.*\\s)(' + item.kase.arguments[0].toLowerCase() + ')(\\s.*|$)').test(
+          text
+        );
         break;
       case 'has_only_phrase':
         match = new RegExp('^(' + item.kase.arguments[0].toLowerCase() + ')$').test(text);
