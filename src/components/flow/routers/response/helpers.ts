@@ -22,7 +22,24 @@ export enum AutomatedTestCaseType {
   USER_GENERATED
 }
 
-export const ALLOWED_USER_TESTS = [Operators.has_email, Operators.has_phone, Operators.has_pattern];
+export const ALLOWED_USER_TESTS = [
+  Operators.has_email,
+  Operators.has_phone,
+  Operators.has_pattern,
+  Operators.has_date,
+  Operators.has_date_lt,
+  Operators.has_date_eq,
+  Operators.has_date_gt,
+  Operators.has_time,
+  Operators.has_text,
+  Operators.has_number,
+  Operators.has_number_lt,
+  Operators.has_number_lte,
+  Operators.has_number_eq,
+  Operators.has_number_gte,
+  Operators.has_number_gt,
+  Operators.has_number_between
+];
 
 export const ALLOWED_AUTO_TESTS = [
   Operators.has_any_word,
@@ -52,8 +69,11 @@ interface ConfigRouter {
 export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
   let matches: string[] = [];
   let args: string[] = [];
-  let emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-  let phoneRegExp = /\+(?:[0-9] ?){6,14}[0-9]/;
+  let emailRegExp = /.*\b(?<email>\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+)\b.*/;
+  let phoneRegExp = /.*\b(?<phone>\+?(?:[0-9] ?){6,14}[0-9])\b.*/;
+  let dateRegExp = /.*\b(?<date>([0-9]{1,2})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{4}|[0-9]{2})|([0-9]{4})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{1,2})|\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))\b.*/;
+  let timeRegExp = /.*\b(?<time>([0-9]{1,2}):([0-9]{2})(:([0-9]{2})(\.(\d+))?)?\W*([aApP][mM])?)\b.*/;
+  let numberRegExp = /.*\b(?<number>[$£€]?([\d,][\d,.]*([.,]\d+)?)\D*$)\b.*/;
   let originalText = text;
   text = text.toLowerCase();
   cases.some(item => {
@@ -94,6 +114,123 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
           match = new RegExp(item.kase.arguments[0]).test(originalText);
           // eslint-disable-next-line no-empty
         } catch (error) {}
+        break;
+      case 'has_date':
+        var msgDate = dateRegExp.exec(originalText);
+        if (msgDate) {
+          match = !isNaN(Date.parse(msgDate.groups.date));
+        }
+        break;
+      case 'has_date_eq':
+        var kwargs = /(?<days>-?\d+)/.exec(item.kase.arguments[0]);
+        var days = Number.parseInt((kwargs ? kwargs : { groups: { days: '' } }).groups.days);
+        // eslint-disable-next-line no-redeclare
+        var msgDate = dateRegExp.exec(originalText);
+        if (!isNaN(days) && msgDate && Date.parse(msgDate.groups.date)) {
+          var exactDay = new Date();
+          var testedDate = new Date(Date.parse(msgDate.groups.date));
+          testedDate.setHours(0, 0, 0, 0);
+          exactDay.setDate(exactDay.getDate() + days);
+          exactDay.setHours(0, 0, 0, 0);
+          match = exactDay.valueOf() === testedDate.valueOf();
+        }
+        break;
+      case 'has_date_lt':
+        // eslint-disable-next-line no-redeclare
+        var kwargs = /(?<days>-?\d+)/.exec(item.kase.arguments[0]);
+        // eslint-disable-next-line no-redeclare
+        var days = Number.parseInt((kwargs ? kwargs : { groups: { days: '' } }).groups.days);
+        // eslint-disable-next-line no-redeclare
+        var msgDate = dateRegExp.exec(originalText);
+        if (!isNaN(days) && msgDate && !isNaN(Date.parse(msgDate.groups.date))) {
+          // eslint-disable-next-line no-redeclare
+          var exactDay = new Date();
+          // eslint-disable-next-line no-redeclare
+          var testedDate = new Date(Date.parse(msgDate.groups.date));
+          testedDate.setHours(0, 0, 0, 0);
+          exactDay.setDate(exactDay.getDate() + days);
+          exactDay.setHours(0, 0, 0, 0);
+          match = exactDay.valueOf() > testedDate.valueOf();
+        }
+        break;
+      case 'has_date_gt':
+        // eslint-disable-next-line no-redeclare
+        var kwargs = /(?<days>-?\d+)/.exec(item.kase.arguments[0]);
+        // eslint-disable-next-line no-redeclare
+        var days = Number.parseInt((kwargs ? kwargs : { groups: { days: '' } }).groups.days);
+        // eslint-disable-next-line no-redeclare
+        var msgDate = dateRegExp.exec(originalText);
+        if (!isNaN(days) && msgDate && !isNaN(Date.parse(msgDate.groups.date))) {
+          // eslint-disable-next-line no-redeclare
+          var exactDay = new Date();
+          // eslint-disable-next-line no-redeclare
+          var testedDate = new Date(Date.parse(msgDate.groups.date));
+          testedDate.setHours(0, 0, 0, 0);
+          exactDay.setDate(exactDay.getDate() + days);
+          exactDay.setHours(0, 0, 0, 0);
+          match = exactDay.valueOf() < testedDate.valueOf();
+        }
+        break;
+      case 'has_time':
+        match = timeRegExp.test(text);
+        break;
+      case 'has_text':
+        match = Boolean(originalText.trim());
+        break;
+      case 'has_number':
+        match = numberRegExp.test(text);
+        break;
+      case 'has_number_lt':
+        var testingNum = numberRegExp.exec(text);
+        if (testingNum) {
+          match =
+            Number.parseFloat(item.kase.arguments[0]) > Number.parseFloat(testingNum.groups.number);
+        }
+        break;
+      case 'has_number_lte':
+        // eslint-disable-next-line no-redeclare
+        var testingNum = numberRegExp.exec(text);
+        if (testingNum) {
+          match =
+            Number.parseFloat(item.kase.arguments[0]) >=
+            Number.parseFloat(testingNum.groups.number);
+        }
+        break;
+      case 'has_number_eq':
+        // eslint-disable-next-line no-redeclare
+        var testingNum = numberRegExp.exec(text);
+        if (testingNum) {
+          match =
+            Number.parseFloat(item.kase.arguments[0]) ===
+            Number.parseFloat(testingNum.groups.number);
+        }
+        break;
+      case 'has_number_gte':
+        // eslint-disable-next-line no-redeclare
+        var testingNum = numberRegExp.exec(text);
+        if (testingNum) {
+          match =
+            Number.parseFloat(item.kase.arguments[0]) <=
+            Number.parseFloat(testingNum.groups.number);
+        }
+        break;
+      case 'has_number_gt':
+        // eslint-disable-next-line no-redeclare
+        var testingNum = numberRegExp.exec(text);
+        if (testingNum) {
+          match =
+            Number.parseFloat(item.kase.arguments[0]) < Number.parseFloat(testingNum.groups.number);
+        }
+        break;
+      case 'has_number_between':
+        // eslint-disable-next-line no-redeclare
+        var testingNum = numberRegExp.exec(text);
+        if (testingNum) {
+          match =
+            Number.parseFloat(item.kase.arguments[0]) <
+              Number.parseFloat(testingNum.groups.number) &&
+            Number.parseFloat(item.kase.arguments[1]) > Number.parseFloat(testingNum.groups.number);
+        }
         break;
       default:
         break;
@@ -211,7 +348,6 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
 
     localizedCases = getLocalizedCases(initialCases, props, currentLanguage.value);
 
-    console.log(router.config);
     if (router.config && router.config.test_cases) {
       testCases = router.config.test_cases;
       languages.forEach(lang => {

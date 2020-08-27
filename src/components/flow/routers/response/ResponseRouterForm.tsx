@@ -218,10 +218,12 @@ export default class ResponseRouterForm extends React.Component<
 
   private onDeleteTestCaseClicked(index: number) {
     // we found a match, merge us in
-    const updated: any = mutate(this.state.automatedTestCases[this.state.testingLang.value], {
+    let automatedTestCases = this.state.automatedTestCases;
+    const updated: any = mutate(automatedTestCases[this.state.testingLang.value], {
       $splice: [[index, 1]]
     });
-    this.setState({ automatedTestCases: updated });
+    automatedTestCases[this.state.testingLang.value] = updated;
+    this.setState({ automatedTestCases });
   }
 
   private onDeleteAllCkicked() {

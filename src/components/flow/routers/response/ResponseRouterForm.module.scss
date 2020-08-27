@@ -133,6 +133,8 @@
     }
     .categoriesContainer{
       margin: 5px 0;
+      max-height: 355px;
+      overflow: scroll;
       .categoryName {
         margin: 2px;
         [class*="Pill"] {
@@ -178,8 +180,8 @@
                 padding: 0;
                 text-overflow: ellipsis;
                 overflow: hidden;
-                line-height: 1em;
-                max-height: 2em;
+                line-height: 1.1em;
+                max-height: 2.2em;
               }
               i {
                 cursor: pointer;
