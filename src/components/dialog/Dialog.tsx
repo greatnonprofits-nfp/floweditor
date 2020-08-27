@@ -23,6 +23,8 @@ export interface Tab {
   hasErrors?: boolean;
   icon?: string;
   checked?: boolean;
+  nameStyle?: string;
+  onClick?: () => any;
 }
 
 interface Buttons {
@@ -193,9 +195,18 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
             {(this.props.tabs || []).map((tab: Tab, index: number) => (
               <div
                 key={'tab_' + tab.name}
-                className={styles.tab + ' ' + (index === this.state.activeTab ? styles.active : '')}
+                className={
+                  styles.tab +
+                  ' ' +
+                  (index === this.state.activeTab ? styles.active : '') +
+                  ' ' +
+                  (tab.nameStyle ? tab.nameStyle : '')
+                }
                 onClick={(evt: React.MouseEvent<HTMLDivElement>) => {
                   evt.stopPropagation();
+                  if (tab.onClick) {
+                    tab.onClick();
+                  }
                   this.setState({ activeTab: index });
                 }}
               >

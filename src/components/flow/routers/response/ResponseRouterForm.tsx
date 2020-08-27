@@ -15,7 +15,8 @@ import {
   AutomatedTestCaseType,
   generateAutomatedTest,
   ALLOWED_TESTS,
-  ALLOWED_AUTO_TESTS
+  ALLOWED_AUTO_TESTS,
+  getLocalizedCases
 } from 'components/flow/routers/response/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import TimeoutControl from 'components/form/timeout/TimeoutControl';
@@ -48,7 +49,8 @@ interface TestingFormState {
   testingLang?: SelectOption;
   testingLangs?: SelectOption[];
   liveTestText?: StringEntry;
-  automatedTestCases?: AutomatedTestCase[];
+  localizedCases?: CaseProps[];
+  automatedTestCases?: { [lang: string]: AutomatedTestCase[] };
 }
 
 export interface ResponseRouterFormState extends FormState, TestingFormState {
@@ -68,7 +70,7 @@ export default class ResponseRouterForm extends React.Component<
   public constructor(props: RouterFormProps) {
     super(props);
 
-    this.state = nodeToState(this.props.nodeSettings, this.props.assetStore.languages);
+    this.state = nodeToState(this.props.nodeSettings, this.props);
 
     bindCallbacks(this, {
       include: [/^on/, /^handle/]
@@ -93,7 +95,8 @@ export default class ResponseRouterForm extends React.Component<
 
   private handleCasesUpdated(cases: CaseProps[]): void {
     const invalidCase = cases.find((caseProps: CaseProps) => !caseProps.valid);
-    this.setState({ cases, valid: !invalidCase });
+    const localizedCases = getLocalizedCases(cases, this.props, this.state.testingLang.value);
+    this.setState({ cases, localizedCases, valid: !invalidCase });
     this.retestAutomatedTestCases();
   }
 
@@ -102,7 +105,7 @@ export default class ResponseRouterForm extends React.Component<
     if (!this.retestAutomatedTestCases()) {
       let message = '';
       if (
-        !this.state.automatedTestCases.every(
+        !this.state.automatedTestCases[this.state.testingLang.value].every(
           testCase => testCase.actualCategory === testCase.confirmedCategory
         )
       ) {
@@ -159,43 +162,48 @@ export default class ResponseRouterForm extends React.Component<
 
   private onAddTestCaseClicked() {
     let matched = this.state.liveTestText
-      ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.cases)
+      ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.localizedCases)
       : [];
-    const testAlreadyExists = this.state.automatedTestCases.some(
-      item => item.testText.toLowerCase() === this.state.liveTestText.value.toLowerCase()
+    let automatedTestCases = this.state.automatedTestCases;
+    const testAlreadyExists = automatedTestCases[this.state.testingLang.value].some(
+      item => item.testText === this.state.liveTestText.value
     );
     if (matched.length > 0 && !testAlreadyExists) {
-      const updated: any = mutate(this.state.automatedTestCases, {
+      const updated: any = mutate(automatedTestCases[this.state.testingLang.value], {
         $push: [
           {
             type: AutomatedTestCaseType.USER_GENERATED,
             testText: this.state.liveTestText.value,
             actualCategory: matched.join(', '),
-            confirmedCategory: '',
+            confirmedCategory: matched.join(', '),
             categoriesMatch: false,
             confirmed: false
           }
         ]
       });
-      this.setState({ automatedTestCases: updated, liveTestText: { value: '' } });
+      automatedTestCases[this.state.testingLang.value] = updated;
+      this.setState({ automatedTestCases, liveTestText: { value: '' } });
     }
   }
 
   private onConfirmTestCaseClicked(index: number, value: boolean) {
     let dataToChange = { confirmed: value };
+    let automatedTestCases = this.state.automatedTestCases;
     if (value) {
       // @ts-ignore
-      dataToChange.confirmedCategory = this.state.automatedTestCases[index].actualCategory;
+      dataToChange.confirmedCategory =
+        automatedTestCases[this.state.testingLang.value][index].actualCategory;
     }
-    const updated: any = mutate(this.state.automatedTestCases, {
+    const updated: any = mutate(automatedTestCases[this.state.testingLang.value], {
       [index]: { $merge: dataToChange }
     });
-    this.setState({ automatedTestCases: updated });
+    automatedTestCases[this.state.testingLang.value] = updated;
+    this.setState({ automatedTestCases });
   }
 
   private onConfirmAllClicked() {
     let automatedTests = this.state.automatedTestCases;
-    automatedTests.forEach(item => {
+    automatedTests[this.state.testingLang.value].forEach(item => {
       item.confirmed = true;
       item.confirmedCategory = item.actualCategory;
     });
@@ -204,38 +212,44 @@ export default class ResponseRouterForm extends React.Component<
 
   private onUnconfirmAllClicked() {
     let automatedTests = this.state.automatedTestCases;
-    automatedTests.forEach(item => (item.confirmed = false));
+    automatedTests[this.state.testingLang.value].forEach(item => (item.confirmed = false));
     this.setState({ automatedTestCases: automatedTests });
   }
 
   private onDeleteTestCaseClicked(index: number) {
     // we found a match, merge us in
-    const updated: any = mutate(this.state.automatedTestCases, {
+    let automatedTestCases = this.state.automatedTestCases;
+    const updated: any = mutate(automatedTestCases[this.state.testingLang.value], {
       $splice: [[index, 1]]
     });
-    this.setState({ automatedTestCases: updated });
+    automatedTestCases[this.state.testingLang.value] = updated;
+    this.setState({ automatedTestCases });
   }
 
   private onDeleteAllCkicked() {
-    this.setState({ automatedTestCases: [] });
+    let automatedTestCases = this.state.automatedTestCases;
+    automatedTestCases[this.state.testingLang.value] = [];
+    this.setState({ automatedTestCases });
   }
 
   private retestAutoGeneratedTests() {
     let retestedTestCases: AutomatedTestCase[] = [];
-    let testCases = this.state.automatedTestCases.filter(
+    let testCases = this.state.automatedTestCases[this.state.testingLang.value].filter(
       item => item.type === AutomatedTestCaseType.AUTO_GENERATED
     );
     let testCasesMap = Object.assign({}, ...testCases.map(item => ({ [item.testText]: item })));
-    let cases = this.state.cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
+    let cases = this.state.localizedCases.filter(case_ =>
+      ALLOWED_AUTO_TESTS.includes(case_.kase.type)
+    );
     cases.forEach(item => {
       if (item.kase.arguments[0] === '') return;
       if (item.kase.arguments[0] in testCasesMap) {
         let testCase = testCasesMap[item.kase.arguments[0]];
         if (item.categoryName !== testCase.confirmedCategory) {
-          testCase = generateAutomatedTest(item, this.state.cases);
+          testCase = generateAutomatedTest(item, this.state.localizedCases);
         } else {
           let matched = testCase.testText
-            ? matchResponseTextWithCategory(testCase.testText, this.state.cases)
+            ? matchResponseTextWithCategory(testCase.testText, this.state.localizedCases)
             : [];
           let newActualCategory = matched.join(', ');
           testCase.confirmed =
@@ -244,7 +258,7 @@ export default class ResponseRouterForm extends React.Component<
         }
         retestedTestCases.push(testCase);
       } else {
-        let testCase = generateAutomatedTest(item, this.state.cases);
+        let testCase = generateAutomatedTest(item, this.state.localizedCases);
         retestedTestCases.push(testCase);
       }
     });
@@ -252,12 +266,16 @@ export default class ResponseRouterForm extends React.Component<
   }
 
   private retestManualyGeneratedTests() {
-    let alreadyCreatedManalTests = this.state.automatedTestCases.filter(
-      item => item.type === AutomatedTestCaseType.USER_GENERATED
+    let alreadyCreatedManalTests = this.state.automatedTestCases[
+      this.state.testingLang.value
+    ].filter(
+      item =>
+        item.type === AutomatedTestCaseType.USER_GENERATED &&
+        this.state.localizedCases.some(case_ => case_.categoryName === item.confirmedCategory)
     );
     alreadyCreatedManalTests.forEach(item => {
       let matched = item.testText
-        ? matchResponseTextWithCategory(item.testText, this.state.cases)
+        ? matchResponseTextWithCategory(item.testText, this.state.localizedCases)
         : [];
       let newActualCategory = matched.join(',');
       item.confirmed = newActualCategory === item.actualCategory ? item.confirmed : false;
@@ -277,16 +295,26 @@ export default class ResponseRouterForm extends React.Component<
     let confirmed = allTests.filter(
       item => item.actualCategory === item.confirmedCategory && item.confirmed
     );
-    this.setState({ automatedTestCases: [...errored, ...unconfirmed, ...confirmed] });
-    let allTestsPassedAndConfirmed = this.state.automatedTestCases.every(
+    let automatedTestCases = this.state.automatedTestCases;
+    automatedTestCases[this.state.testingLang.value] = [...errored, ...unconfirmed, ...confirmed];
+    this.setState({ automatedTestCases });
+    let allTestsPassedAndConfirmed = this.state.automatedTestCases[
+      this.state.testingLang.value
+    ].every(
       testCase => testCase.confirmed && testCase.actualCategory === testCase.confirmedCategory
     );
     return allTestsPassedAndConfirmed;
   }
 
+  private onTestingLangChanged(lang: any) {
+    let localizedCases = getLocalizedCases(this.state.cases, this.props, lang.value);
+    this.setState({ testingLang: lang, localizedCases });
+    this.retestAutomatedTestCases();
+  }
+
   private renderTestingTab(): JSX.Element {
     let matched = this.state.liveTestText
-      ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.cases)
+      ? matchResponseTextWithCategory(this.state.liveTestText.value, this.state.localizedCases)
       : [];
     let filteredCases = this.state.cases.filter(case_ => ALLOWED_TESTS.includes(case_.kase.type));
     let cases = Object.assign(
@@ -308,9 +336,7 @@ export default class ResponseRouterForm extends React.Component<
               name="Intent"
               value={this.state.testingLang}
               options={this.state.testingLangs}
-              onChange={(lang: any) => {
-                this.setState({ testingLang: lang });
-              }}
+              onChange={this.onTestingLangChanged}
               placeholder="Language"
               isSearchable={false}
               className={styles.languageSelect}
@@ -360,41 +386,43 @@ export default class ResponseRouterForm extends React.Component<
                 </tr>
               </thead>
               <tbody>
-                {this.state.automatedTestCases.map((test, index: number) => (
-                  <tr
-                    className={
-                      test.actualCategory === test.confirmedCategory
-                        ? styles.testCorrect
-                        : styles.testFailed
-                    }
-                  >
-                    <td>
-                      <p className={styles.text} title={test.testText}>
-                        {test.testText}
-                      </p>
-                    </td>
-                    <td className={styles.categoryName}>
-                      <p className={styles.text} title={test.actualCategory}>
-                        {test.actualCategory}
-                      </p>
-                    </td>
-                    <td>
-                      <CheckboxElement
-                        name="checked"
-                        checked={test.confirmed}
-                        onChange={value => this.onConfirmTestCaseClicked(index, value)}
-                      />
-                    </td>
-                    <td className={styles.categoryName}>
-                      <p className={styles.text} title={test.confirmedCategory}>
-                        {test.confirmedCategory}
-                      </p>
-                    </td>
-                    <td>
-                      <i className="fe-x" onClick={() => this.onDeleteTestCaseClicked(index)}></i>
-                    </td>
-                  </tr>
-                ))}
+                {this.state.automatedTestCases[this.state.testingLang.value].map(
+                  (test, index: number) => (
+                    <tr
+                      className={
+                        test.actualCategory === test.confirmedCategory
+                          ? styles.testCorrect
+                          : styles.testFailed
+                      }
+                    >
+                      <td>
+                        <p className={styles.text} title={test.testText}>
+                          {test.testText}
+                        </p>
+                      </td>
+                      <td className={styles.categoryName}>
+                        <p className={styles.text} title={test.actualCategory}>
+                          {test.actualCategory}
+                        </p>
+                      </td>
+                      <td>
+                        <CheckboxElement
+                          name="checked"
+                          checked={test.confirmed}
+                          onChange={value => this.onConfirmTestCaseClicked(index, value)}
+                        />
+                      </td>
+                      <td className={styles.categoryName}>
+                        <p className={styles.text} title={test.confirmedCategory}>
+                          {test.confirmedCategory}
+                        </p>
+                      </td>
+                      <td>
+                        <i className="fe-x" onClick={() => this.onDeleteTestCaseClicked(index)}></i>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
             <div className={styles.buttons}>
@@ -422,7 +450,7 @@ export default class ResponseRouterForm extends React.Component<
 
   public renderEdit(): JSX.Element {
     const typeConfig = this.props.typeConfig;
-    const checked = this.state.automatedTestCases.every(
+    const checked = this.state.automatedTestCases[this.state.testingLang.value].every(
       item => item.confirmed && item.actualCategory === item.confirmedCategory
     );
     let isTestingAvailable = this.state.cases.some(case_ => {
@@ -432,13 +460,18 @@ export default class ResponseRouterForm extends React.Component<
           case_.kase.arguments.length === 0)
       );
     });
-    isTestingAvailable = isTestingAvailable || this.state.automatedTestCases.length > 0;
+    isTestingAvailable =
+      isTestingAvailable || this.state.automatedTestCases[this.state.testingLang.value].length > 0;
     const tabs = [
       {
         name: 'Testing',
         checked: checked,
         body: this.renderTestingTab(),
-        hasErrors: !checked
+        hasErrors: !checked,
+        nameStyle: checked ? '' : styles.testingTabNameError,
+        onClick: () => {
+          this.retestAutomatedTestCases();
+        }
       }
     ];
 
