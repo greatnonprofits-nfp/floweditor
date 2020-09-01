@@ -312,7 +312,8 @@ export default class ResponseRouterForm extends React.Component<
   private onTestingLangChanged(lang: any) {
     let localizedCases = getLocalizedCases(this.state.cases, this.props, lang.value);
     this.setState({ testingLang: lang, localizedCases });
-    this.retestAutomatedTestCases();
+    /* need some time to change language before retesting */
+    setTimeout(() => this.retestAutomatedTestCases(), 100);
   }
 
   private renderTestingTab(): JSX.Element {
