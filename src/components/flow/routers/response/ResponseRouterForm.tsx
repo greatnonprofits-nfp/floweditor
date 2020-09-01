@@ -109,7 +109,7 @@ export default class ResponseRouterForm extends React.Component<
           testCase => testCase.actualCategory === testCase.confirmedCategory
         )
       ) {
-        message = 'Some of tests are failed. Fix errors or confirm new test behavior.';
+        message = 'Test cases have not been confirmed or contain failures.';
       } else {
         message = 'You have unconfirmed test results. Please confirm the results before saving.';
       }
@@ -246,7 +246,14 @@ export default class ResponseRouterForm extends React.Component<
       if (item.kase.arguments[0] in testCasesMap) {
         let testCase = testCasesMap[item.kase.arguments[0]];
         if (item.categoryName !== testCase.confirmedCategory) {
+          let previousCase = testCase;
           testCase = generateAutomatedTest(item, this.state.localizedCases);
+          if (testCase.actualCategory === previousCase.actualCategory && previousCase.confirmed) {
+            if (cases.some(case_ => case_.categoryName === previousCase.confirmedCategory)) {
+              testCase.confirmedCategory = previousCase.confirmedCategory;
+              testCase.confirmed = previousCase.confirmed;
+            }
+          }
         } else {
           let matched = testCase.testText
             ? matchResponseTextWithCategory(testCase.testText, this.state.localizedCases)
@@ -268,11 +275,7 @@ export default class ResponseRouterForm extends React.Component<
   private retestManualyGeneratedTests() {
     let alreadyCreatedManalTests = this.state.automatedTestCases[
       this.state.testingLang.value
-    ].filter(
-      item =>
-        item.type === AutomatedTestCaseType.USER_GENERATED &&
-        this.state.localizedCases.some(case_ => case_.categoryName === item.confirmedCategory)
-    );
+    ].filter(item => item.type === AutomatedTestCaseType.USER_GENERATED);
     alreadyCreatedManalTests.forEach(item => {
       let matched = item.testText
         ? matchResponseTextWithCategory(item.testText, this.state.localizedCases)
