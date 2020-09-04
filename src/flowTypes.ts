@@ -46,6 +46,7 @@ export interface Endpoints {
   simulateStart: string;
   simulateResume: string;
   editor: string;
+  keyword_triggers: string;
 }
 
 export interface FlowEditorConfig {

@@ -89,6 +89,7 @@ export enum AssetType {
   Scheme = 'scheme',
   Template = 'template',
   TrackableLink = 'shorten_url',
+  Trigger = 'keyword_trigger',
   URN = 'urn'
 }
 
