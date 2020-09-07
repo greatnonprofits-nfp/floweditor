@@ -69,7 +69,7 @@ export default class ResponseRouterForm extends React.Component<
 > {
   public constructor(props: RouterFormProps) {
     super(props);
-    console.log(this.props);
+
     this.state = nodeToState(this.props.nodeSettings, this.props);
 
     bindCallbacks(this, {
@@ -133,10 +133,18 @@ export default class ResponseRouterForm extends React.Component<
   }
 
   private checkKeywordConflict() {
-    let triggersDict = this.props.assetStore.keywordTriggers.items;
     let cases = this.state.cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
+    let triggersDict: any = this.props.assetStore.keywordTriggers.items;
+    triggersDict = Object.entries(triggersDict);
+
+    // we shold allow to use triggers of current flow for the first flow step
+    if (this.props.nodeSettings.isStartingNode) {
+      triggersDict = triggersDict.filter((item: any) => {
+        return item[1].content.flow.uuid !== this.props.nodeSettings.flowID;
+      });
+    }
     let usedKeywords = [];
-    for (const [, trigger] of Object.entries(triggersDict)) {
+    for (const [, trigger] of triggersDict) {
       if (
         cases.some(case_ =>
           case_.kase.arguments[0].toLowerCase().includes(trigger.content.keyword.toLowerCase())

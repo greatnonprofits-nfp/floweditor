@@ -7,7 +7,7 @@ const triggers = [
     name: 'embed',
     keyword: 'embed',
     flow: {
-      uuid: '49c55d47-44ab-412c-a602-e58f2070955f',
+      uuid: 'a4f64f1b-85bc-477e-b706-de313a022979',
       name: 'Test_ED'
     }
   },
@@ -17,7 +17,7 @@ const triggers = [
     name: 'tested',
     keyword: 'tested',
     flow: {
-      uuid: '49c55d47-44ab-412c-a602-e58f2070955f',
+      uuid: 'a4f64f1b-85bc-477e-b706-de313a022979',
       name: 'Test_ED'
     }
   },
