@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { UpdateUserAddingAction } from 'store/actionTypes';
 import { Asset, AssetStore, RenderNode } from 'store/flowContext';
+import { getOrderedNodes } from 'store/helpers';
 import { NodeEditorSettings, updateUserAddingAction } from 'store/nodeEditor';
 import AppState from 'store/state';
 import {
@@ -171,6 +172,10 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
       }
 
       const { form: Form } = typeConfig;
+      const isStartingNode = Object.entries(this.props.nodes).length
+        ? getOrderedNodes(this.props.nodes)[0].node.uuid ===
+          this.props.settings.originalNode.node.uuid
+        : true;
 
       const formProps: FormProps = {
         assetStore: this.props.assetStore,
@@ -179,6 +184,8 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
         updateAction: this.updateAction,
         updateRouter: this.updateRouter,
         nodeSettings: {
+          isStartingNode,
+          flowID: this.props.definition.uuid,
           localization: this.props.definition.localization,
           defaultLanguage: this.props.definition.language,
           ...this.props.settings

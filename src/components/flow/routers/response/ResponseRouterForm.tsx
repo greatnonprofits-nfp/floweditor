@@ -123,10 +123,54 @@ export default class ResponseRouterForm extends React.Component<
       });
       return;
     }
+    if (!this.checkKeywordConflict()) {
+      return;
+    }
     if (this.state.valid) {
       this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
       this.props.onClose(false);
     }
+  }
+
+  private checkKeywordConflict() {
+    let cases = this.state.cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
+    let triggersDict: any = this.props.assetStore.keywordTriggers.items;
+    triggersDict = Object.entries(triggersDict);
+
+    // we shold allow to use triggers of current flow for the first flow step
+    if (this.props.nodeSettings.isStartingNode) {
+      triggersDict = triggersDict.filter((item: any) => {
+        return item[1].content.flow.uuid !== this.props.nodeSettings.flowID;
+      });
+    }
+    let usedKeywords = [];
+    for (const [, trigger] of triggersDict) {
+      if (
+        cases.some(case_ =>
+          case_.kase.arguments[0].toLowerCase().includes(trigger.content.keyword.toLowerCase())
+        )
+      ) {
+        usedKeywords.push(trigger.content.keyword);
+      }
+    }
+    if (usedKeywords.length) {
+      let singular = usedKeywords.length === 1;
+      let body = `${singular ? 'Word' : 'Words'} 
+      ${usedKeywords.map(word => `'${word}'`).join(', ')} 
+      ${singular ? 'is' : 'are'} used as trigger word${singular ? '' : 's'} 
+      to run into another flow. Please, correct your response rules to don't use 
+      ${singular ? 'this' : 'these'} word${singular ? '' : 's'}.`;
+      // @ts-ignore
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: 'Warning',
+          body: body
+        },
+        saving: false
+      });
+      return false;
+    }
+    return true;
   }
 
   private getButtons(): ButtonSet {

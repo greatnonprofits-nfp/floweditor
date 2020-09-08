@@ -163,6 +163,8 @@ export interface NodeEditorSettings {
   localizations?: LocalizedObject[];
   localization?: any;
   defaultLanguage?: string;
+  isStartingNode?: boolean;
+  flowID?: string;
 }
 
 export interface NodeEditor {
