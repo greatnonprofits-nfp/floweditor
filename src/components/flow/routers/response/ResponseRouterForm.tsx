@@ -155,11 +155,11 @@ export default class ResponseRouterForm extends React.Component<
     }
     if (usedKeywords.length) {
       let singular = usedKeywords.length === 1;
-      let body = `${singular ? 'Word' : 'Words'} 
-      ${usedKeywords.map(word => `'${word}'`).join(', ')} 
-      ${singular ? 'is' : 'are'} used as trigger word${singular ? '' : 's'} 
-      to run into another flow. Please, correct your response rules to don't use 
-      ${singular ? 'this' : 'these'} word${singular ? '' : 's'}.`;
+      let body = `${usedKeywords.map(word => `'${word}'`).join(', ')} 
+      ${singular ? 'is' : 'are'} used by another flow as an active trigger.
+      This means that a user responding with 
+      ${singular ? 'this word' : 'these words'} will start a different flow. 
+      If you do not intend for this to happen, please change the response rule in this flow step.`;
       // @ts-ignore
       this.props.mergeEditorState({
         modalMessage: {
