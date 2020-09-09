@@ -7,6 +7,7 @@ import { Trans } from 'react-i18next';
 import shared from 'components/shared.module.scss';
 import { showHelpArticle } from 'external';
 import { IssueProps } from '../props';
+import i18n from 'config/i18n';
 
 export const renderIssues = (issueProps: IssueProps): JSX.Element => {
   const { issues, helpArticles } = issueProps;
@@ -67,6 +68,20 @@ export const renderIssue = (
   if (issue.type === FlowIssueType.LEGACY_EXTRA) {
     message = (
       <Trans i18nKey="issue.legacy_extra">Expressions should not reference @legacy_extra</Trans>
+    );
+  }
+
+  if (issue.type === FlowIssueType.INVALID_LINK) {
+    message = (
+      <>
+        {i18n.t('issue.link_beginning', 'Link ')}
+        {issue.actual_link}
+        {i18n.t(
+          'issue.link_main',
+          ' can not be shortened because it is mistyped. Expected link is '
+        )}
+        {issue.expected_link}
+      </>
     );
   }
 
