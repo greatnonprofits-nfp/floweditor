@@ -78,7 +78,7 @@ export const renderIssue = (
         {issue.actual_link}
         {i18n.t(
           'issue.link_main',
-          ' can not be shortened because it is mistyped. Expected link is '
+          ' can not be shortened because it is an invalid link. The expected link is '
         )}
         {issue.expected_link}
       </>
