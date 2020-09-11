@@ -58,6 +58,7 @@ export interface AutomatedTestCase {
   confirmedCategory: string;
   categoriesMatch: boolean;
   confirmed: boolean;
+  deleted: boolean;
 }
 
 interface ConfigRouter {
@@ -416,7 +417,10 @@ export const stateToNode = (
   }
 
   if (state.automatedTestCases) {
-    config.test_cases = state.automatedTestCases;
+    config.test_cases = {};
+    for (const [lang, testCases] of Object.entries(state.automatedTestCases)) {
+      config.test_cases[lang] = testCases.filter(test => !test.deleted);
+    }
   }
 
   const router: SwitchRouter = {
