@@ -84,12 +84,12 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
       case 'has_any_word':
         args = item.kase.arguments[0].toLowerCase().split(/\s+/);
         args = args.filter(arg => arg !== '');
-        match = args.some(element => new RegExp('(' + element + ')').test(text));
+        match = args.some(element => new RegExp('(^|.*\\s)(' + element + ')(\\s.*|$)').test(text));
         break;
       case 'has_all_words':
         args = item.kase.arguments[0].toLowerCase().split(/\s+/);
         args = args.filter(arg => arg !== '');
-        match = args.every(element => new RegExp('(' + element + ')').test(text));
+        match = args.every(element => new RegExp('(^|.*\\s)(' + element + ')(\\s.*|$)').test(text));
         break;
       case 'has_phrase':
         match = new RegExp('(^|.*\\s)(' + item.kase.arguments[0].toLowerCase() + ')(\\s.*|$)').test(
