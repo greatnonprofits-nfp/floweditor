@@ -74,11 +74,13 @@ export const renderIssue = (
   if (issue.type === FlowIssueType.INVALID_LINK) {
     message = (
       <>
-        {i18n.t('issue.link_beginning', 'Link ')}
+        {i18n.t('issue.link_beginning', 'Warning! Link ')}
         {issue.actual_link}
+        {i18n.t('issue.link_main', ' is similar to ')}
+        {issue.expected_link}
         {i18n.t(
-          'issue.link_main',
-          ' can not be shortened because it is an invalid link. The expected link is '
+          'issue.link_ending',
+          '. If you intended to track it, please place the link in this flow with '
         )}
         {issue.expected_link}
       </>
