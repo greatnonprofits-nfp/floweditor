@@ -81,3 +81,21 @@
   display: table;
   width: 100%;
 }
+
+.sharing_buttons {
+  margin: 20px 0 0 0;
+}
+
+.sharing_buttons_default_text {
+  margin: 10px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sharing_buttons_default_label {
+  width: 20%;
+}
+
+.sharing_buttons_default_field {
+  width: 78%;
+}

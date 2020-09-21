@@ -17,6 +17,7 @@ import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import MultiChoiceInput from 'components/form/multichoice/MultiChoice';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
 import TextInputElement, { Count } from 'components/form/textinput/TextInputElement';
+import HelpIcon from 'components/helpicon/HelpIcon';
 import TypeList from 'components/nodeeditor/TypeList';
 import Pill from 'components/pill/Pill';
 import { fakePropType } from 'config/ConfigProvider';
@@ -41,8 +42,18 @@ import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
 import { FeatureFilter } from 'config/interfaces';
 
+import variables from 'variables.module.scss';
+
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
+
+const FACEBOOK_ICON = require('static/images/facebook.png');
+const TELEGRAM_ICON = require('static/images/telegram.png');
+const WHATSAPP_ICON = require('static/images/whatsapp.png');
+const LINE_ICON = require('static/images/line.png');
+const PINTEREST_ICON = require('static/images/pinterest.png');
+const DOWNLOAD_ICON = require('static/images/download.png');
+const EMAIL_ICON = require('static/images/email.png');
 
 const MAX_ATTACHMENTS = 3;
 
@@ -601,6 +612,61 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             onItemAdded={this.handleAddQuickReply}
             onEntryChanged={this.handleQuickReplyEntry}
           />
+
+          <div className={styles.sharing_buttons}>
+            <p>
+              {i18n.t(
+                'forms.send_msg.add_sharing_buttons',
+                'Add sharing buttons (For WebChat only).'
+              )}
+            </p>
+
+            <div className={styles.sharing_buttons_default_text}>
+              <label className={styles.sharing_buttons_default_label}>
+                {i18n.t('forms.send_msg.sharing_buttons_default', 'Default text')}
+                <HelpIcon iconColor={variables.light_gray} iconSize="18px" dataFor="sharingBtnType">
+                  <p>
+                    Some social media application allow sharing to include default text. Type here
+                    the text and hashtags if you wish to include default text.
+                  </p>
+                </HelpIcon>
+              </label>
+              <TextInputElement
+                __className={styles.sharing_buttons_default_field}
+                name="sharing_btn_default_text"
+                showLabel={false}
+                onChange={() => {}}
+                entry={this.state.message}
+                autocomplete={false}
+                focus={false}
+                textarea={true}
+              />
+            </div>
+            <div className={styles.sharing_buttons_default_text}>
+              <label className={styles.sharing_buttons_default_label}>
+                {i18n.t('forms.send_msg.sharing_buttons_default', 'Hashtag')}
+              </label>
+              <TextInputElement
+                __className={styles.sharing_buttons_default_field}
+                placeholder="(if available)"
+                name="sharing_btn_hashtag"
+                showLabel={false}
+                onChange={() => {}}
+                entry={this.state.message}
+                autocomplete={false}
+                focus={false}
+                textarea={false}
+              />
+            </div>
+            <div className={styles.sharing_buttons_default_text}>
+              <p>
+                {i18n.t(
+                  'forms.send_msg.sharing_buttons_available',
+                  'Available sharing buttons to include'
+                )}
+              </p>
+            </div>
+          </div>
         </>
       ),
       checked: this.state.quickReplies.value.length > 0,
