@@ -86,7 +86,7 @@
   margin: 20px 0 0 0;
 }
 
-.sharing_buttons_default_text {
+.sharing_buttons_default_text, .sharing_buttons_hashtag {
   margin: 10px 0 0 0;
   display: flex;
   justify-content: space-between;
@@ -98,4 +98,36 @@
 
 .sharing_buttons_default_field {
   width: 78%;
+}
+
+.sharing_buttons_box_items {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.sharing_buttons_items {
+  width: 25%;
+  flex: 1 0 21%;
+
+  img {
+    margin: 14px 10px 0 0;
+    float: left;
+  }
+
+}
+
+.view_shareable_button {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.view_shareable_button_icon {
+  margin: 0 5px 0 0;
+}
+
+.sharing_buttons_available {
+  margin-bottom: -5px;
 }

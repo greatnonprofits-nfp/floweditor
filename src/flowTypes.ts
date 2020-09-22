@@ -341,6 +341,7 @@ export interface SendMsg extends Action {
   topic?: string;
   templating?: MsgTemplating;
   receive_attachment?: string;
+  sharing_config?: SharingConfig;
 }
 
 export interface SayMsg extends Action {
@@ -514,6 +515,19 @@ export interface StickyNote {
 export interface UIMetaData {
   nodes: { [key: string]: UINode };
   stickies: { [key: string]: StickyNote };
+}
+
+export interface SharingConfig {
+  text?: string;
+  hashtags?: string[];
+  email: boolean;
+  facebook: boolean;
+  whatsapp: boolean;
+  pinterest: boolean;
+  download: boolean;
+  twitter: boolean;
+  telegram: boolean;
+  line: boolean;
 }
 
 export type AnyAction =
