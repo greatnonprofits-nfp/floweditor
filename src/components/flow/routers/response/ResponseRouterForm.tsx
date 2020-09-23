@@ -107,7 +107,8 @@ export default class ResponseRouterForm extends React.Component<
 
   private handleSave(): void {
     // retest all cases and show error if some of them are failed or unconfirmed
-    if (!this.retestAutomatedTestCases()) {
+    const resultOfTesting = this.retestAutomatedTestCases();
+    if (!Object.values(resultOfTesting).every(x => x)) {
       let message = '';
       if (
         !this.state.automatedTestCases[this.state.testingLang.value].every(
@@ -125,6 +126,10 @@ export default class ResponseRouterForm extends React.Component<
           body: message
         },
         saving: false
+      });
+      let firstFailedLanguage = Object.entries(resultOfTesting).find(([, value]) => !value)[0];
+      this.setState({
+        testingLang: this.state.testingLangs.find(lang => lang.value === firstFailedLanguage)
       });
       return;
     }
@@ -343,7 +348,7 @@ export default class ResponseRouterForm extends React.Component<
     return alreadyCreatedManalTests;
   }
 
-  private retestAutomatedTestCases(): boolean {
+  private retestAutomatedTestCases() {
     let automatedTestCases = this.state.automatedTestCases;
     let testResults = this.state.testResults;
     this.state.testingLangs.forEach(language => {
@@ -366,7 +371,7 @@ export default class ResponseRouterForm extends React.Component<
       testResults[language.value] = allTestsPassedAndConfirmed;
     });
     this.setState({ automatedTestCases, testResults });
-    return testResults[this.state.testingLang.value];
+    return testResults;
   }
 
   private onTestingLangChanged(lang: any) {
