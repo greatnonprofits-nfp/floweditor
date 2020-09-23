@@ -314,9 +314,10 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
   let enabledSpell = false;
   let spellSensitivity = '70';
   let languages: SelectOption[] = [];
-  let localizedCases: CaseProps[] = [];
+  let localizedCases: { [lang: string]: CaseProps[] } = {};
   let currentLanguage: any = null;
   let testCases: any = {};
+  let testResults: any = {};
 
   if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
@@ -347,29 +348,41 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
       }
     });
 
-    localizedCases = getLocalizedCases(initialCases, props, currentLanguage.value);
-
-    if (router.config && router.config.test_cases) {
-      testCases = router.config.test_cases;
-      languages.forEach(lang => {
-        if (!testCases[lang.value]) {
-          let cases = getLocalizedCases(initialCases, props, lang.value);
-          testCases[lang.value] = generateAutomatedTests(cases);
-        }
-      });
-    } else {
-      testCases[currentLanguage.value] = generateAutomatedTests(localizedCases);
-      languages.forEach(lang => {
-        let cases = getLocalizedCases(initialCases, props, lang.value);
-        testCases[lang.value] = generateAutomatedTests(cases);
-      });
+    if (!currentLanguage) {
+      currentLanguage = { label: 'English', value: settings.defaultLanguage || 'eng' };
+      languages.push(currentLanguage);
     }
+    languages.forEach(language => {
+      localizedCases[language.value] = getLocalizedCases(initialCases, props, language.value);
+      if (router.config && router.config.test_cases && router.config.test_cases[language.value]) {
+        testCases[language.value] = router.config.test_cases[language.value];
+      } else {
+        testCases[language.value] = generateAutomatedTests(localizedCases[language.value]);
+      }
+      testResults[language.value] = testCases[language.value].every(
+        (testCase: { confirmed: any; actualCategory: any; confirmedCategory: any }) => {
+          return testCase.confirmed && testCase.actualCategory === testCase.confirmedCategory;
+        }
+      );
+    });
   }
 
+  // RegexTesting for new wait for resoponse node
   if (!currentLanguage) {
-    currentLanguage = { label: 'English', value: settings.defaultLanguage || 'eng' };
-    testCases[currentLanguage.value] = [];
-    languages.push(currentLanguage);
+    Object.entries(props.assetStore.languages.items).forEach(([_, item]) => {
+      // @ts-ignore
+      languages.push({ label: item.name, value: item.id });
+      // @ts-ignore
+      if (item.id === (settings.defaultLanguage || 'eng')) {
+        // @ts-ignore
+        currentLanguage = { label: item.name, value: item.id };
+      }
+    });
+    languages.forEach(language => {
+      testCases[language.value] = [];
+      localizedCases[language.value] = [];
+      testResults[language.value] = true;
+    });
   }
 
   return {
@@ -383,7 +396,8 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
     testingLang: currentLanguage,
     liveTestText: { value: '' },
     automatedTestCases: testCases,
-    localizedCases
+    localizedCases,
+    testResults
   };
 };
 
