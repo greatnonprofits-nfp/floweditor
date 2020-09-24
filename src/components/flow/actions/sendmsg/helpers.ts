@@ -4,7 +4,7 @@ import { Attachment, SendMsgFormState } from 'components/flow/actions/sendmsg/Se
 import { Types } from 'config/interfaces';
 import { MsgTemplating, SendMsg } from 'flowTypes';
 import { AssetStore, AssetType } from 'store/flowContext';
-import { AssetEntry, NodeEditorSettings, StringEntry } from 'store/nodeEditor';
+import { AssetEntry, NodeEditorSettings, StringArrayEntry, StringEntry } from 'store/nodeEditor';
 import { SelectOption } from 'components/form/select/SelectElement';
 import { createUUID } from 'utils';
 
@@ -23,6 +23,19 @@ export const initializeForm = (
 ): SendMsgFormState => {
   let template: AssetEntry = { value: null };
   let templateVariables: StringEntry[] = [];
+
+  let sharingBtnText: StringEntry = { value: '' };
+  let sharingBtnHashtags: StringArrayEntry = { value: [] };
+  let emailSharing: boolean = false;
+  let facebookSharing: boolean = false;
+  let whatsappSharing: boolean = false;
+  let pinterestSharing: boolean = false;
+  let downloadSharing: boolean = false;
+  let twitterSharing: boolean = false;
+  let telegramSharing: boolean = false;
+  let lineSharing: boolean = false;
+
+  let viewShareableButtons: boolean = false;
 
   if (settings.originalAction && settings.originalAction.type === Types.send_msg) {
     const action = settings.originalAction as SendMsg;
@@ -56,6 +69,19 @@ export const initializeForm = (
       });
     }
 
+    if (action.sharing_config) {
+      sharingBtnText = { value: action.sharing_config.text };
+      sharingBtnHashtags = { value: action.sharing_config.hashtags || [] };
+      emailSharing = action.sharing_config.email;
+      facebookSharing = action.sharing_config.facebook;
+      whatsappSharing = action.sharing_config.whatsapp;
+      pinterestSharing = action.sharing_config.pinterest;
+      downloadSharing = action.sharing_config.download;
+      twitterSharing = action.sharing_config.twitter;
+      telegramSharing = action.sharing_config.telegram;
+      lineSharing = action.sharing_config.line;
+    }
+
     return {
       topic: { value: TOPIC_OPTIONS.find(option => option.value === action.topic) },
       template,
@@ -68,7 +94,18 @@ export const initializeForm = (
       valid: true,
       receiveAttachment: {
         value: RECEIVE_ATTACHMENT_OPTIONS.find(option => option.value === action.receive_attachment)
-      }
+      },
+      sharingBtnText,
+      sharingBtnHashtags,
+      emailSharing,
+      facebookSharing,
+      whatsappSharing,
+      pinterestSharing,
+      downloadSharing,
+      twitterSharing,
+      telegramSharing,
+      lineSharing,
+      viewShareableButtons
     };
   }
 
@@ -82,7 +119,18 @@ export const initializeForm = (
     quickReplyEntry: { value: '' },
     sendAll: false,
     valid: false,
-    receiveAttachment: { value: null }
+    receiveAttachment: { value: null },
+    sharingBtnText: { value: null },
+    sharingBtnHashtags: { value: [] },
+    emailSharing,
+    facebookSharing,
+    whatsappSharing,
+    pinterestSharing,
+    downloadSharing,
+    twitterSharing,
+    telegramSharing,
+    lineSharing,
+    viewShareableButtons
   };
 };
 
@@ -135,6 +183,33 @@ export const stateToAction = (settings: NodeEditorSettings, state: SendMsgFormSt
 
   if (state.receiveAttachment.value) {
     result.receive_attachment = state.receiveAttachment.value.value;
+  }
+
+  let allSharingBtns = [
+    state.downloadSharing,
+    state.facebookSharing,
+    state.whatsappSharing,
+    state.pinterestSharing,
+    state.downloadSharing,
+    state.twitterSharing,
+    state.telegramSharing,
+    state.lineSharing
+  ];
+  let trueSharingBtns = allSharingBtns.some(value => value);
+
+  if (trueSharingBtns) {
+    result.sharing_config = {
+      text: state.sharingBtnText.value,
+      hashtags: state.sharingBtnHashtags.value,
+      email: state.emailSharing,
+      facebook: state.facebookSharing,
+      whatsapp: state.whatsappSharing,
+      pinterest: state.pinterestSharing,
+      download: state.downloadSharing,
+      twitter: state.twitterSharing,
+      telegram: state.telegramSharing,
+      line: state.lineSharing
+    };
   }
 
   return result;

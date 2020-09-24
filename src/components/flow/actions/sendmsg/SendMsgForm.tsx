@@ -10,6 +10,7 @@ import {
   TOPIC_OPTIONS,
   RECEIVE_ATTACHMENT_OPTIONS
 } from 'components/flow/actions/sendmsg/helpers';
+import TaggingElement from 'components/form/select/tags/TaggingElement';
 import { ActionFormProps } from 'components/flow/props';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { hasUseableTranslation } from 'components/form/assetselector/helpers';
@@ -17,6 +18,7 @@ import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import MultiChoiceInput from 'components/form/multichoice/MultiChoice';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
 import TextInputElement, { Count } from 'components/form/textinput/TextInputElement';
+import HelpIcon from 'components/helpicon/HelpIcon';
 import TypeList from 'components/nodeeditor/TypeList';
 import Pill from 'components/pill/Pill';
 import { fakePropType } from 'config/ConfigProvider';
@@ -41,10 +43,23 @@ import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
 import { FeatureFilter } from 'config/interfaces';
 
+import variables from 'variables.module.scss';
+
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
 
+const FACEBOOK_ICON = require('static/images/facebook.png');
+const TELEGRAM_ICON = require('static/images/telegram.png');
+const WHATSAPP_ICON = require('static/images/whatsapp.png');
+const LINE_ICON = require('static/images/line.png');
+const PINTEREST_ICON = require('static/images/pinterest.png');
+const TWITTER_ICON = require('static/images/twitter.png');
+const DOWNLOAD_ICON = require('static/images/download.png');
+const EMAIL_ICON = require('static/images/email.png');
+
 const MAX_ATTACHMENTS = 3;
+
+const HASHTAG_PATTERN = /(?:\s|^)#[A-Za-z0-9\\.\\_]+(?:\s|$)/;
 
 const TYPE_OPTIONS: SelectOption[] = [
   { value: 'image', label: 'Image URL' },
@@ -75,6 +90,17 @@ export interface SendMsgFormState extends FormState {
   templateVariables: StringEntry[];
   templateTranslation?: TemplateTranslation;
   receiveAttachment?: SelectOptionEntry;
+  sharingBtnText: StringEntry;
+  sharingBtnHashtags?: StringArrayEntry;
+  emailSharing?: boolean;
+  facebookSharing?: boolean;
+  whatsappSharing?: boolean;
+  pinterestSharing?: boolean;
+  downloadSharing?: boolean;
+  twitterSharing?: boolean;
+  telegramSharing?: boolean;
+  lineSharing?: boolean;
+  viewShareableButtons?: boolean;
 }
 
 export default class SendMsgForm extends React.Component<ActionFormProps, SendMsgFormState> {
@@ -108,6 +134,17 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       text?: string;
       sendAll?: boolean;
       quickReplies?: string[];
+      sharingBtnText?: string;
+      sharingBtnHashtags?: string[];
+      emailSharing?: boolean;
+      facebookSharing?: boolean;
+      whatsappSharing?: boolean;
+      pinterestSharing?: boolean;
+      downloadSharing?: boolean;
+      twitterSharing?: boolean;
+      telegramSharing?: boolean;
+      lineSharing?: boolean;
+      viewShareableButtons?: boolean;
     },
     submitting = false
   ): boolean {
@@ -122,6 +159,50 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
     if (keys.hasOwnProperty('quickReplies')) {
       updates.quickReplies = validate('Quick Replies', keys.quickReplies, [MaxOfTenItems]);
+    }
+
+    if (keys.hasOwnProperty('sharingBtnText')) {
+      updates.sharingBtnText = { value: keys.sharingBtnText };
+    }
+
+    if (keys.hasOwnProperty('sharingBtnHashtags')) {
+      updates.sharingBtnHashtags = { value: keys.sharingBtnHashtags };
+    }
+
+    if (keys.hasOwnProperty('emailSharing')) {
+      updates.emailSharing = keys.emailSharing;
+    }
+
+    if (keys.hasOwnProperty('facebookSharing')) {
+      updates.facebookSharing = keys.facebookSharing;
+    }
+
+    if (keys.hasOwnProperty('whatsappSharing')) {
+      updates.whatsappSharing = keys.whatsappSharing;
+    }
+
+    if (keys.hasOwnProperty('pinterestSharing')) {
+      updates.pinterestSharing = keys.pinterestSharing;
+    }
+
+    if (keys.hasOwnProperty('downloadSharing')) {
+      updates.downloadSharing = keys.downloadSharing;
+    }
+
+    if (keys.hasOwnProperty('twitterSharing')) {
+      updates.twitterSharing = keys.twitterSharing;
+    }
+
+    if (keys.hasOwnProperty('telegramSharing')) {
+      updates.telegramSharing = keys.telegramSharing;
+    }
+
+    if (keys.hasOwnProperty('lineSharing')) {
+      updates.lineSharing = keys.lineSharing;
+    }
+
+    if (keys.hasOwnProperty('viewShareableButtons')) {
+      updates.viewShareableButtons = keys.viewShareableButtons;
     }
 
     const updated = mergeForm(this.state, updates) as SendMsgFormState;
@@ -574,6 +655,197 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     this.setState({ quickReplyEntry });
   }
 
+  private handleEmailSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ emailSharing: checked });
+  }
+
+  private handleFacebookSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ facebookSharing: checked });
+  }
+
+  private handleWhatsAppSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ whatsappSharing: checked });
+  }
+
+  private handlePinterestSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ pinterestSharing: checked });
+  }
+
+  private handleDownloadSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ downloadSharing: checked });
+  }
+
+  private handleTwitterSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ twitterSharing: checked });
+  }
+
+  private handleTelegramSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ telegramSharing: checked });
+  }
+
+  private handleLineSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ lineSharing: checked });
+  }
+
+  private renderSharingButtons(): JSX.Element {
+    return (
+      <div className={styles.sharing_buttons_box_items}>
+        <div className={styles.sharing_buttons_items}>
+          <img src={EMAIL_ICON} alt="Email" />
+          <CheckboxElement
+            name="Email"
+            title="Email"
+            labelClassName={styles.checkbox}
+            checked={this.state.emailSharing}
+            onChange={this.handleEmailSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={FACEBOOK_ICON} alt="Facebook" />
+          <CheckboxElement
+            name="Facebook"
+            title="Facebook"
+            labelClassName={styles.checkbox}
+            checked={this.state.facebookSharing}
+            onChange={this.handleFacebookSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={WHATSAPP_ICON} alt="WhatsApp" />
+          <CheckboxElement
+            name="WhatsApp"
+            title="WhatsApp"
+            labelClassName={styles.checkbox}
+            checked={this.state.whatsappSharing}
+            onChange={this.handleWhatsAppSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={PINTEREST_ICON} alt="Pinterest" />
+          <CheckboxElement
+            name="Pinterest"
+            title="Pinterest"
+            labelClassName={styles.checkbox}
+            checked={this.state.pinterestSharing}
+            onChange={this.handlePinterestSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={DOWNLOAD_ICON} alt="Download" />
+          <CheckboxElement
+            name="Download"
+            title="Download"
+            labelClassName={styles.checkbox}
+            checked={this.state.downloadSharing}
+            onChange={this.handleDownloadSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={TWITTER_ICON} alt="Twitter" />
+          <CheckboxElement
+            name="Twitter"
+            title="Twitter"
+            labelClassName={styles.checkbox}
+            checked={this.state.twitterSharing}
+            onChange={this.handleTwitterSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={TELEGRAM_ICON} alt="Telegram" />
+          <CheckboxElement
+            name="Telegram"
+            title="Telegram"
+            labelClassName={styles.checkbox}
+            checked={this.state.telegramSharing}
+            onChange={this.handleTelegramSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={LINE_ICON} alt="Line" />
+          <CheckboxElement
+            name="Line"
+            title="Line"
+            labelClassName={styles.checkbox}
+            checked={this.state.lineSharing}
+            onChange={this.handleLineSharingItem}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  public handleSharingButtonDefaultText(defaultText: string): boolean {
+    return this.handleUpdate({ sharingBtnText: defaultText });
+  }
+
+  public handleCheckHashtagValid(value: string): boolean {
+    return HASHTAG_PATTERN.test(value) && !(value.indexOf(' ') >= 0);
+  }
+
+  public handleHashtagChanged(hashtags: string[]): boolean {
+    return this.handleUpdate({ sharingBtnHashtags: hashtags });
+  }
+
+  private handleViewShareableButtons(): boolean {
+    return this.handleUpdate({ viewShareableButtons: !this.state.viewShareableButtons });
+  }
+
+  private renderSharingButtonsBox(): JSX.Element {
+    return (
+      <div className={styles.sharing_buttons}>
+        <div className={styles.sharing_buttons_default_text}>
+          <label className={styles.sharing_buttons_default_label}>
+            {i18n.t('forms.send_msg.sharing_buttons_default', 'Default text')}
+            <HelpIcon iconColor={variables.light_gray} iconSize="18px" dataFor="sharingBtnType">
+              <p>
+                Some social media application allow sharing to include default text. Type here the
+                text and hashtags if you wish to include default text.
+              </p>
+            </HelpIcon>
+          </label>
+          <TextInputElement
+            __className={styles.sharing_buttons_default_field}
+            name="Sharing Buttons Default Text"
+            showLabel={false}
+            onChange={this.handleSharingButtonDefaultText}
+            entry={this.state.sharingBtnText}
+            autocomplete={false}
+            focus={false}
+            textarea={true}
+          />
+        </div>
+        <div className={styles.sharing_buttons_hashtag}>
+          <label className={styles.sharing_buttons_default_label}>
+            {i18n.t('forms.send_msg.sharing_buttons_default', 'Hashtag')}
+          </label>
+          <div className={styles.sharing_buttons_default_field}>
+            <TaggingElement
+              name="Hashtags"
+              placeholder={i18n.t(
+                'forms.send_msg.sharing_buttons_hashtag_placeholder',
+                '(if available)'
+              )}
+              prompt={i18n.t('forms.send_msg.sharing_buttons_hashtag_prompt', 'Enter hashtags')}
+              onCheckValid={this.handleCheckHashtagValid}
+              entry={this.state.sharingBtnHashtags}
+              onChange={this.handleHashtagChanged}
+              createPrompt={''}
+            />
+          </div>
+        </div>
+        <div>
+          <p className={styles.sharing_buttons_available}>
+            {i18n.t(
+              'forms.send_msg.sharing_buttons_available',
+              'Available sharing buttons to include'
+            )}
+          </p>
+          {this.renderSharingButtons()}
+        </div>
+      </div>
+    );
+  }
+
   public render(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
@@ -601,6 +873,32 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             onItemAdded={this.handleAddQuickReply}
             onEntryChanged={this.handleQuickReplyEntry}
           />
+
+          <p>
+            {/* eslint-disable-next-line */}
+            <a
+              role="button"
+              onClick={this.handleViewShareableButtons}
+              className={styles.view_shareable_button}
+            >
+              {this.state.viewShareableButtons ? (
+                <span
+                  className={styles.tab_icon + ' fe-arrow-up ' + styles.view_shareable_button_icon}
+                />
+              ) : (
+                <span
+                  className={
+                    styles.tab_icon + ' fe-plus-circle ' + styles.view_shareable_button_icon
+                  }
+                />
+              )}
+              {i18n.t(
+                'forms.send_msg.add_sharing_buttons',
+                'Add sharing buttons (For WebChat only)'
+              )}
+            </a>
+          </p>
+          {this.state.viewShareableButtons ? this.renderSharingButtonsBox() : null}
         </>
       ),
       checked: this.state.quickReplies.value.length > 0,
