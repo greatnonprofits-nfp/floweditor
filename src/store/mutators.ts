@@ -412,16 +412,18 @@ export const removeNode = (
       }
     }
 
-    const exitIdx = getExitIndex(fromNode.node, fromExitUUID);
-    updatedNodes = mutate(updatedNodes, {
-      [fromNodeUUID]: {
-        node: {
-          exits: {
-            [exitIdx]: { destination_uuid: set(destination) }
+    try {
+      const exitIdx = getExitIndex(fromNode.node, fromExitUUID);
+      updatedNodes = mutate(updatedNodes, {
+        [fromNodeUUID]: {
+          node: {
+            exits: {
+              [exitIdx]: { destination_uuid: set(destination) }
+            }
           }
         }
-      }
-    });
+      });
+    } catch {}
 
     // if we are setting a new destination, update the inboundConnections
     if (destination) {
