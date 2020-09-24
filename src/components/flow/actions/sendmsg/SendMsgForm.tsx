@@ -875,8 +875,8 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           />
 
           <p>
+            {/* eslint-disable-next-line */}
             <a
-              href="/#"
               role="button"
               onClick={this.handleViewShareableButtons}
               className={styles.view_shareable_button}
