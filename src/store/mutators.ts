@@ -423,9 +423,7 @@ export const removeNode = (
           }
         }
       });
-    } catch {
-      console.log('The relation has been already deleted.');
-    }
+    } catch {}
 
     // if we are setting a new destination, update the inboundConnections
     if (destination) {
