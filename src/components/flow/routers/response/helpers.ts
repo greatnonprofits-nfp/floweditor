@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { Map, Set } from 'core-js';
 import { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import {
   createCaseProps,
@@ -271,8 +272,14 @@ export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] 
   return testCases;
 };
 
-export const getLocalizedCases = (cases: CaseProps[], props: RouterFormProps, isoLang: string) => {
+export const getLocalizedCases = (
+  cases: CaseProps[],
+  props: RouterFormProps,
+  isoLang: string,
+  activeLocalizations = new Set()
+) => {
   if (isoLang === props.nodeSettings.defaultLanguage) {
+    activeLocalizations.add(isoLang);
     return cases;
   }
   let localizations = getLocalizations(
@@ -281,17 +288,33 @@ export const getLocalizedCases = (cases: CaseProps[], props: RouterFormProps, is
     props.assetStore.languages.items[isoLang],
     props.nodeSettings.localization[isoLang]
   );
-  // eslint-disable-next-line no-undef
-  let localizedCases = new Map();
+  let localizedCases = new Map<string, any>();
+  let localizedCategories = new Map<string, string>();
   localizations.forEach(localization => {
-    let localizedObj = localization.getObject();
+    let localizedObj: any = localization.getObject();
     if (
       localizedObj.hasOwnProperty('uuid') &&
       localizedObj.hasOwnProperty('type') &&
       localizedObj.hasOwnProperty('category_uuid') &&
-      localizedObj.hasOwnProperty('arguments')
+      localizedObj.hasOwnProperty('arguments') &&
+      localizedObj.arguments.length &&
+      localizedObj.arguments[0] !== ''
     ) {
       localizedCases.set(localizedObj.uuid, localizedObj);
+      if (localization.isLocalized()) {
+        activeLocalizations.add(isoLang);
+      }
+    }
+
+    if (
+      localizedObj.hasOwnProperty('uuid') &&
+      localizedObj.hasOwnProperty('name') &&
+      localizedObj.hasOwnProperty('exit_uuid')
+    ) {
+      localizedCategories.set(localizedObj.uuid, localizedObj.name);
+      if (localization.isLocalized()) {
+        activeLocalizations.add(isoLang);
+      }
     }
   });
   /* copying of cases to prevent updating of original cases */
@@ -300,6 +323,10 @@ export const getLocalizedCases = (cases: CaseProps[], props: RouterFormProps, is
     let translatedKase = localizedCases.get(case_.kase.uuid);
     if (translatedKase) {
       case_.kase = translatedKase;
+    }
+    let categoryName = localizedCategories.get(case_.kase.category_uuid);
+    if (categoryName && categoryName !== '') {
+      case_.categoryName = categoryName;
     }
   });
   return cases;
@@ -318,6 +345,7 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
   let currentLanguage: any = null;
   let testCases: any = {};
   let testResults: any = {};
+  let activeLocalizations: Set<string> = new Set<string>();
 
   if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
@@ -353,7 +381,12 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
       languages.push(currentLanguage);
     }
     languages.forEach(language => {
-      localizedCases[language.value] = getLocalizedCases(initialCases, props, language.value);
+      localizedCases[language.value] = getLocalizedCases(
+        initialCases,
+        props,
+        language.value,
+        activeLocalizations
+      );
       if (router.config && router.config.test_cases && router.config.test_cases[language.value]) {
         testCases[language.value] = router.config.test_cases[language.value];
       } else {
@@ -383,6 +416,7 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
       localizedCases[language.value] = [];
       testResults[language.value] = true;
     });
+    activeLocalizations.add(currentLanguage.value);
   }
 
   return {
@@ -397,6 +431,7 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
     liveTestText: { value: '' },
     automatedTestCases: testCases,
     localizedCases,
+    activeLocalizations,
     testResults
   };
 };

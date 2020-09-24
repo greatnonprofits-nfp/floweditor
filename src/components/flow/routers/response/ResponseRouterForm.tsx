@@ -51,6 +51,7 @@ interface TestingFormState {
   liveTestText?: StringEntry;
   localizedCases?: { [lang: string]: CaseProps[] };
   automatedTestCases?: { [lang: string]: AutomatedTestCase[] };
+  activeLocalizations?: Set<string>;
   testResults?: { [lang: string]: boolean };
 }
 
@@ -108,7 +109,11 @@ export default class ResponseRouterForm extends React.Component<
   private handleSave(): void {
     // retest all cases and show error if some of them are failed or unconfirmed
     const resultOfTesting = this.retestAutomatedTestCases();
-    if (!Object.values(resultOfTesting).every(x => x)) {
+    if (
+      !Object.entries(resultOfTesting)
+        .filter(([localization]) => this.state.activeLocalizations.has(localization))
+        .every(([, testingResult]) => testingResult)
+    ) {
       let message = '';
       if (
         !this.state.automatedTestCases[this.state.testingLang.value].every(
@@ -385,7 +390,9 @@ export default class ResponseRouterForm extends React.Component<
           this.state.localizedCases[this.state.testingLang.value]
         )
       : [];
-    let filteredCases = this.state.cases.filter(case_ => ALLOWED_TESTS.includes(case_.kase.type));
+    let filteredCases = this.state.localizedCases[this.state.testingLang.value].filter(case_ =>
+      ALLOWED_TESTS.includes(case_.kase.type)
+    );
     let cases = Object.assign(
       {},
       ...filteredCases.map(item => ({
