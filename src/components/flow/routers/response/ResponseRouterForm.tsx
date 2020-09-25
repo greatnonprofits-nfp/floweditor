@@ -132,7 +132,10 @@ export default class ResponseRouterForm extends React.Component<
         },
         saving: false
       });
-      let firstFailedLanguage = Object.entries(resultOfTesting).find(([, value]) => !value)[0];
+      let firstFailedLanguage = Object.entries(resultOfTesting).find(
+        ([localization, testingResult]) =>
+          this.state.activeLocalizations.has(localization) && !testingResult
+      )[0];
       this.setState({
         testingLang: this.state.testingLangs.find(lang => lang.value === firstFailedLanguage)
       });
@@ -411,7 +414,9 @@ export default class ResponseRouterForm extends React.Component<
             <Select
               name="Intent"
               value={this.state.testingLang}
-              options={this.state.testingLangs}
+              options={this.state.testingLangs.filter(lang =>
+                this.state.activeLocalizations.has(lang.value)
+              )}
               onChange={this.onTestingLangChanged}
               placeholder="Language"
               isSearchable={false}
