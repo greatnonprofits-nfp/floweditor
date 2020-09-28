@@ -779,6 +779,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
   }
 
   public handleCheckHashtagValid(value: string): boolean {
+    if (this.state.sharingBtnHashtags.value.length > 0) {
+      return false;
+    }
     return HASHTAG_PATTERN.test(value) && !(value.indexOf(' ') >= 0);
   }
 
@@ -820,12 +823,12 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           </label>
           <div className={styles.sharing_buttons_default_field}>
             <TaggingElement
-              name="Hashtags"
+              name="Hashtag"
               placeholder={i18n.t(
                 'forms.send_msg.sharing_buttons_hashtag_placeholder',
                 '(if available)'
               )}
-              prompt={i18n.t('forms.send_msg.sharing_buttons_hashtag_prompt', 'Enter hashtags')}
+              prompt={i18n.t('forms.send_msg.sharing_buttons_hashtag_prompt', 'Enter a hashtag')}
               onCheckValid={this.handleCheckHashtagValid}
               entry={this.state.sharingBtnHashtags}
               onChange={this.handleHashtagChanged}
