@@ -186,7 +186,7 @@ export const stateToAction = (settings: NodeEditorSettings, state: SendMsgFormSt
   }
 
   let allSharingBtns = [
-    state.downloadSharing,
+    state.emailSharing,
     state.facebookSharing,
     state.whatsappSharing,
     state.pinterestSharing,
