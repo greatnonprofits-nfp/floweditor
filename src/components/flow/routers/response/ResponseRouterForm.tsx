@@ -164,9 +164,13 @@ export default class ResponseRouterForm extends React.Component<
     let usedKeywords = [];
     for (const [, trigger] of triggersDict) {
       if (
-        cases.some(case_ =>
-          case_.kase.arguments[0].toLowerCase().includes(trigger.content.keyword.toLowerCase())
-        )
+        cases.some(case_ => {
+          let regex = new RegExp(
+            '(^|.*\\s)(' + trigger.content.keyword.toLowerCase() + ')(\\s.*|$)'
+          );
+          let words = case_.kase.arguments[0].toLowerCase().split(/\s+/);
+          return words.some(word => regex.test(word));
+        })
       ) {
         usedKeywords.push(trigger.content.keyword);
       }
