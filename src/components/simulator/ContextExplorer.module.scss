@@ -17,6 +17,10 @@
     display: flex;
     flex-direction: column;
 
+    @media only screen and (max-height: 740px) {
+        height: 275px;
+    }
+
     &.visible {
         opacity: 1;
         width: 400px;
