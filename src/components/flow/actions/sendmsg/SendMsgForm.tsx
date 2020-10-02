@@ -41,7 +41,7 @@ import { small, large } from 'utils/reactselect';
 
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
-import { FeatureFilter } from 'config/interfaces';
+import { FeatureFilter, FlowTypes } from 'config/interfaces';
 
 import variables from 'variables.module.scss';
 
@@ -106,8 +106,9 @@ export interface SendMsgFormState extends FormState {
 export default class SendMsgForm extends React.Component<ActionFormProps, SendMsgFormState> {
   private filePicker: any;
 
-  constructor(props: ActionFormProps) {
+  constructor(props: ActionFormProps, context: any) {
     super(props);
+    this.context = context;
     this.state = stateToForm(this.props.nodeSettings, this.props.assetStore);
     bindCallbacks(this, {
       include: [/^handle/, /^on/]
@@ -877,31 +878,39 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             onEntryChanged={this.handleQuickReplyEntry}
           />
 
-          <p>
-            {/* eslint-disable-next-line */}
-            <a
-              role="button"
-              onClick={this.handleViewShareableButtons}
-              className={styles.view_shareable_button}
-            >
-              {this.state.viewShareableButtons ? (
-                <span
-                  className={styles.tab_icon + ' fe-arrow-up ' + styles.view_shareable_button_icon}
-                />
-              ) : (
-                <span
-                  className={
-                    styles.tab_icon + ' fe-plus-circle ' + styles.view_shareable_button_icon
-                  }
-                />
-              )}
-              {i18n.t(
-                'forms.send_msg.add_sharing_buttons',
-                'Add sharing buttons (For WebChat only)'
-              )}
-            </a>
-          </p>
-          {this.state.viewShareableButtons ? this.renderSharingButtonsBox() : null}
+          {this.context.config.flowType === FlowTypes.MESSAGE ? (
+            <>
+              <p>
+                {/* eslint-disable-next-line */}
+                <a
+                  role="button"
+                  onClick={this.handleViewShareableButtons}
+                  className={styles.view_shareable_button}
+                >
+                  {this.state.viewShareableButtons ? (
+                    <span
+                      className={
+                        styles.tab_icon + ' fe-arrow-up ' + styles.view_shareable_button_icon
+                      }
+                    />
+                  ) : (
+                    <span
+                      className={
+                        styles.tab_icon + ' fe-plus-circle ' + styles.view_shareable_button_icon
+                      }
+                    />
+                  )}
+                  {i18n.t(
+                    'forms.send_msg.add_sharing_buttons',
+                    'Add sharing buttons (For WebChat only)'
+                  )}
+                </a>
+              </p>
+              {this.state.viewShareableButtons ? this.renderSharingButtonsBox() : null}
+            </>
+          ) : (
+            <></>
+          )}
         </>
       ),
       checked: this.state.quickReplies.value.length > 0,
