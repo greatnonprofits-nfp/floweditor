@@ -547,6 +547,7 @@ export default class ResponseRouterForm extends React.Component<
     let isTestingAvailable = this.state.cases.some(case_ => {
       return (
         ALLOWED_TESTS.includes(case_.kase.type) &&
+        case_.kase.arguments &&
         ((case_.kase.arguments.length > 0 && case_.kase.arguments[0] !== '') ||
           case_.kase.arguments.length === 0)
       );
