@@ -18,6 +18,9 @@
     flex-direction: column;
 
     @media only screen and (max-height: 740px) {
+        height: 375px;
+    }
+    @media only screen and (max-height: 585px) {
         height: 275px;
     }
 
