@@ -229,9 +229,10 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
         var testingNum = numberRegExp.exec(text);
         if (testingNum) {
           match =
-            Number.parseFloat(item.kase.arguments[0]) <
+            Number.parseFloat(item.kase.arguments[0]) <=
               Number.parseFloat(testingNum.groups.number) &&
-            Number.parseFloat(item.kase.arguments[1]) > Number.parseFloat(testingNum.groups.number);
+            Number.parseFloat(item.kase.arguments[1]) >=
+              Number.parseFloat(testingNum.groups.number);
         }
         break;
       default:
