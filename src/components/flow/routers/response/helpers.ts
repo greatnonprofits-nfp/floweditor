@@ -17,6 +17,7 @@ import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import { SelectOption } from 'components/form/select/SelectElement';
 import { getLocalizations } from 'store/helpers';
 import { RouterFormProps } from 'components/flow/props';
+import moment from 'moment-timezone';
 
 export enum AutomatedTestCaseType {
   AUTO_GENERATED,
@@ -62,13 +63,87 @@ export interface AutomatedTestCase {
   deleted: boolean;
 }
 
+export interface TimezoneData {
+  dateFormat?: string;
+  timeZone?: string;
+}
+
 interface ConfigRouter {
   spell_checker?: boolean;
   spelling_correction_sensitivity?: string;
   test_cases?: { [lang: string]: AutomatedTestCase[] };
 }
 
-export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
+enum Comparators {
+  EQUAL,
+  LESS_THAN,
+  GREATER_THAN
+}
+
+const date = (tz?: string, dateString?: string | number, format?: string) => {
+  let dateObj;
+  if (format) {
+    dateObj = dateString
+      ? moment.tz(
+          dateString.toString(),
+          [
+            format,
+            format
+              .split('')
+              .reverse()
+              .join('')
+          ],
+          tz
+        )
+      : moment.tz(tz);
+  } else {
+    dateObj = dateString ? moment.tz(dateString, tz) : moment.tz(tz);
+  }
+  return dateObj
+    .hour(0)
+    .minute(0)
+    .second(0)
+    .millisecond(0);
+};
+
+const testDate = (
+  message: string,
+  daysSinceNow: string,
+  comparator: Comparators,
+  timezoneData: TimezoneData
+) => {
+  let dateRegExp = /.*\b(?<date>([0-9]{1,2})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{4}|[0-9]{2})|([0-9]{4})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{1,2})|\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))\b.*/;
+  let kwargs = /(?<days>-?\d+)/.exec(daysSinceNow);
+  let msgDate = dateRegExp.exec(message);
+  let daysToTheTesingDate = Number.parseInt(
+    (kwargs ? kwargs : { groups: { days: '' } }).groups.days
+  );
+  if (!isNaN(daysToTheTesingDate) && msgDate && Date.parse(msgDate.groups.date)) {
+    let actual = date(
+      timezoneData.timeZone,
+      msgDate.groups.date,
+      timezoneData.dateFormat
+    ).valueOf();
+    let expected = date(timezoneData.timeZone)
+      .add(daysToTheTesingDate, 'days')
+      .valueOf();
+    switch (comparator) {
+      case Comparators.EQUAL:
+        return expected === actual;
+      case Comparators.LESS_THAN:
+        return expected > actual;
+      case Comparators.GREATER_THAN:
+        return expected < actual;
+    }
+  }
+  return false;
+};
+
+export const matchResponseTextWithCategory = (
+  text: string,
+  cases: CaseProps[],
+  timezoneData: TimezoneData
+): string[] => {
   let matches: string[] = [];
   let args: string[] = [];
   let emailRegExp = /.*\b(?<email>\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+)\b.*/;
@@ -124,54 +199,18 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
         }
         break;
       case 'has_date_eq':
-        var kwargs = /(?<days>-?\d+)/.exec(item.kase.arguments[0]);
-        var days = Number.parseInt((kwargs ? kwargs : { groups: { days: '' } }).groups.days);
-        // eslint-disable-next-line no-redeclare
-        var msgDate = dateRegExp.exec(originalText);
-        if (!isNaN(days) && msgDate && Date.parse(msgDate.groups.date)) {
-          var exactDay = new Date();
-          var testedDate = new Date(Date.parse(msgDate.groups.date));
-          testedDate.setHours(0, 0, 0, 0);
-          exactDay.setDate(exactDay.getDate() + days);
-          exactDay.setHours(0, 0, 0, 0);
-          match = exactDay.valueOf() === testedDate.valueOf();
-        }
+        match = testDate(originalText, item.kase.arguments[0], Comparators.EQUAL, timezoneData);
         break;
       case 'has_date_lt':
-        // eslint-disable-next-line no-redeclare
-        var kwargs = /(?<days>-?\d+)/.exec(item.kase.arguments[0]);
-        // eslint-disable-next-line no-redeclare
-        var days = Number.parseInt((kwargs ? kwargs : { groups: { days: '' } }).groups.days);
-        // eslint-disable-next-line no-redeclare
-        var msgDate = dateRegExp.exec(originalText);
-        if (!isNaN(days) && msgDate && !isNaN(Date.parse(msgDate.groups.date))) {
-          // eslint-disable-next-line no-redeclare
-          var exactDay = new Date();
-          // eslint-disable-next-line no-redeclare
-          var testedDate = new Date(Date.parse(msgDate.groups.date));
-          testedDate.setHours(0, 0, 0, 0);
-          exactDay.setDate(exactDay.getDate() + days);
-          exactDay.setHours(0, 0, 0, 0);
-          match = exactDay.valueOf() > testedDate.valueOf();
-        }
+        match = testDate(originalText, item.kase.arguments[0], Comparators.LESS_THAN, timezoneData);
         break;
       case 'has_date_gt':
-        // eslint-disable-next-line no-redeclare
-        var kwargs = /(?<days>-?\d+)/.exec(item.kase.arguments[0]);
-        // eslint-disable-next-line no-redeclare
-        var days = Number.parseInt((kwargs ? kwargs : { groups: { days: '' } }).groups.days);
-        // eslint-disable-next-line no-redeclare
-        var msgDate = dateRegExp.exec(originalText);
-        if (!isNaN(days) && msgDate && !isNaN(Date.parse(msgDate.groups.date))) {
-          // eslint-disable-next-line no-redeclare
-          var exactDay = new Date();
-          // eslint-disable-next-line no-redeclare
-          var testedDate = new Date(Date.parse(msgDate.groups.date));
-          testedDate.setHours(0, 0, 0, 0);
-          exactDay.setDate(exactDay.getDate() + days);
-          exactDay.setHours(0, 0, 0, 0);
-          match = exactDay.valueOf() < testedDate.valueOf();
-        }
+        match = testDate(
+          originalText,
+          item.kase.arguments[0],
+          Comparators.GREATER_THAN,
+          timezoneData
+        );
         break;
       case 'has_time':
         match = timeRegExp.test(text);
@@ -250,22 +289,30 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
 
 export const generateAutomatedTest = (
   caseItem: CaseProps,
-  cases: CaseProps[]
+  cases: CaseProps[],
+  timezoneData: TimezoneData
 ): AutomatedTestCase => {
   let testCase = {
     type: AutomatedTestCaseType.AUTO_GENERATED,
     testText: caseItem.kase.arguments[0],
-    actualCategory: matchResponseTextWithCategory(caseItem.kase.arguments[0], cases).join(', '),
+    actualCategory: matchResponseTextWithCategory(
+      caseItem.kase.arguments[0],
+      cases,
+      timezoneData
+    ).join(', '),
     confirmedCategory: caseItem.categoryName
   };
   return testCase as AutomatedTestCase;
 };
 
-export const generateAutomatedTests = (cases: CaseProps[]): AutomatedTestCase[] => {
+export const generateAutomatedTests = (
+  cases: CaseProps[],
+  timezoneData: TimezoneData
+): AutomatedTestCase[] => {
   let testCases: AutomatedTestCase[] = [];
   cases = cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
   cases.forEach(item => {
-    let testCase = generateAutomatedTest(item, cases);
+    let testCase = generateAutomatedTest(item, cases, timezoneData);
     if (testCase.confirmedCategory) {
       testCases.push(testCase as AutomatedTestCase);
     }
@@ -347,6 +394,18 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
   let testCases: any = {};
   let testResults: any = {};
   let activeLocalizations: Set<string> = new Set<string>();
+  let timezoneData: TimezoneData = {
+    timeZone: null,
+    dateFormat: null
+  };
+
+  let environment = props.assetStore.environment.items.environment;
+  if (environment) {
+    timezoneData = {
+      dateFormat: environment.date_format,
+      timeZone: environment.timezone
+    };
+  }
 
   if (settings.originalNode && getType(settings.originalNode) === Types.wait_for_response) {
     const router = settings.originalNode.node.router as SwitchRouter;
@@ -391,7 +450,10 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
       if (router.config && router.config.test_cases && router.config.test_cases[language.value]) {
         testCases[language.value] = router.config.test_cases[language.value];
       } else {
-        testCases[language.value] = generateAutomatedTests(localizedCases[language.value]);
+        testCases[language.value] = generateAutomatedTests(
+          localizedCases[language.value],
+          timezoneData
+        );
       }
       testResults[language.value] = testCases[language.value].every(
         (testCase: { confirmed: any; actualCategory: any; confirmedCategory: any }) => {
@@ -433,7 +495,8 @@ export const nodeToState = (settings: NodeEditorSettings, props?: any): Response
     automatedTestCases: testCases,
     localizedCases,
     activeLocalizations,
-    testResults
+    testResults,
+    timezoneData
   };
 };
 
