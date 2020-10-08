@@ -46,7 +46,6 @@ export interface Endpoints {
   simulateStart: string;
   simulateResume: string;
   editor: string;
-  keyword_triggers: string;
 }
 
 export interface FlowEditorConfig {
@@ -118,7 +117,8 @@ export enum FlowIssueType {
   MISSING_DEPENDENCY = 'missing_dependency',
   LEGACY_EXTRA = 'legacy_extra',
   INVALID_REGEX = 'invalid_regex',
-  INVALID_LINK = 'invalid_link'
+  INVALID_LINK = 'invalid_link',
+  WARNING_MESSAGE = 'warning_message'
 }
 
 export interface FlowIssue {
@@ -131,6 +131,7 @@ export interface FlowIssue {
   regex?: string;
   actual_link?: string;
   expected_link?: string;
+  message?: string;
 }
 
 export interface FlowDetails {

@@ -141,58 +141,10 @@ export default class ResponseRouterForm extends React.Component<
       });
       return;
     }
-    if (!this.checkKeywordConflict()) {
-      return;
-    }
     if (this.state.valid) {
       this.props.updateRouter(stateToNode(this.props.nodeSettings, this.state));
       this.props.onClose(false);
     }
-  }
-
-  private checkKeywordConflict() {
-    let cases = this.state.cases.filter(case_ => ALLOWED_AUTO_TESTS.includes(case_.kase.type));
-    let triggersDict: any = this.props.assetStore.keywordTriggers.items;
-    triggersDict = Object.entries(triggersDict);
-
-    // we shold allow to use triggers of current flow for the first flow step
-    if (this.props.nodeSettings.isStartingNode) {
-      triggersDict = triggersDict.filter((item: any) => {
-        return item[1].content.flow.uuid !== this.props.nodeSettings.flowID;
-      });
-    }
-    let usedKeywords = [];
-    for (const [, trigger] of triggersDict) {
-      if (
-        cases.some(case_ => {
-          let regex = new RegExp(
-            '(^|.*\\s)(' + trigger.content.keyword.toLowerCase() + ')(\\s.*|$)'
-          );
-          let words = case_.kase.arguments[0].toLowerCase().split(/\s+/);
-          return words.some(word => regex.test(word));
-        })
-      ) {
-        usedKeywords.push(trigger.content.keyword);
-      }
-    }
-    if (usedKeywords.length) {
-      let singular = usedKeywords.length === 1;
-      let body = `${usedKeywords.map(word => `'${word}'`).join(', ')} 
-      ${singular ? 'is' : 'are'} used by another flow as an active trigger.
-      This means that a user responding with 
-      ${singular ? 'this word' : 'these words'} will start a different flow. 
-      If you do not intend for this to happen, please change the response rule in this flow step.`;
-      // @ts-ignore
-      this.props.mergeEditorState({
-        modalMessage: {
-          title: 'Warning',
-          body: body
-        },
-        saving: false
-      });
-      return false;
-    }
-    return true;
   }
 
   private getButtons(): ButtonSet {

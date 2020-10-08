@@ -87,6 +87,10 @@ export const renderIssue = (
     );
   }
 
+  if (issue.type === FlowIssueType.WARNING_MESSAGE) {
+    message = <>Warning! {issue.message}</>;
+  }
+
   const article = helpArticles[issue.type];
   if (article) {
     return (

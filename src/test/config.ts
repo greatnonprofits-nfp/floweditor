@@ -26,7 +26,6 @@ export const config: FlowEditorConfig = {
     functions: '/assets/functions.json',
     attachments: '/assets/attachments.json',
     attachments_validation: '/assets/validate_attachment_url.json',
-    keyword_triggers: '/assets/keyword_triggers.json',
     recents: '/assets/recents.json',
     templates: '/assets/templates.json',
     editor: '/flow/editor',
