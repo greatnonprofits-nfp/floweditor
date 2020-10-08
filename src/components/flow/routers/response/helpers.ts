@@ -68,6 +68,22 @@ interface ConfigRouter {
   test_cases?: { [lang: string]: AutomatedTestCase[] };
 }
 
+const splitRegex = /[[\]{}().?!,:;\s\\/\-*]+/;
+const escapeRegex = (str: string) => {
+  return str.replace(/[|\\{}()[\]-^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');
+};
+
+const preprocessArgs = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace('+', ' + ')
+    .replace('|', ' | ')
+    .trim()
+    .split(splitRegex)
+    .filter(arg => arg !== '')
+    .map(escapeRegex);
+};
+
 export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]): string[] => {
   let matches: string[] = [];
   let args: string[] = [];
@@ -78,30 +94,40 @@ export const matchResponseTextWithCategory = (text: string, cases: CaseProps[]):
   let numberRegExp = /.*\b(?<number>[$£€]?([\d,][\d,.]*([.,]\d+)?)\D*$)\b.*/;
   let originalText = text;
   text = text.toLowerCase();
+  let clearText = text
+    .split(splitRegex)
+    .join(' ')
+    .replace('+', ' + ')
+    .replace(/\s+/, ' ')
+    .trim();
   cases.some(item => {
     let match = false;
     let type = item.kase.type;
+    let phrase = '';
     switch (type) {
       case 'has_any_word':
-        args = item.kase.arguments[0].toLowerCase().split(/\s+/);
-        args = args.filter(arg => arg !== '');
-        match = args.some(element => new RegExp('(^|.*\\s)(' + element + ')(\\s.*|$)').test(text));
+        args = preprocessArgs(item.kase.arguments[0]);
+        match =
+          args.length > 0 &&
+          args.some(element => new RegExp('(^|.*\\s)(' + element + ')(\\s.*|$)').test(clearText));
         break;
       case 'has_all_words':
-        args = item.kase.arguments[0].toLowerCase().split(/\s+/);
-        args = args.filter(arg => arg !== '');
-        match = args.every(element => new RegExp('(^|.*\\s)(' + element + ')(\\s.*|$)').test(text));
+        args = preprocessArgs(item.kase.arguments[0]);
+        match =
+          args.length > 0 &&
+          args.every(element => new RegExp('(^|.*\\s)(' + element + ')(\\s.*|$)').test(clearText));
         break;
       case 'has_phrase':
-        match = new RegExp('(^|.*\\s)(' + item.kase.arguments[0].toLowerCase() + ')(\\s.*|$)').test(
-          text
-        );
+        phrase = escapeRegex(item.kase.arguments[0].toLowerCase());
+        match = new RegExp('(^|.*\\s)(' + phrase + ')(\\s.*|$)').test(text);
         break;
       case 'has_only_phrase':
-        match = new RegExp('^(' + item.kase.arguments[0].toLowerCase() + ')$').test(text);
+        phrase = escapeRegex(item.kase.arguments[0].toLowerCase());
+        match = new RegExp('^(' + phrase + ')$').test(text);
         break;
       case 'has_beginning':
-        match = new RegExp('^(' + item.kase.arguments[0].toLowerCase() + ').*').test(text);
+        phrase = escapeRegex(item.kase.arguments[0].toLowerCase());
+        match = new RegExp('^(' + phrase + ').*').test(text);
         break;
       case 'has_email':
         args = text.split(/\s+/);
