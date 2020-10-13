@@ -262,6 +262,7 @@ export default class ResponseRouterForm extends React.Component<
       item => item.type === AutomatedTestCaseType.AUTO_GENERATED
     );
     let testCasesMap = Object.assign({}, ...testCases.map(item => ({ [item.testText]: item })));
+    let allCases = this.state.localizedCases[lang.value];
     let cases = this.state.localizedCases[lang.value].filter(case_ =>
       ALLOWED_AUTO_TESTS.includes(case_.kase.type)
     );
@@ -277,7 +278,7 @@ export default class ResponseRouterForm extends React.Component<
             this.state.timezoneData
           );
           if (testCase.actualCategory === previousCase.actualCategory && previousCase.confirmed) {
-            if (cases.some(case_ => case_.categoryName === previousCase.confirmedCategory)) {
+            if (allCases.some(case_ => case_.categoryName === previousCase.confirmedCategory)) {
               testCase.confirmedCategory = previousCase.confirmedCategory;
               testCase.confirmed = previousCase.confirmed;
               testCase.deleted = previousCase.deleted;

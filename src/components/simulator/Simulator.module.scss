@@ -77,7 +77,12 @@ $reset_color: #666;
   transition-delay: 100ms;
 
   @media only screen and (max-height: 740px) {
+    height: 400px;
+    top: -50px;
+  }
+  @media only screen and (max-height: 585px) {
     height: 300px;
+    top: -100px;
   }
 
   .screen {
@@ -90,6 +95,9 @@ $reset_color: #666;
     cursor: default;
 
     @media only screen and (max-height: 740px) {
+      height: 388px;
+    }
+    @media only screen and (max-height: 585px) {
       height: 288px;
     }
 
@@ -192,6 +200,9 @@ $reset_color: #666;
       transition: height 0.3s linear;
 
       @media only screen and (max-height: 740px) {
+        height: 260px !important;
+      }
+      @media only screen and (max-height: 585px) {
         height: 160px !important;
       }
     }
@@ -434,6 +445,21 @@ $reset_color: #666;
 .quick_replies {
   text-align: center;
   padding: 5px;
+
+  @media only screen and (max-height: 740px) {
+    max-height: 95px;
+    overflow-y: auto;
+  }
+  @media only screen and (max-height: 585px) {
+    max-height: 65px;
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid #666;
+  }
+  &::-webkit-scrollbar-track {
+    background: #666;
+  }
 
   .quick_reply {
     // white-space: nowrap;
