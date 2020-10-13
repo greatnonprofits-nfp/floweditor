@@ -143,11 +143,18 @@ export const getAssetPage = (url: string, type: AssetType, id: string): Promise<
     axios
       .get(url)
       .then((response: AxiosResponse) => {
-        const assets: Asset[] = response.data.results.map((result: any, idx: number) => {
-          const asset = resultToAsset(result, type, id);
-          asset.order = idx;
-          return asset;
-        });
+        let assets: Asset[];
+        if (response.data.results) {
+          assets = response.data.results.map((result: any, idx: number) => {
+            const asset = resultToAsset(result, type, id);
+            asset.order = idx;
+            return asset;
+          });
+        } else {
+          let asset = response.data;
+          asset.id = asset.id ? asset.id : type;
+          assets = [asset];
+        }
         resolve({ assets, next: response.data.next });
       })
       .catch(error => reject(error));
@@ -260,6 +267,11 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
         type: AssetType.Classifier,
         items: {}
       },
+      environment: {
+        endpoint: getURL(endpoints.environment),
+        type: AssetType.Environment,
+        items: {}
+      },
       languages: {
         endpoint: getURL(endpoints.languages),
         type: AssetType.Language,
@@ -348,7 +360,7 @@ export const createAssetStore = (endpoints: Endpoints): Promise<AssetStore> => {
 
     // prefetch some of our assets
     const fetches: any[] = [];
-    ['languages', 'fields', 'groups', 'labels', 'globals', 'classifiers'].forEach(
+    ['languages', 'fields', 'groups', 'labels', 'globals', 'classifiers', 'environment'].forEach(
       (storeId: string) => {
         const store = assetStore[storeId];
         fetches.push(
