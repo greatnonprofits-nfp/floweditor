@@ -16,7 +16,8 @@ import {
   generateAutomatedTest,
   ALLOWED_TESTS,
   ALLOWED_AUTO_TESTS,
-  getLocalizedCases
+  getLocalizedCases,
+  TimezoneData
 } from 'components/flow/routers/response/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import TimeoutControl from 'components/form/timeout/TimeoutControl';
@@ -53,6 +54,7 @@ interface TestingFormState {
   automatedTestCases?: { [lang: string]: AutomatedTestCase[] };
   activeLocalizations?: Set<string>;
   testResults?: { [lang: string]: boolean };
+  timezoneData?: TimezoneData;
 }
 
 export interface ResponseRouterFormState extends FormState, TestingFormState {
@@ -182,7 +184,8 @@ export default class ResponseRouterForm extends React.Component<
     let matched = this.state.liveTestText
       ? matchResponseTextWithCategory(
           this.state.liveTestText.value,
-          this.state.localizedCases[this.state.testingLang.value]
+          this.state.localizedCases[this.state.testingLang.value],
+          this.state.timezoneData
         )
       : [];
     let automatedTestCases = this.state.automatedTestCases;
@@ -269,7 +272,11 @@ export default class ResponseRouterForm extends React.Component<
         let testCase = testCasesMap[item.kase.arguments[0]];
         if (item.categoryName !== testCase.confirmedCategory) {
           let previousCase = testCase;
-          testCase = generateAutomatedTest(item, this.state.localizedCases[lang.value]);
+          testCase = generateAutomatedTest(
+            item,
+            this.state.localizedCases[lang.value],
+            this.state.timezoneData
+          );
           if (testCase.actualCategory === previousCase.actualCategory && previousCase.confirmed) {
             if (allCases.some(case_ => case_.categoryName === previousCase.confirmedCategory)) {
               testCase.confirmedCategory = previousCase.confirmedCategory;
@@ -281,7 +288,8 @@ export default class ResponseRouterForm extends React.Component<
           let matched = testCase.testText
             ? matchResponseTextWithCategory(
                 testCase.testText,
-                this.state.localizedCases[lang.value]
+                this.state.localizedCases[lang.value],
+                this.state.timezoneData
               )
             : [];
           let newActualCategory = matched.join(', ');
@@ -291,7 +299,11 @@ export default class ResponseRouterForm extends React.Component<
         }
         retestedTestCases.push(testCase);
       } else {
-        let testCase = generateAutomatedTest(item, this.state.localizedCases[lang.value]);
+        let testCase = generateAutomatedTest(
+          item,
+          this.state.localizedCases[lang.value],
+          this.state.timezoneData
+        );
         retestedTestCases.push(testCase);
       }
     });
@@ -304,7 +316,11 @@ export default class ResponseRouterForm extends React.Component<
     );
     alreadyCreatedManalTests.forEach(item => {
       let matched = item.testText
-        ? matchResponseTextWithCategory(item.testText, this.state.localizedCases[lang.value])
+        ? matchResponseTextWithCategory(
+            item.testText,
+            this.state.localizedCases[lang.value],
+            this.state.timezoneData
+          )
         : [];
       let newActualCategory = matched.join(',');
       item.confirmed = newActualCategory === item.actualCategory ? item.confirmed : false;
@@ -347,7 +363,8 @@ export default class ResponseRouterForm extends React.Component<
     let matched = this.state.liveTestText
       ? matchResponseTextWithCategory(
           this.state.liveTestText.value,
-          this.state.localizedCases[this.state.testingLang.value]
+          this.state.localizedCases[this.state.testingLang.value],
+          this.state.timezoneData
         )
       : [];
     let filteredCases = this.state.localizedCases[this.state.testingLang.value].filter(case_ =>
