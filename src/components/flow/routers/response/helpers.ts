@@ -113,7 +113,7 @@ const testDate = (
   comparator: Comparators,
   timezoneData: TimezoneData
 ) => {
-  let dateRegExp = /.*\b(?<date>([0-9]{1,2})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{4}|[0-9]{2})|([0-9]{4})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{1,2})|\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))\b.*/;
+  let dateRegExp = /.*\b(?<date>([0-9]{1,2})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{4}|[0-9]{2})|([0-9]{4})-([0-9]{2})-([0-9]{2})|\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))\b.*/;
   let kwargs = /(?<days>-?\d+)/.exec(daysSinceNow);
   let msgDate = dateRegExp.exec(message);
   let daysToTheTesingDate = Number.parseInt(
