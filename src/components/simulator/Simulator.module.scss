@@ -445,6 +445,9 @@ $reset_color: #666;
 .quick_replies {
   text-align: center;
   padding: 5px;
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   @media only screen and (max-height: 740px) {
     max-height: 95px;
