@@ -52,6 +52,7 @@ import Debug from 'utils/debug';
 import styles from './Flow.module.scss';
 import { Trans } from 'react-i18next';
 import { PopTabType } from 'config/interfaces';
+import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu';
 
 declare global {
   interface Window {
@@ -406,6 +407,30 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     );
   }
 
+  private getContextMenu(): JSX.Element {
+    return (
+      <ContextMenu id="context-menu" className={styles.contextMenu}>
+        <MenuItem
+          className={styles.menuItem}
+          onClick={event => {
+            const flowEditor = event.currentTarget.parentElement.parentElement;
+            const emptyNode = createEmptyNode(null, null, 1, this.context.config.flowType);
+            // @ts-ignore
+            emptyNode.ui.position.left = event.pageX - flowEditor.offsetLeft - 50 || 0;
+            // @ts-ignore
+            emptyNode.ui.position.top = event.pageY - flowEditor.offsetTop - 50 || 0;
+            this.props.onOpenNodeEditor({
+              originalNode: emptyNode,
+              originalAction: emptyNode.node.actions[0]
+            });
+          }}
+        >
+          Create Message
+        </MenuItem>
+      </ContextMenu>
+    );
+  }
+
   public render(): JSX.Element {
     const nodes = this.getNodes();
 
@@ -421,31 +446,34 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
 
     return (
       <div onDoubleClick={this.onDoubleClick} ref={this.onRef}>
-        <Canvas
-          mutable={this.context.config.mutable}
-          draggingNew={!!this.props.editorState.ghostNode && !this.props.nodeEditorSettings}
-          onDragging={(uuids: string[]) => {
-            uuids.forEach((uuid: string) => {
-              if (uuid in this.props.nodes) {
-                this.props.nodes[uuid].node.exits.forEach((exit: Exit) => {
-                  if (exit.destination_uuid) {
-                    uuids.push(uuid + ':' + exit.uuid);
-                  }
-                });
-              }
-            });
-            this.Plumber.recalculateUUIDs(uuids);
-          }}
-          uuid={this.nodeContainerUUID}
-          dragActive={this.props.editorState.dragActive}
-          mergeEditorState={this.props.mergeEditorState}
-          onRemoveNodes={this.props.onRemoveNodes}
-          draggables={draggables}
-          onUpdatePositions={this.props.onUpdateCanvasPositions}
-        >
-          {children}
-          {this.getNodeEditor()}
-        </Canvas>
+        <ContextMenuTrigger id="context-menu">
+          <Canvas
+            mutable={this.context.config.mutable}
+            draggingNew={!!this.props.editorState.ghostNode && !this.props.nodeEditorSettings}
+            onDragging={(uuids: string[]) => {
+              uuids.forEach((uuid: string) => {
+                if (uuid in this.props.nodes) {
+                  this.props.nodes[uuid].node.exits.forEach((exit: Exit) => {
+                    if (exit.destination_uuid) {
+                      uuids.push(uuid + ':' + exit.uuid);
+                    }
+                  });
+                }
+              });
+              this.Plumber.recalculateUUIDs(uuids);
+            }}
+            uuid={this.nodeContainerUUID}
+            dragActive={this.props.editorState.dragActive}
+            mergeEditorState={this.props.mergeEditorState}
+            onRemoveNodes={this.props.onRemoveNodes}
+            draggables={draggables}
+            onUpdatePositions={this.props.onUpdateCanvasPositions}
+          >
+            {children}
+            {this.getNodeEditor()}
+            {this.getContextMenu()}
+          </Canvas>
+        </ContextMenuTrigger>
       </div>
     );
   }
