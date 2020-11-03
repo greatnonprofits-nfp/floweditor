@@ -19,7 +19,6 @@ export interface ContextMenuState {
 
 export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
   private wrapperRef: any;
-  // private setWrapperRef: any;
 
   public constructor(props: ContextMenuProps) {
     super(props);
@@ -29,7 +28,6 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
       visible: false
     };
     this.wrapperRef = React.createRef();
-    // this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 

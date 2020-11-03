@@ -448,13 +448,12 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     let menuItems = [
       {
         label: 'Create Message',
-        onClick: (event: any) => {
+        onClick: (event: MouseEvent) => {
+          // @ts-ignore
           const flowEditor = event.currentTarget.parentElement.parentElement;
           const emptyNode = createEmptyNode(null, null, 1, this.context.config.flowType);
-          // @ts-ignore
           emptyNode.ui.position.left = event.pageX - flowEditor.offsetLeft - 50 || 0;
-          // @ts-ignore
-          emptyNode.ui.position.top = event.pageY - flowEditor.offsetTop - 50 || 0;
+          emptyNode.ui.position.top = event.pageY - flowEditor.offsetTop - 250 || 0;
           this.props.onOpenNodeEditor({
             originalNode: emptyNode,
             originalAction: emptyNode.node.actions[0]
@@ -463,10 +462,11 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       },
       {
         label: 'Paste Step',
-        onClick: (event: any) => {
+        onClick: (event: MouseEvent) => {
+          // @ts-ignore
           const flowEditor = event.currentTarget.parentElement.parentElement;
           let left = event.pageX - flowEditor.offsetLeft - 50 || 0;
-          let top = event.pageY - flowEditor.offsetTop - 50 || 0;
+          let top = event.pageY - flowEditor.offsetTop - 250 || 0;
           this.pasteNodeFromClipbord(left, top);
         }
       }
@@ -493,9 +493,11 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
         onDoubleClick={this.onDoubleClick}
         ref={this.onRef}
         onContextMenu={e => {
-          contextMenu.current.show(e);
-          e.preventDefault();
-          e.stopPropagation();
+          if (this.context.config.mutable) {
+            contextMenu.current.show(e);
+            e.preventDefault();
+            e.stopPropagation();
+          }
         }}
       >
         <Canvas
