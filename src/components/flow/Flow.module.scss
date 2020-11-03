@@ -20,21 +20,3 @@
     line-height: 18px;
   }
 }
-
-.contextMenu {
-  z-index: 150;
-  border: 1px solid  #ccc;
-  background-color: hsl(0,0%,100%);
-  border-radius: 5px;
-  .menuItem {
-    font-size: 14px;
-    border-radius: 4px;
-    background-color: hsl(0,0%,100%);
-    outline: none;
-    padding: 10px 16px;
-    &:hover {
-      color: white;
-      background-color: #289f9b;
-    }
-  }
-}

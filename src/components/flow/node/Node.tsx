@@ -39,6 +39,7 @@ import { ClickHandler, createClickHandler } from 'utils';
 import styles from './Node.module.scss';
 import { hasIssues } from '../helpers';
 import MountScroll from 'components/mountscroll/MountScroll';
+import { ContextMenu } from 'components/contextmenu/ContextMenu';
 
 export interface NodePassedProps {
   nodeUUID: string;
@@ -422,11 +423,18 @@ export class NodeComp extends React.Component<NodeProps> {
       </div>
     );
 
+    const contextMenu = React.createRef<any>();
+    const menuItems = [{ label: 'Copy', onClick: () => {} }];
     const renderedNode = (
       <div
         id={this.props.renderNode.node.uuid}
         className={`${styles.node_container} ${classes}`}
         ref={this.eleRef}
+        onContextMenu={e => {
+          contextMenu.current.show(e);
+          e.preventDefault();
+          e.stopPropagation();
+        }}
       >
         {!this.props.scrollToAction &&
         this.props.scrollToNode &&
@@ -435,6 +443,7 @@ export class NodeComp extends React.Component<NodeProps> {
         ) : (
           body
         )}
+        <ContextMenu ref={contextMenu} items={menuItems} />
       </div>
     );
     return renderedNode;
