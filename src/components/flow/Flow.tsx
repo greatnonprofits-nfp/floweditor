@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux';
 import Plumber from 'services/Plumber';
 import { DragSelection, EditorState } from 'store/editor';
 import { RenderNode } from 'store/flowContext';
-import { createEmptyNode, detectLoops, getOrderedNodes } from 'store/helpers';
+import { createEmptyNode, detectLoops, duplicateNode, getOrderedNodes } from 'store/helpers';
 import { NodeEditorSettings } from 'store/nodeEditor';
 import AppState from 'store/state';
 import {
@@ -279,6 +279,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
             key={renderNode.node.uuid}
             data-spec={nodeSpecId}
             nodeUUID={renderNode.node.uuid}
+            onNodeCopyClick={() => this.copyNodeToClipboard(renderNode.node.uuid)}
             plumberMakeTarget={this.Plumber.makeTarget}
             plumberRemove={this.Plumber.remove}
             plumberRecalculate={this.Plumber.recalculate}
@@ -288,6 +289,41 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
           />
         )
       };
+    });
+  }
+
+  private copyNodeToClipboard(nodeUUID: string) {
+    let node = this.props.nodes[nodeUUID];
+    node.inboundConnections = {};
+    navigator.clipboard.writeText(JSON.stringify(node)).then(() => console.log('Copied!'));
+  }
+
+  private pasteNodeFromClipbord(left: number, top: number) {
+    navigator.clipboard.readText().then(text => {
+      try {
+        let nodeData: RenderNode = JSON.parse(text);
+        if (!(nodeData.ui && nodeData.node)) {
+          throw Error('Failed to paste node!');
+        }
+        let duplicatedNode = duplicateNode(nodeData);
+        duplicatedNode.ui.position.left = left;
+        duplicatedNode.ui.position.top = top;
+        this.props.onOpenNodeEditor({
+          originalNode: duplicatedNode,
+          originalAction: duplicatedNode.node.actions.length ? duplicatedNode.node.actions[0] : null
+        });
+      } catch (e) {
+        console.error(e);
+        console.log('Pasting failed!');
+        this.props.mergeEditorState({
+          modalMessage: {
+            title: "Can't create a flow step.",
+            body:
+              'There are no flow steps in clipboard to be pasted. Please copy one of flow steps first.'
+          },
+          saving: false
+        });
+      }
     });
   }
 
@@ -423,6 +459,15 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
             originalNode: emptyNode,
             originalAction: emptyNode.node.actions[0]
           });
+        }
+      },
+      {
+        label: 'Paste Step',
+        onClick: (event: any) => {
+          const flowEditor = event.currentTarget.parentElement.parentElement;
+          let left = event.pageX - flowEditor.offsetLeft - 50 || 0;
+          let top = event.pageY - flowEditor.offsetTop - 50 || 0;
+          this.pasteNodeFromClipbord(left, top);
         }
       }
     ];

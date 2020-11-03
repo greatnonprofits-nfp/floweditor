@@ -79,6 +79,7 @@ export interface NodeStoreProps {
   definition: FlowDefinition;
   onAddToNode: OnAddToNode;
   onOpenNodeEditor: OnOpenNodeEditor;
+  onNodeCopyClick?: (event?: any) => void;
   removeNode: RemoveNode;
   mergeEditorState: MergeEditorState;
   scrollToNode: string;
@@ -424,7 +425,7 @@ export class NodeComp extends React.Component<NodeProps> {
     );
 
     const contextMenu = React.createRef<any>();
-    const menuItems = [{ label: 'Copy', onClick: () => {} }];
+    const menuItems = [{ label: 'Copy Step', onClick: this.props.onNodeCopyClick }];
     const renderedNode = (
       <div
         id={this.props.renderNode.node.uuid}

@@ -68,9 +68,9 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
           style={{ left: this.state.left + 'px', top: this.state.top + 'px' }}
           ref={this.wrapperRef}
         >
-          {this.props.items.map(menuItem => (
+          {this.props.items.map((menuItem, index) => (
             <div
-              key=""
+              key={index}
               className={styles.menuItem}
               onClick={e => {
                 menuItem.onClick(e);
