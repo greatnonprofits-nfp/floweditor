@@ -39,6 +39,7 @@ import { ClickHandler, createClickHandler } from 'utils';
 import styles from './Node.module.scss';
 import { hasIssues } from '../helpers';
 import MountScroll from 'components/mountscroll/MountScroll';
+import { ContextMenu } from 'components/contextmenu/ContextMenu';
 
 export interface NodePassedProps {
   nodeUUID: string;
@@ -78,6 +79,7 @@ export interface NodeStoreProps {
   definition: FlowDefinition;
   onAddToNode: OnAddToNode;
   onOpenNodeEditor: OnOpenNodeEditor;
+  onNodeCopyClick?: (event?: any) => void;
   removeNode: RemoveNode;
   mergeEditorState: MergeEditorState;
   scrollToNode: string;
@@ -422,11 +424,20 @@ export class NodeComp extends React.Component<NodeProps> {
       </div>
     );
 
+    const contextMenu = React.createRef<any>();
+    const menuItems = [{ label: 'Copy Step', onClick: this.props.onNodeCopyClick }];
     const renderedNode = (
       <div
         id={this.props.renderNode.node.uuid}
         className={`${styles.node_container} ${classes}`}
         ref={this.eleRef}
+        onContextMenu={e => {
+          if (this.context.config.mutable) {
+            contextMenu.current.show(e);
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
       >
         {!this.props.scrollToAction &&
         this.props.scrollToNode &&
@@ -435,6 +446,7 @@ export class NodeComp extends React.Component<NodeProps> {
         ) : (
           body
         )}
+        <ContextMenu ref={contextMenu} items={menuItems} />
       </div>
     );
     return renderedNode;

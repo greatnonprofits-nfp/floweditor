@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux';
 import Plumber from 'services/Plumber';
 import { DragSelection, EditorState } from 'store/editor';
 import { RenderNode } from 'store/flowContext';
-import { createEmptyNode, detectLoops, getOrderedNodes } from 'store/helpers';
+import { createEmptyNode, detectLoops, duplicateNode, getOrderedNodes } from 'store/helpers';
 import { NodeEditorSettings } from 'store/nodeEditor';
 import AppState from 'store/state';
 import {
@@ -52,6 +52,8 @@ import Debug from 'utils/debug';
 import styles from './Flow.module.scss';
 import { Trans } from 'react-i18next';
 import { PopTabType } from 'config/interfaces';
+import { RefObject } from 'react';
+import { ContextMenu } from 'components/contextmenu/ContextMenu';
 
 declare global {
   interface Window {
@@ -277,6 +279,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
             key={renderNode.node.uuid}
             data-spec={nodeSpecId}
             nodeUUID={renderNode.node.uuid}
+            onNodeCopyClick={() => this.copyNodeToClipboard(renderNode.node.uuid)}
             plumberMakeTarget={this.Plumber.makeTarget}
             plumberRemove={this.Plumber.remove}
             plumberRecalculate={this.Plumber.recalculate}
@@ -286,6 +289,39 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
           />
         )
       };
+    });
+  }
+
+  private copyNodeToClipboard(nodeUUID: string) {
+    let node = this.props.nodes[nodeUUID];
+    node.inboundConnections = {};
+    navigator.clipboard.writeText(JSON.stringify(node)).then(() => console.log('Copied!'));
+  }
+
+  private pasteNodeFromClipbord(left: number, top: number) {
+    navigator.clipboard.readText().then(text => {
+      try {
+        let nodeData: RenderNode = JSON.parse(text);
+        if (!(nodeData.ui && nodeData.node)) {
+          throw Error('Failed to paste node!');
+        }
+        let duplicatedNode = duplicateNode(nodeData);
+        duplicatedNode.ui.position.left = left;
+        duplicatedNode.ui.position.top = top;
+        this.props.onOpenNodeEditor({
+          originalNode: duplicatedNode,
+          originalAction: duplicatedNode.node.actions.length ? duplicatedNode.node.actions[0] : null
+        });
+      } catch {
+        this.props.mergeEditorState({
+          modalMessage: {
+            title: "Can't create a flow step.",
+            body:
+              'There are no flow steps in clipboard to be pasted. Please copy one of flow steps first.'
+          },
+          saving: false
+        });
+      }
     });
   }
 
@@ -406,6 +442,36 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     );
   }
 
+  private getContextMenu(reference: RefObject<any>): JSX.Element {
+    let menuItems = [
+      {
+        label: 'Create Message',
+        onClick: (event: MouseEvent) => {
+          // @ts-ignore
+          const flowEditor = event.currentTarget.parentElement.parentElement;
+          const emptyNode = createEmptyNode(null, null, 1, this.context.config.flowType);
+          emptyNode.ui.position.left = event.pageX - flowEditor.offsetLeft - 50 || 0;
+          emptyNode.ui.position.top = event.pageY - flowEditor.offsetTop - 250 || 0;
+          this.props.onOpenNodeEditor({
+            originalNode: emptyNode,
+            originalAction: emptyNode.node.actions[0]
+          });
+        }
+      },
+      {
+        label: 'Paste Step',
+        onClick: (event: MouseEvent) => {
+          // @ts-ignore
+          const flowEditor = event.currentTarget.parentElement.parentElement;
+          let left = event.pageX - flowEditor.offsetLeft - 50 || 0;
+          let top = event.pageY - flowEditor.offsetTop - 250 || 0;
+          this.pasteNodeFromClipbord(left, top);
+        }
+      }
+    ];
+    return <ContextMenu ref={reference} items={menuItems} />;
+  }
+
   public render(): JSX.Element {
     const nodes = this.getNodes();
 
@@ -418,9 +484,20 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     }
 
     const draggables = this.getStickies().concat(nodes);
+    const contextMenu = React.createRef<any>();
 
     return (
-      <div onDoubleClick={this.onDoubleClick} ref={this.onRef}>
+      <div
+        onDoubleClick={this.onDoubleClick}
+        ref={this.onRef}
+        onContextMenu={e => {
+          if (this.context.config.mutable) {
+            contextMenu.current.show(e);
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+      >
         <Canvas
           mutable={this.context.config.mutable}
           draggingNew={!!this.props.editorState.ghostNode && !this.props.nodeEditorSettings}
@@ -445,6 +522,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
         >
           {children}
           {this.getNodeEditor()}
+          {this.getContextMenu(contextMenu)}
         </Canvas>
       </div>
     );

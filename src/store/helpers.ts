@@ -1,3 +1,4 @@
+import { Map } from 'core-js';
 import { fieldToAsset } from 'components/flow/actions/updatecontact/helpers';
 import { getResultName } from 'components/flow/node/helpers';
 import { DefaultExitNames } from 'components/flow/routers/constants';
@@ -417,6 +418,47 @@ export const createEmptyNode = (
     node: emptyNode,
     ui: { position: { left: 0, top: 0 }, type },
     inboundConnections,
+    ghost: true
+  };
+};
+
+export const duplicateNode = (fromNode: RenderNode): RenderNode => {
+  let type = fromNode.ui.type;
+  let copiedNode: FlowNode = JSON.parse(JSON.stringify(fromNode.node));
+  copiedNode.uuid = createUUID();
+  copiedNode.actions.forEach((action: any): void => {
+    action.uuid = createUUID();
+  });
+
+  let nodeExitsMap = new Map<string, string>();
+  copiedNode.exits.forEach(nodeExit => {
+    nodeExitsMap.set(nodeExit.uuid, createUUID());
+    nodeExit.uuid = nodeExitsMap.get(nodeExit.uuid);
+    nodeExit.destination_uuid = null;
+  });
+
+  if (copiedNode.router) {
+    let categoriesMap = new Map<string, string>();
+    copiedNode.router.categories.forEach(category => {
+      categoriesMap.set(category.uuid, createUUID());
+      category.uuid = categoriesMap.get(category.uuid);
+      category.exit_uuid = nodeExitsMap.get(category.exit_uuid);
+    });
+
+    let router = copiedNode.router as SwitchRouter;
+    router.default_category_uuid = categoriesMap.get(router.default_category_uuid);
+    if (router.cases) {
+      router.cases.forEach(routerCase => {
+        routerCase.category_uuid = categoriesMap.get(routerCase.category_uuid);
+        routerCase.uuid = createUUID();
+      });
+    }
+  }
+
+  return {
+    node: copiedNode,
+    ui: { position: { left: 0, top: 0 }, type },
+    inboundConnections: {},
     ghost: true
   };
 };
