@@ -63,7 +63,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
       return (
         <div
           className={styles.contextMenu}
-          style={{ left: this.state.left + 'px', top: this.state.top + 'px' }}
+          style={{ left: `${this.state.left}px`, top: `${this.state.top}px` }}
           ref={this.wrapperRef}
         >
           {this.props.items.map((menuItem, index) => (

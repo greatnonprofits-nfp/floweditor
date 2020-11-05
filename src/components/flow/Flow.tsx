@@ -312,9 +312,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
           originalNode: duplicatedNode,
           originalAction: duplicatedNode.node.actions.length ? duplicatedNode.node.actions[0] : null
         });
-      } catch (e) {
-        console.error(e);
-        console.log('Pasting failed!');
+      } catch {
         this.props.mergeEditorState({
           modalMessage: {
             title: "Can't create a flow step.",
