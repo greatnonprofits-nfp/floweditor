@@ -79,6 +79,10 @@ export interface FlowStoreProps {
   updateSticky: UpdateSticky;
 }
 
+export interface FlowStoreState {
+  isPasteAvailable?: boolean;
+}
+
 export interface Translations {
   [uuid: string]: any;
 }
@@ -109,7 +113,7 @@ export const getDragStyle = (drag: DragSelection) => {
   };
 };
 
-export class Flow extends React.Component<FlowStoreProps, {}> {
+export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
   private Plumber: Plumber;
   private ele: HTMLDivElement;
   private nodeContainerUUID: string;
@@ -127,6 +131,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     this.nodeContainerUUID = createUUID();
 
     this.Plumber = new Plumber();
+    this.state = {};
 
     /* istanbul ignore next */
     if (context.config.debug) {
@@ -325,6 +330,20 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
     });
   }
 
+  private chackIsPasteAvailable() {
+    navigator.clipboard.readText().then(text => {
+      try {
+        let nodeData: RenderNode = JSON.parse(text);
+        if (!(nodeData.ui && nodeData.node)) {
+          throw Error('No node found in the clipboard!');
+        }
+        this.setState({ isPasteAvailable: true });
+      } catch {
+        this.setState({ isPasteAvailable: false });
+      }
+    });
+  }
+
   private getStickies(): CanvasDraggableProps[] {
     const stickyMap = this.props.definition._ui.stickies || {};
     return Object.keys(stickyMap).map(uuid => {
@@ -460,6 +479,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       },
       {
         label: 'Paste Step',
+        hidden: !this.state.isPasteAvailable,
         onClick: (event: MouseEvent) => {
           // @ts-ignore
           const flowEditor = event.currentTarget.parentElement.parentElement;
@@ -493,6 +513,7 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
         style={{ minWidth: document.body.scrollWidth }}
         onContextMenu={e => {
           if (this.context.config.mutable && !this.props.editorState.translating) {
+            this.chackIsPasteAvailable();
             contextMenu.current.show(e);
             e.preventDefault();
             e.stopPropagation();
