@@ -432,7 +432,7 @@ export class NodeComp extends React.Component<NodeProps> {
         className={`${styles.node_container} ${classes}`}
         ref={this.eleRef}
         onContextMenu={e => {
-          if (this.context.config.mutable) {
+          if (this.context.config.mutable && !this.props.translating) {
             contextMenu.current.show(e);
             e.preventDefault();
             e.stopPropagation();

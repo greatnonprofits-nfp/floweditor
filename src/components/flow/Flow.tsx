@@ -490,8 +490,9 @@ export class Flow extends React.Component<FlowStoreProps, {}> {
       <div
         onDoubleClick={this.onDoubleClick}
         ref={this.onRef}
+        style={{ minWidth: document.body.scrollWidth }}
         onContextMenu={e => {
-          if (this.context.config.mutable) {
+          if (this.context.config.mutable && !this.props.editorState.translating) {
             contextMenu.current.show(e);
             e.preventDefault();
             e.stopPropagation();
