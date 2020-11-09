@@ -3,6 +3,7 @@ import styles from './ContextMenu.module.scss';
 
 interface MenuItem {
   label: string;
+  hidden?: boolean;
   onClick?: (event?: any) => void;
 }
 
@@ -66,18 +67,20 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
           style={{ left: `${this.state.left}px`, top: `${this.state.top}px` }}
           ref={this.wrapperRef}
         >
-          {this.props.items.map((menuItem, index) => (
-            <div
-              key={index}
-              className={styles.menuItem}
-              onClick={e => {
-                menuItem.onClick(e);
-                this.dismiss();
-              }}
-            >
-              {menuItem.label}
-            </div>
-          ))}
+          {this.props.items
+            .filter(menuItem => !menuItem.hidden)
+            .map((menuItem, index) => (
+              <div
+                key={index}
+                className={styles.menuItem}
+                onClick={e => {
+                  menuItem.onClick(e);
+                  this.dismiss();
+                }}
+              >
+                {menuItem.label}
+              </div>
+            ))}
         </div>
       );
     } else {
