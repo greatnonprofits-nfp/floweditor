@@ -241,7 +241,8 @@ export const typeConfigList: Type[] = [
     form: SendBroadcastForm,
     localization: KeyLocalizationForm,
     localizeableKeys: ['text'],
-    component: SendBroadcastComp
+    component: SendBroadcastComp,
+    visibility: ONLINE
   },
   {
     type: Types.add_input_labels,
