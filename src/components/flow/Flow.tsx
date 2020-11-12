@@ -16,7 +16,7 @@ import Plumber from 'services/Plumber';
 import { DragSelection, EditorState } from 'store/editor';
 import { RenderNode } from 'store/flowContext';
 import { createEmptyNode, detectLoops, duplicateNode, getOrderedNodes } from 'store/helpers';
-import { NodeEditorSettings } from 'store/nodeEditor';
+import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import AppState from 'store/state';
 import {
   ConnectionEvent,
@@ -54,6 +54,9 @@ import { Trans } from 'react-i18next';
 import { PopTabType } from 'config/interfaces';
 import { RefObject } from 'react';
 import { ContextMenu } from 'components/contextmenu/ContextMenu';
+import { TextInputElement } from 'components/form/textinput/TextInputElement';
+import Modal from 'components/modal/Modal';
+import Dialog from 'components/dialog/Dialog';
 
 declare global {
   interface Window {
@@ -80,7 +83,10 @@ export interface FlowStoreProps {
 }
 
 export interface FlowStoreState {
-  isPasteAvailable?: boolean;
+  isClipboardAvailable?: boolean;
+  displayClipboardBuffer?: boolean;
+  clipboardBuffer?: StringEntry;
+  pastingModalCallback?: () => void;
 }
 
 export interface Translations {
@@ -131,7 +137,7 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
     this.nodeContainerUUID = createUUID();
 
     this.Plumber = new Plumber();
-    this.state = {};
+    this.state = { clipboardBuffer: { value: '' } };
 
     /* istanbul ignore next */
     if (context.config.debug) {
@@ -303,45 +309,86 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
     navigator.clipboard.writeText(JSON.stringify(node)).then(() => console.log('Copied!'));
   }
 
-  private pasteNodeFromClipbord(left: number, top: number) {
-    navigator.clipboard.readText().then(text => {
-      try {
-        let nodeData: RenderNode = JSON.parse(text);
-        if (!(nodeData.ui && nodeData.node)) {
-          throw Error('Failed to paste node!');
-        }
-        let duplicatedNode = duplicateNode(nodeData);
-        duplicatedNode.ui.position.left = left;
-        duplicatedNode.ui.position.top = top;
-        this.props.onOpenNodeEditor({
-          originalNode: duplicatedNode,
-          originalAction: duplicatedNode.node.actions.length ? duplicatedNode.node.actions[0] : null
-        });
-      } catch {
-        this.props.mergeEditorState({
-          modalMessage: {
-            title: "Can't create a flow step.",
-            body:
-              'There are no flow steps in clipboard to be pasted. Please copy one of flow steps first.'
-          },
-          saving: false
+  private pasteNodeFromClipbord(left: number, top: number): void {
+    let callback = () => {
+      if (
+        !this.state.clipboardBuffer.validationFailures ||
+        this.state.clipboardBuffer.validationFailures.length === 0
+      ) {
+        this.processCreatingOfNewFlowStep(left, top, this.state.clipboardBuffer.value);
+        this.setState({
+          displayClipboardBuffer: false,
+          clipboardBuffer: { value: '' }
         });
       }
-    });
+    };
+    try {
+      navigator.clipboard
+        .readText()
+        .then(text => this.processCreatingOfNewFlowStep(left, top, text))
+        .catch(() => {
+          this.setState({
+            displayClipboardBuffer: true,
+            pastingModalCallback: callback
+          });
+        });
+    } catch {
+      this.setState({
+        displayClipboardBuffer: true,
+        pastingModalCallback: callback
+      });
+    }
   }
 
-  private chackIsPasteAvailable() {
-    navigator.clipboard.readText().then(text => {
-      try {
-        let nodeData: RenderNode = JSON.parse(text);
-        if (!(nodeData.ui && nodeData.node)) {
-          throw Error('No node found in the clipboard!');
-        }
-        this.setState({ isPasteAvailable: true });
-      } catch {
-        this.setState({ isPasteAvailable: false });
+  private processCreatingOfNewFlowStep(left: number, top: number, text: string): void {
+    try {
+      let nodeData: RenderNode = JSON.parse(text);
+      if (!(nodeData.ui && nodeData.node)) {
+        throw Error('Failed to paste node!');
       }
-    });
+      let duplicatedNode = duplicateNode(nodeData);
+      duplicatedNode.ui.position.left = left;
+      duplicatedNode.ui.position.top = top;
+      this.props.onOpenNodeEditor({
+        originalNode: duplicatedNode,
+        originalAction: duplicatedNode.node.actions.length ? duplicatedNode.node.actions[0] : null
+      });
+    } catch {
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: "Can't create a flow step.",
+          body: 'There are no valid data to be pasted. Please copy one of the flow steps first.'
+        },
+        saving: false
+      });
+    }
+  }
+
+  private chackIsPasteAvailable(): void {
+    try {
+      navigator.clipboard
+        .readText()
+        .then(text => {
+          this.setState({ isClipboardAvailable: this.validateStringifiedNode(text) });
+        })
+        .catch(() => {
+          this.setState({ isClipboardAvailable: true });
+        });
+    } catch {
+      this.setState({ isClipboardAvailable: true });
+    }
+  }
+
+  private validateStringifiedNode(text: string): boolean {
+    try {
+      let nodeData: RenderNode = JSON.parse(text);
+      if (!(nodeData.ui && nodeData.node)) {
+        throw Error('No node found in the clipboard!');
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private getStickies(): CanvasDraggableProps[] {
@@ -479,7 +526,7 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
       },
       {
         label: 'Paste Step',
-        hidden: !this.state.isPasteAvailable,
+        hidden: !this.state.isClipboardAvailable,
         onClick: (event: MouseEvent) => {
           // @ts-ignore
           const flowEditor = event.currentTarget.parentElement.parentElement;
@@ -489,7 +536,61 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
         }
       }
     ];
-    return <ContextMenu ref={reference} items={menuItems} />;
+    return (
+      <>
+        <ContextMenu ref={reference} items={menuItems} />
+        <Modal width="600px" show={this.state.displayClipboardBuffer}>
+          <Dialog
+            className={styles.alert_modal}
+            title="Create Flow Step"
+            headerClass="msg"
+            buttons={{
+              primary: {
+                name: 'Ok',
+                onClick: this.state.pastingModalCallback
+              },
+              secondary: {
+                name: 'Cancel',
+                onClick: () => this.setState({ displayClipboardBuffer: false })
+              }
+            }}
+          >
+            <div
+              className={styles.alert_body}
+              onContextMenu={e => {
+                e.stopPropagation();
+              }}
+            >
+              <div style={{ padding: '10px 0' }}>
+                Please insert below the data that you are going to paste
+              </div>
+              <TextInputElement
+                name=""
+                showLabel={false}
+                onChange={value =>
+                  this.setState({
+                    clipboardBuffer: {
+                      value: value,
+                      validationFailures: this.validateStringifiedNode(value)
+                        ? []
+                        : [{ message: 'Invalid flowstep data' }]
+                    }
+                  })
+                }
+                entry={this.state.clipboardBuffer}
+                autocomplete={false}
+                focus={true}
+                textarea={true}
+                typeConfig={null}
+                assetStore={null}
+                completionSchema={null}
+                functions={null}
+              />
+            </div>
+          </Dialog>
+        </Modal>
+      </>
+    );
   }
 
   public render(): JSX.Element {
