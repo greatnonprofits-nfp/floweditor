@@ -25,7 +25,13 @@ export default class DragHelper extends React.Component<{}, DragHelperState> {
 
   public render(): JSX.Element {
     return (
-      <div className={styles.drag_helper + ' ' + (this.state.visible ? styles.visible : '')}>
+      <div
+        className={styles.drag_helper + ' ' + (this.state.visible ? styles.visible : '')}
+        onContextMenu={e => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+      >
         <div className={styles.arrow}>
           <div className={styles.tail} />
           <div className={styles.head} />
