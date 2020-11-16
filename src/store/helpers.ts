@@ -445,6 +445,12 @@ export const duplicateNode = (fromNode: RenderNode): RenderNode => {
       category.exit_uuid = nodeExitsMap.get(category.exit_uuid);
     });
 
+    if (copiedNode.router.wait && copiedNode.router.wait.timeout) {
+      copiedNode.router.wait.timeout.category_uuid = categoriesMap.get(
+        copiedNode.router.wait.timeout.category_uuid
+      );
+    }
+
     let router = copiedNode.router as SwitchRouter;
     router.default_category_uuid = categoriesMap.get(router.default_category_uuid);
     if (router.cases) {
