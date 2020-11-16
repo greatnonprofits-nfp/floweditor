@@ -562,7 +562,9 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
               }}
             >
               <div style={{ padding: '10px 0' }}>
-                Please insert below the data that you are going to paste
+                Paste the copied text in the box below to duplicate the flow step. You will see a
+                long JSON string appear if you are successful. Click the OK button to complete the
+                process.
               </div>
               <TextInputElement
                 name=""
