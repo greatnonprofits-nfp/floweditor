@@ -36,7 +36,9 @@ import {
   UpdateConnection,
   updateConnection,
   updateSticky,
-  UpdateSticky
+  UpdateSticky,
+  updateNode,
+  UpdateNode
 } from 'store/thunks';
 import {
   createUUID,
@@ -80,6 +82,7 @@ export interface FlowStoreProps {
   resetNodeEditingState: NoParamsAC;
   onConnectionDrag: OnConnectionDrag;
   updateSticky: UpdateSticky;
+  updateNode: UpdateNode;
 }
 
 export interface FlowStoreState {
@@ -349,10 +352,7 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
       let duplicatedNode = duplicateNode(nodeData);
       duplicatedNode.ui.position.left = left;
       duplicatedNode.ui.position.top = top;
-      this.props.onOpenNodeEditor({
-        originalNode: duplicatedNode,
-        originalAction: duplicatedNode.node.actions.length ? duplicatedNode.node.actions[0] : null
-      });
+      this.props.updateNode(duplicatedNode);
     } catch {
       this.props.mergeEditorState({
         modalMessage: {
@@ -585,7 +585,7 @@ export class Flow extends React.Component<FlowStoreProps, FlowStoreState> {
                 textarea={true}
                 typeConfig={null}
                 assetStore={null}
-                completionSchema={null}
+                completionSchema={{ root: [], types: [] }}
                 functions={null}
               />
             </div>
@@ -681,7 +681,8 @@ const mapDispatchToProps = (dispatch: DispatchWithState) =>
       onUpdateCanvasPositions,
       onRemoveNodes,
       updateConnection,
-      updateSticky
+      updateSticky,
+      updateNode
     },
     dispatch
   );
