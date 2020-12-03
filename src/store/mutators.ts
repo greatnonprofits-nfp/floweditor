@@ -581,6 +581,15 @@ export const updateStickyNote = (
   }
 };
 
+export const updateFlowStep = (nodes: RenderNodeMap, renderNode: RenderNode): RenderNodeMap => {
+  if (renderNode.node) {
+    return mutate(nodes, {
+      $merge: { [renderNode.node.uuid]: renderNode }
+    });
+  }
+  return nodes;
+};
+
 export const mergeNodeEditorSettings = (
   current: NodeEditorSettings,
   newSettings: NodeEditorSettings
