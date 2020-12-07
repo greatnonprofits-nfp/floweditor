@@ -465,7 +465,7 @@ export const duplicateNode = (fromNode: RenderNode): RenderNode => {
     node: copiedNode,
     ui: { position: { left: 0, top: 0 }, type },
     inboundConnections: {},
-    ghost: true
+    ghost: false
   };
 };
 
