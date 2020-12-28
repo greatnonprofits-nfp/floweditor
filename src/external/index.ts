@@ -21,6 +21,10 @@ axios.defaults.headers.post['Content-Type'] = 'application/javascript';
 axios.defaults.responseType = 'json';
 axios.defaults.timeout = 30000;
 
+export const setHTTPTimeout = (millis: number) => {
+  axios.defaults.timeout = millis;
+};
+
 /**
  * Gets the path activity and the count of active particpants at each node
  * @param {string} flowUUID - The UUID of the current flow
@@ -119,7 +123,7 @@ export const postNewAsset = (assets: Assets, payload: any): Promise<Asset> => {
     axios
       .post(assets.endpoint, payload, { headers })
       .then((response: AxiosResponse) => {
-        resolve(resultToAsset(response.data, assets.type, assets.id));
+        resolve(response.data);
       })
       .catch(error => reject(error));
   });
@@ -169,6 +173,17 @@ export const getAssets = async (url: string, type: AssetType, id: string): Promi
   return assets;
 };
 
+export const getFlowType = (flow: any) => {
+  switch (flow.type) {
+    case 'message':
+      return FlowTypes.MESSAGING;
+    case 'voice':
+      return FlowTypes.VOICE;
+    case 'survey':
+      return FlowTypes.MESSAGING_OFFLINE;
+  }
+};
+
 export const resultToAsset = (result: any, type: AssetType, id: string): Asset => {
   const idKey = id || 'uuid';
 
@@ -177,13 +192,13 @@ export const resultToAsset = (result: any, type: AssetType, id: string): Asset =
   if (type === AssetType.Flow && result.type) {
     switch (result.type) {
       case 'message':
-        result.type = FlowTypes.MESSAGE;
+        result.type = FlowTypes.MESSAGING;
         break;
       case 'voice':
         result.type = FlowTypes.VOICE;
         break;
       case 'survey':
-        result.type = FlowTypes.SURVEY;
+        result.type = FlowTypes.MESSAGING_OFFLINE;
         break;
     }
   }
