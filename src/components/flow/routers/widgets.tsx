@@ -8,7 +8,9 @@ import i18n from 'config/i18n';
 
 export const createResultNameInput = (
   value: StringEntry,
-  onChange: (value: string) => void
+  onChange: (value: string) => void,
+  noHelpText?: boolean,
+  helpText?: string
 ): JSX.Element => {
   const snaked = !hasErrors(value) && value.value ? '.' + snakify(value.value) : '';
 
@@ -20,9 +22,12 @@ export const createResultNameInput = (
       onChange={onChange}
       toggleText={i18n.t('forms.save_as_title', 'Save as..')}
       helpText={
-        <Trans i18nKey="forms.result_name_help" values={{ resultFormat: `@results${snaked}` }}>
-          By naming the result, you can reference it later using [[resultFormat]]
-        </Trans>
+        !noHelpText &&
+        (helpText || (
+          <Trans i18nKey="forms.result_name_help" values={{ resultFormat: `@results${snaked}` }}>
+            By naming the result, you can reference it later using [[resultFormat]]
+          </Trans>
+        ))
       }
     />
   );

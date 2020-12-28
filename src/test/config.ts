@@ -26,12 +26,16 @@ export const config: FlowEditorConfig = {
     completion: '/assets/completion.json',
     functions: '/assets/functions.json',
     attachments: '/assets/attachments.json',
+    attachments_validation: '/assets/validate_attachment_url.json',
     recents: '/assets/recents.json',
     templates: '/assets/templates.json',
     editor: '/flow/editor',
     activity: '',
     simulateStart: '',
-    simulateResume: ''
+    simulateResume: '',
+    lookups: '',
+    giftcard: '',
+    link: ''
   },
   onChangeLanguage: (code: string, name: string) => {}
 };

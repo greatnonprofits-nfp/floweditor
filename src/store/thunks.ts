@@ -123,6 +123,8 @@ export type OnUpdateLocalizations = (
 
 export type UpdateSticky = (stickyUUID: string, sticky: StickyNote) => Thunk<void>;
 
+export type UpdateNode = (renderNode: RenderNode) => Thunk<void>;
+
 export type OnUpdateAction = (
   action: AnyAction,
   onUpdated?: (dispatch: DispatchWithState, getState: GetState) => void
@@ -943,6 +945,19 @@ export const updateSticky = (uuid: string, sticky: StickyNote) => (
 
   const updated = mutators.updateStickyNote(definition, uuid, sticky);
   dispatch(updateDefinition(updated));
+  markDirty();
+};
+
+export const updateNode = (renderNode: RenderNode) => (
+  dispatch: DispatchWithState,
+  getState: GetState
+): void => {
+  const {
+    flowContext: { nodes }
+  } = getState();
+
+  const updated = mutators.updateFlowStep(nodes, renderNode);
+  dispatch(updateNodes(updated));
   markDirty();
 };
 

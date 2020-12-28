@@ -164,15 +164,16 @@ export default class WebhookRouterForm extends React.Component<
   }
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate(i18n.t('forms.result_name', 'Result Name'), value, [
-      Required,
-      Alphanumeric,
-      StartIsNonNumeric
-    ]);
-    this.setState({
-      resultName,
-      valid: this.state.valid && !hasErrors(resultName)
-    });
+    const updates: Partial<WebhookRouterFormState> = {
+      resultName: validate(i18n.t('forms.result_name', 'Result Name'), value, [
+        Required,
+        Alphanumeric,
+        StartIsNonNumeric
+      ])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
   }
 
   private handleMethodUpdate(method: MethodOption): boolean {
@@ -220,7 +221,11 @@ export default class WebhookRouterForm extends React.Component<
 
   private getButtons(): ButtonSet {
     return {
-      primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
+      primary: {
+        name: i18n.t('buttons.ok', 'Ok'),
+        onClick: this.handleSave,
+        disabled: !this.state.valid
+      },
       secondary: {
         name: i18n.t('buttons.cancel', 'Cancel'),
         onClick: () => this.props.onClose(true)

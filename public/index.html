@@ -163,7 +163,7 @@
     var base = '/.netlify/functions/';
     var config = {
       flow: 'a4f64f1b-85bc-477e-b706-de313a022979',
-      flowType: 'message',
+      flowType: 'messaging',
       localStorage: true,
       mutable: true,
       filters: ['facebook', 'whatsapp', 'airtime', 'resthook', 'classifier', 'ticketer'],
@@ -181,6 +181,9 @@
         classifiers: base + 'classifiers',
         ticketers: base + 'ticketers',
         resthooks: base + 'resthooks',
+        link: base + 'link',
+        lookups: base + 'lookups',
+        giftcard: base + 'giftcards',
         templates: base + 'templates',
         flows: base + 'flows',
         revisions: base + 'revisions',
@@ -191,6 +194,7 @@
         functions: base + 'functions',
         completion: base + 'completion',
         attachments: base + 'attachments',
+        attachments_validation: base + 'attachments_validation',
         activity: base + 'activity',
 
         editor: '/',

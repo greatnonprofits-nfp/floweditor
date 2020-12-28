@@ -58,6 +58,11 @@ export default class CheckboxElement extends React.Component<CheckboxElementProp
   }
 
   public render(): JSX.Element {
+    // this condition required to update state when property was updated
+    if (this.state.checked !== this.props.checked) {
+      this.setState({ checked: this.props.checked });
+    }
+
     const checkboxIcon = this.state.checked ? checkedBoxIco : boxIco;
     return (
       <label className={cx(styles.label, this.props.labelClassName)} onClick={this.handleChange}>

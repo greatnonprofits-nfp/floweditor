@@ -118,7 +118,12 @@ export default class RouterLocalizationForm extends React.Component<
 
       const { verboseName } = getOperatorConfig(originalCase.type);
 
-      const [orginalArgument] = originalCase.arguments;
+      let orginalArgument;
+      if (originalCase.arguments instanceof Array) {
+        [orginalArgument] = originalCase.arguments;
+      } else {
+        [orginalArgument] = new Array<any>();
+      }
 
       let argument = '';
       if (kase.arguments && kase.arguments.length > 0) {

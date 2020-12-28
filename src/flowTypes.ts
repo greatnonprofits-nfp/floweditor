@@ -22,10 +22,14 @@ export interface Environment {
 
 export interface Endpoints {
   attachments: string;
+  attachments_validation: string;
   resthooks: string;
+  lookups: string;
   recents: string;
   fields: string;
   globals: string;
+  giftcard: string;
+  link: string;
   groups: string;
   recipients: string;
   flows: string;
@@ -50,6 +54,7 @@ export interface FlowEditorConfig {
   endpoints: Endpoints;
   flow: string;
   flowType: FlowTypes;
+  flowName?: string;
   showTemplates?: boolean;
   showDownload?: boolean;
   mutable?: boolean;
@@ -113,7 +118,9 @@ export interface FlowMetadata {
 export enum FlowIssueType {
   MISSING_DEPENDENCY = 'missing_dependency',
   LEGACY_EXTRA = 'legacy_extra',
-  INVALID_REGEX = 'invalid_regex'
+  INVALID_REGEX = 'invalid_regex',
+  INVALID_LINK = 'invalid_link',
+  WARNING_MESSAGE = 'warning_message'
 }
 
 export interface FlowIssue {
@@ -124,6 +131,9 @@ export interface FlowIssue {
   dependency?: Dependency;
   language?: string;
   regex?: string;
+  actual_link?: string;
+  expected_link?: string;
+  message?: string;
 }
 
 export interface FlowDetails {
@@ -201,6 +211,7 @@ export interface SwitchRouter extends Router {
   cases: Case[];
   operand: string;
   default_category_uuid: string;
+  config?: any;
 }
 
 export enum WaitTypes {
@@ -342,6 +353,8 @@ export interface SendMsg extends Action {
   attachments?: string[];
   topic?: string;
   templating?: MsgTemplating;
+  receive_attachment?: string;
+  sharing_config?: SharingConfig;
 }
 
 export interface SayMsg extends Action {
@@ -374,6 +387,7 @@ export interface SendEmail extends Action {
   subject: string;
   body: string;
   addresses: string[];
+  attachments?: string[];
 }
 
 export interface SetRunResult extends Action {
@@ -424,6 +438,57 @@ export interface OpenTicket extends Action {
   ticketer: Ticketer;
   subject: string;
   body: string;
+  result_name: string;
+}
+
+export interface LookupDB {
+  id: string;
+  text: string;
+}
+
+export interface LookupRule {
+  type: string;
+  verbose_name: string;
+}
+
+export interface LookupField {
+  id: string;
+  text: string;
+  type: 'String' | 'Number' | 'Date';
+}
+
+export interface LookupQuery {
+  rule: LookupRule;
+  field: LookupField;
+  value: string;
+}
+
+export interface CallLookup extends Action {
+  lookup_db: LookupDB;
+  lookup_queries: LookupQuery[];
+  result_name: string;
+}
+
+export interface GiftcardType {
+  id: string;
+  text: string;
+}
+
+export interface CallGiftcard extends Action {
+  type: Types.call_giftcard;
+  giftcard_db: GiftcardType;
+  giftcard_type: string;
+  result_name: string;
+}
+
+export interface TrackableLinkType {
+  id: string;
+  text: string;
+}
+
+export interface TrackableLinkAction extends Action {
+  type: Types.call_shorten_url;
+  shorten_url: TrackableLinkType;
   result_name: string;
 }
 
@@ -478,6 +543,19 @@ export interface UIMetaData {
   stickies: { [key: string]: StickyNote };
 }
 
+export interface SharingConfig {
+  text?: string;
+  hashtags?: string[];
+  email: boolean;
+  facebook: boolean;
+  whatsapp: boolean;
+  pinterest: boolean;
+  download: boolean;
+  twitter: boolean;
+  telegram: boolean;
+  line: boolean;
+}
+
 export type AnyAction =
   | Action
   | ChangeGroups
@@ -489,8 +567,11 @@ export type AnyAction =
   | SendEmail
   | CallClassifier
   | CallWebhook
+  | CallLookup
+  | CallGiftcard
   | StartFlow
-  | StartSession;
+  | StartSession
+  | TrackableLinkAction;
 
 export enum ContactProperties {
   UUID = 'uuid',
@@ -534,6 +615,11 @@ export enum StartFlowArgs {
 export enum StartFlowExitNames {
   Complete = 'Complete',
   Expired = 'Expired'
+}
+
+export enum GiftcardExitNames {
+  Success = 'Success',
+  Failure = 'Failure'
 }
 
 export enum WebhookExitNames {

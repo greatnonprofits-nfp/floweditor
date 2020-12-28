@@ -204,6 +204,57 @@ Array [
   },
   Object {
     "aliases": Array [
+      "split_by_lookup",
+    ],
+    "component": [Function],
+    "description": "Call Lookup",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Lookup",
+    "type": "call_lookup",
+    "visibility": Array [
+      "message",
+    ],
+  },
+  Object {
+    "aliases": Array [
+      "split_by_giftcard",
+    ],
+    "component": [Function],
+    "description": "Call Giftcard",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Giftcard",
+    "type": "call_giftcard",
+    "visibility": Array [
+      "message",
+    ],
+  },
+  Object {
+    "aliases": Array [
+      "split_by_shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "call_shorten_url",
+    "visibility": Array [
+      "message",
+    ],
+  },
+  Object {
+    "aliases": Array [
       "split_by_resthook",
     ],
     "component": [Function],
@@ -457,6 +508,40 @@ Object {
       "voice",
     ],
   },
+  "call_giftcard": Object {
+    "aliases": Array [
+      "split_by_giftcard",
+    ],
+    "component": [Function],
+    "description": "Call Giftcard",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Giftcard",
+    "type": "call_giftcard",
+    "visibility": Array [
+      "message",
+    ],
+  },
+  "call_lookup": Object {
+    "aliases": Array [
+      "split_by_lookup",
+    ],
+    "component": [Function],
+    "description": "Call Lookup",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Lookup",
+    "type": "call_lookup",
+    "visibility": Array [
+      "message",
+    ],
+  },
   "call_resthook": Object {
     "aliases": Array [
       "split_by_resthook",
@@ -474,6 +559,23 @@ Object {
     "visibility": Array [
       "messaging",
       "voice",
+    ],
+  },
+  "call_shorten_url": Object {
+    "aliases": Array [
+      "split_by_shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "call_shorten_url",
+    "visibility": Array [
+      "message",
     ],
   },
   "call_webhook": Object {
@@ -722,6 +824,23 @@ Object {
     "name": "Split by Expression",
     "type": "split_by_expression",
   },
+  "split_by_giftcard": Object {
+    "aliases": Array [
+      "split_by_giftcard",
+    ],
+    "component": [Function],
+    "description": "Call Giftcard",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Giftcard",
+    "type": "call_giftcard",
+    "visibility": Array [
+      "message",
+    ],
+  },
   "split_by_groups": Object {
     "description": "Split by group membership",
     "form": [Function],
@@ -749,6 +868,23 @@ Object {
     "visibility": Array [
       "messaging",
       "voice",
+    ],
+  },
+  "split_by_lookup": Object {
+    "aliases": Array [
+      "split_by_lookup",
+    ],
+    "component": [Function],
+    "description": "Call Lookup",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Call Lookup",
+    "type": "call_lookup",
+    "visibility": Array [
+      "message",
     ],
   },
   "split_by_random": Object {
@@ -817,6 +953,23 @@ Object {
     ],
     "name": "Split by URN Type",
     "type": "split_by_scheme",
+  },
+  "split_by_shorten_url": Object {
+    "aliases": Array [
+      "split_by_shorten_url",
+    ],
+    "component": [Function],
+    "description": "Shorten Trackable Link",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Shorten Trackable Link",
+    "type": "call_shorten_url",
+    "visibility": Array [
+      "message",
+    ],
   },
   "split_by_subflow": Object {
     "aliases": Array [

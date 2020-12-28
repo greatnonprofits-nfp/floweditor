@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { UpdateUserAddingAction } from 'store/actionTypes';
 import { Asset, AssetStore, RenderNode } from 'store/flowContext';
+import { getOrderedNodes } from 'store/helpers';
 import { NodeEditorSettings, updateUserAddingAction } from 'store/nodeEditor';
 import AppState from 'store/state';
 import {
@@ -79,6 +80,8 @@ export interface FormProps {
   typeConfig?: Type;
   onTypeChange?(config: Type): void;
   onClose?(canceled: boolean): void;
+
+  mergeEditorState?: MergeEditorState;
 }
 
 /* export interface LocalizationProps {
@@ -168,6 +171,10 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
       }
 
       const { form: Form } = typeConfig;
+      const isStartingNode = Object.entries(this.props.nodes).length
+        ? getOrderedNodes(this.props.nodes)[0].node.uuid ===
+          this.props.settings.originalNode.node.uuid
+        : true;
 
       const formProps: FormProps = {
         assetStore: this.props.assetStore,
@@ -175,10 +182,17 @@ export class NodeEditor extends React.Component<NodeEditorProps> {
         addAsset: this.handleAddAsset,
         updateAction: this.updateAction,
         updateRouter: this.updateRouter,
-        nodeSettings: this.props.settings,
+        nodeSettings: {
+          isStartingNode,
+          flowID: this.props.definition.uuid,
+          localization: this.props.definition.localization,
+          defaultLanguage: this.props.definition.language,
+          ...this.props.settings
+        },
         helpArticles: this.props.helpArticles,
         issues: this.props.issues.filter((issue: FlowIssue) => !issue.language),
         typeConfig: this.props.typeConfig,
+        mergeEditorState: this.props.mergeEditorState,
         onTypeChange: this.props.handleTypeConfigChange,
         onClose: this.close
       };

@@ -32,6 +32,8 @@ exports[`helpers prefix should prefix "has an email" operator appropriately 1`] 
 
 exports[`helpers prefix should prefix "has an error" operator appropriately 1`] = `""`;
 
+exports[`helpers prefix should prefix "has an image" operator appropriately 1`] = `""`;
+
 exports[`helpers prefix should prefix "has any of the words" operator appropriately 1`] = `""`;
 
 exports[`helpers prefix should prefix "has district" operator appropriately 1`] = `""`;

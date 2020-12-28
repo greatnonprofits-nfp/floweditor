@@ -1,6 +1,6 @@
 import { react as bindCallbacks } from 'auto-bind';
 import Dialog, { ButtonSet } from 'components/dialog/Dialog';
-import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
+import { renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
@@ -49,15 +49,16 @@ export default class ResthookRouterForm extends React.PureComponent<
   }
 
   private handleUpdateResultName(result: string): void {
-    const resultName = validate(i18n.t('forms.result_name', 'Result Name'), result, [
-      Required,
-      Alphanumeric,
-      StartIsNonNumeric
-    ]);
-    this.setState({
-      resultName,
-      valid: this.state.valid && !hasErrors(resultName)
-    });
+    const updates: Partial<ResthookRouterFormState> = {
+      resultName: validate(i18n.t('forms.result_name', 'Result Name'), result, [
+        Required,
+        Alphanumeric,
+        StartIsNonNumeric
+      ])
+    };
+
+    const updated = mergeForm(this.state, updates);
+    this.setState(updated);
   }
 
   public handleResthookChanged(selected: any[], submitting = false): boolean {

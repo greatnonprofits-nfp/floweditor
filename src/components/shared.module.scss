@@ -70,7 +70,7 @@
 .msg,
 .say_msg,
 .send_msg {
-  background: $blue;
+  background: $ccl_green;
 }
 
 .open_ticket,
@@ -127,7 +127,10 @@
 }
 
 .call_resthook,
-.call_webhook {
+.call_webhook,
+.call_giftcard,
+.call_shorten_url,
+.call_lookup {
   background: $orange;
 }
 

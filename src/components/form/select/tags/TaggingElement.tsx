@@ -16,14 +16,10 @@ export interface TaggingElementProps extends FormElementProps {
   onCheckValid: (value: string) => boolean;
 }
 
-export const tagsToOptions = (tags: StringArrayEntry): TagList => {
-  return tags.value.map(tag => ({ label: tag, value: tag }));
-};
+export const tagsToOptions = (tags: StringArrayEntry): TagList =>
+  tags ? tags.value.map(tag => ({ label: tag, value: tag })) : [];
 
-export const optionsToTags = (tags: TagList): string[] =>
-  (tags || []).map(tag => {
-    return tag.label;
-  });
+export const optionsToTags = (tags: TagList): string[] => (tags ? tags.map(tag => tag.label) : []);
 
 export default class TaggingElement extends React.Component<TaggingElementProps> {
   constructor(props: any) {

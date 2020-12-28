@@ -159,6 +159,13 @@ export const Required: ValidatorFunc = (name: string, input: FormInput) => {
         failures: [{ message: `${name} ${i18n.t('forms.are_required', 'are required')}` }]
       };
     }
+  } else if (typeof input === 'object' && 'id' in input) {
+    if (input.id === '') {
+      return {
+        value: input,
+        failures: [{ message: `${name} is required` }]
+      };
+    }
   }
   return { failures: [], value: input };
 };

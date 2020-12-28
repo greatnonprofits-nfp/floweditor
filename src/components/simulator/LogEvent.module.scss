@@ -26,6 +26,8 @@
   margin-right: 24px;
   color: #333;
   overflow: auto;
+  cursor: text;
+  user-select: text !important;
 
   .msg_text {
     background: $light_gray;
@@ -38,6 +40,8 @@
   margin-left: 24px;
   color: #fff;
   overflow: auto;
+  cursor: text;
+  user-select: text !important;
 
   .msg_text {
     background: #2095fe;

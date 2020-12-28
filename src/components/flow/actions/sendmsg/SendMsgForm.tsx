@@ -7,8 +7,10 @@ import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import {
   initializeForm as stateToForm,
   stateToAction,
-  TOPIC_OPTIONS
+  TOPIC_OPTIONS,
+  RECEIVE_ATTACHMENT_OPTIONS
 } from 'components/flow/actions/sendmsg/helpers';
+import TaggingElement from 'components/form/select/tags/TaggingElement';
 import { ActionFormProps } from 'components/flow/props';
 import AssetSelector from 'components/form/assetselector/AssetSelector';
 import { hasUseableTranslation } from 'components/form/assetselector/helpers';
@@ -16,6 +18,7 @@ import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import MultiChoiceInput from 'components/form/multichoice/MultiChoice';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
 import TextInputElement, { TextInputStyle } from 'components/form/textinput/TextInputElement';
+import HelpIcon from 'components/helpicon/HelpIcon';
 import TypeList from 'components/nodeeditor/TypeList';
 import Pill from 'components/pill/Pill';
 import { fakePropType } from 'config/ConfigProvider';
@@ -37,13 +40,26 @@ import { createUUID, range } from 'utils';
 
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
-import { FeatureFilter } from 'config/interfaces';
+import { FeatureFilter, FlowTypes } from 'config/interfaces';
+
+import variables from 'variables.module.scss';
 
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
 import { TembaSelectStyle } from 'temba/TembaSelect';
 
+const FACEBOOK_ICON = require('static/images/facebook.png');
+const TELEGRAM_ICON = require('static/images/telegram.png');
+const WHATSAPP_ICON = require('static/images/whatsapp.png');
+const LINE_ICON = require('static/images/line.png');
+const PINTEREST_ICON = require('static/images/pinterest.png');
+const TWITTER_ICON = require('static/images/twitter.png');
+const DOWNLOAD_ICON = require('static/images/download.png');
+const EMAIL_ICON = require('static/images/email.png');
+
 const MAX_ATTACHMENTS = 3;
+
+const HASHTAG_PATTERN = /(?:\s|^)#[A-Za-z0-9\\.\\_]+(?:\s|$)/;
 
 const TYPE_OPTIONS: SelectOption[] = [
   { value: 'image', name: i18n.t('forms.image_url', 'Image URL') },
@@ -74,13 +90,26 @@ export interface SendMsgFormState extends FormState {
   topic: SelectOptionEntry;
   templateVariables: StringEntry[];
   templateTranslation?: TemplateTranslation;
+  receiveAttachment?: SelectOptionEntry;
+  sharingBtnText: StringEntry;
+  sharingBtnHashtags?: StringArrayEntry;
+  emailSharing?: boolean;
+  facebookSharing?: boolean;
+  whatsappSharing?: boolean;
+  pinterestSharing?: boolean;
+  downloadSharing?: boolean;
+  twitterSharing?: boolean;
+  telegramSharing?: boolean;
+  lineSharing?: boolean;
+  viewShareableButtons?: boolean;
 }
 
 export default class SendMsgForm extends React.Component<ActionFormProps, SendMsgFormState> {
   private filePicker: any;
 
-  constructor(props: ActionFormProps) {
+  constructor(props: ActionFormProps, context: any) {
     super(props);
+    this.context = context;
     this.state = stateToForm(this.props.nodeSettings, this.props.assetStore);
     bindCallbacks(this, {
       include: [/^handle/, /^on/]
@@ -107,6 +136,17 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       text?: string;
       sendAll?: boolean;
       quickReplies?: string[];
+      sharingBtnText?: string;
+      sharingBtnHashtags?: string[];
+      emailSharing?: boolean;
+      facebookSharing?: boolean;
+      whatsappSharing?: boolean;
+      pinterestSharing?: boolean;
+      downloadSharing?: boolean;
+      twitterSharing?: boolean;
+      telegramSharing?: boolean;
+      lineSharing?: boolean;
+      viewShareableButtons?: boolean;
     },
     submitting = false
   ): boolean {
@@ -127,6 +167,50 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         keys.quickReplies,
         [MaxOfTenItems]
       );
+    }
+
+    if (keys.hasOwnProperty('sharingBtnText')) {
+      updates.sharingBtnText = { value: keys.sharingBtnText };
+    }
+
+    if (keys.hasOwnProperty('sharingBtnHashtags')) {
+      updates.sharingBtnHashtags = { value: keys.sharingBtnHashtags };
+    }
+
+    if (keys.hasOwnProperty('emailSharing')) {
+      updates.emailSharing = keys.emailSharing;
+    }
+
+    if (keys.hasOwnProperty('facebookSharing')) {
+      updates.facebookSharing = keys.facebookSharing;
+    }
+
+    if (keys.hasOwnProperty('whatsappSharing')) {
+      updates.whatsappSharing = keys.whatsappSharing;
+    }
+
+    if (keys.hasOwnProperty('pinterestSharing')) {
+      updates.pinterestSharing = keys.pinterestSharing;
+    }
+
+    if (keys.hasOwnProperty('downloadSharing')) {
+      updates.downloadSharing = keys.downloadSharing;
+    }
+
+    if (keys.hasOwnProperty('twitterSharing')) {
+      updates.twitterSharing = keys.twitterSharing;
+    }
+
+    if (keys.hasOwnProperty('telegramSharing')) {
+      updates.telegramSharing = keys.telegramSharing;
+    }
+
+    if (keys.hasOwnProperty('lineSharing')) {
+      updates.lineSharing = keys.lineSharing;
+    }
+
+    if (keys.hasOwnProperty('viewShareableButtons')) {
+      updates.viewShareableButtons = keys.viewShareableButtons;
     }
 
     const updated = mergeForm(this.state, updates) as SendMsgFormState;
@@ -253,6 +337,10 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     // mark us as ajax
     headers['X-Requested-With'] = 'XMLHttpRequest';
 
+    if (!this.isAttachmentsValid(files)) {
+      return null;
+    }
+
     const data = new FormData();
     data.append('file', files[0]);
     axios
@@ -268,6 +356,44 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       });
   }
 
+  private isAttachmentsValid(files: FileList) {
+    let title = '';
+    let message = '';
+    let isValid = true;
+    const file = files[0];
+    const fileType = file.type.split('/')[0];
+    const fileEncoding = file.name.split('.').pop();
+
+    if (!['audio', 'video', 'image'].includes(fileType)) {
+      title = 'Invalid Attachment';
+      message = 'Attachments must be either video, audio, or an image.';
+      isValid = false;
+    } else if (
+      fileType === 'audio' &&
+      !['mp3', 'm4a', 'x-m4a', 'wav', 'ogg', 'oga'].includes(fileEncoding)
+    ) {
+      title = 'Invalid Format';
+      message = 'Audio attachments must be encoded as mp3, m4a, wav, ogg or oga files.';
+      isValid = false;
+    } else if ((fileType === 'image' && file.size > 512000) || file.size > 20971520) {
+      title = 'File Size Exceeded';
+      message =
+        'The file size should be less than 500kB for images and less than 20MB for audio and video files. Please choose another file and try again.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: title,
+          body: message
+        },
+        saving: false
+      });
+    }
+    return isValid;
+  }
+
   private renderAttachment(index: number, attachment: Attachment): JSX.Element {
     let attachments: any = this.state.attachments;
     return (
@@ -280,7 +406,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             key={'attachment_type_' + index}
             style={TembaSelectStyle.small}
             name={i18n.t('forms.type_options', 'Type Options')}
-            placeholder="Add Attachment"
+            placeholder="Send Attachment"
             entry={{
               value: index > -1 ? getAttachmentTypeOption(attachment.type) : null
             }}
@@ -354,6 +480,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     return (
       <>
         <p>
+          Send attachment: <br />
           {i18n.t(
             'forms.send_msg_summary',
             'Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
@@ -372,8 +499,29 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           type="file"
           onChange={e => this.handleUploadFile(e.target.files)}
         />
+        <span className={styles.span_separator}></span>
+        <p>
+          Receive attachment: <br />
+          Select a type of attachment to receive from a user as an answer choice. <br />
+          Note: only available for channels with file upload capabilities.
+        </p>
+        <div className={styles.type_choice}>
+          <SelectElement
+            styles={small as any}
+            name="ReceiveAttachment"
+            entry={this.state.receiveAttachment}
+            onChange={this.handleReceiveAttachmentUpdate}
+            options={RECEIVE_ATTACHMENT_OPTIONS}
+            placeholder="Receive Attachment"
+            clearable={true}
+          />
+        </div>
       </>
     );
+  }
+
+  private handleReceiveAttachmentUpdate(option: SelectOption) {
+    this.setState({ receiveAttachment: { value: option } });
   }
 
   private handleTemplateChanged(selected: any[]): void {
@@ -491,6 +639,234 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     );
   }
 
+  private handleAddQuickReply(newQuickReply: string): boolean {
+    const newReplies = [...this.state.quickReplies.value];
+    if (newReplies.length >= 10) {
+      return false;
+    }
+
+    // we don't allow two quick replies with the same name
+    const isNew = !newReplies.find(
+      (reply: string) => reply.toLowerCase() === newQuickReply.toLowerCase()
+    );
+
+    if (isNew) {
+      newReplies.push(newQuickReply);
+      this.setState({
+        quickReplies: { value: newReplies }
+      });
+      return true;
+    }
+
+    return false;
+  }
+
+  private handleRemoveQuickReply(toRemove: string): void {
+    this.setState({
+      quickReplies: {
+        value: this.state.quickReplies.value.filter((reply: string) => reply !== toRemove)
+      }
+    });
+  }
+
+  private handleQuickReplyEntry(quickReplyEntry: StringEntry): void {
+    this.setState({ quickReplyEntry });
+  }
+
+  private handleEmailSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ emailSharing: checked });
+  }
+
+  private handleFacebookSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ facebookSharing: checked });
+  }
+
+  private handleWhatsAppSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ whatsappSharing: checked });
+  }
+
+  private handlePinterestSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ pinterestSharing: checked });
+  }
+
+  private handleDownloadSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ downloadSharing: checked });
+  }
+
+  private handleTwitterSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ twitterSharing: checked });
+  }
+
+  private handleTelegramSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ telegramSharing: checked });
+  }
+
+  private handleLineSharingItem(checked: boolean): boolean {
+    return this.handleUpdate({ lineSharing: checked });
+  }
+
+  private renderSharingButtons(): JSX.Element {
+    return (
+      <div className={styles.sharing_buttons_box_items}>
+        <div className={styles.sharing_buttons_items}>
+          <img src={EMAIL_ICON} alt="Email" />
+          <CheckboxElement
+            name="Email"
+            title="Email"
+            labelClassName={styles.checkbox}
+            checked={this.state.emailSharing}
+            onChange={this.handleEmailSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={FACEBOOK_ICON} alt="Facebook" />
+          <CheckboxElement
+            name="Facebook"
+            title="Facebook"
+            labelClassName={styles.checkbox}
+            checked={this.state.facebookSharing}
+            onChange={this.handleFacebookSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={WHATSAPP_ICON} alt="WhatsApp" />
+          <CheckboxElement
+            name="WhatsApp"
+            title="WhatsApp"
+            labelClassName={styles.checkbox}
+            checked={this.state.whatsappSharing}
+            onChange={this.handleWhatsAppSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={PINTEREST_ICON} alt="Pinterest" />
+          <CheckboxElement
+            name="Pinterest"
+            title="Pinterest"
+            labelClassName={styles.checkbox}
+            checked={this.state.pinterestSharing}
+            onChange={this.handlePinterestSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={DOWNLOAD_ICON} alt="Download" />
+          <CheckboxElement
+            name="Download"
+            title="Download"
+            labelClassName={styles.checkbox}
+            checked={this.state.downloadSharing}
+            onChange={this.handleDownloadSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={TWITTER_ICON} alt="Twitter" />
+          <CheckboxElement
+            name="Twitter"
+            title="Twitter"
+            labelClassName={styles.checkbox}
+            checked={this.state.twitterSharing}
+            onChange={this.handleTwitterSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={TELEGRAM_ICON} alt="Telegram" />
+          <CheckboxElement
+            name="Telegram"
+            title="Telegram"
+            labelClassName={styles.checkbox}
+            checked={this.state.telegramSharing}
+            onChange={this.handleTelegramSharingItem}
+          />
+        </div>
+        <div className={styles.sharing_buttons_items}>
+          <img src={LINE_ICON} alt="Line" />
+          <CheckboxElement
+            name="Line"
+            title="Line"
+            labelClassName={styles.checkbox}
+            checked={this.state.lineSharing}
+            onChange={this.handleLineSharingItem}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  public handleSharingButtonDefaultText(defaultText: string): boolean {
+    return this.handleUpdate({ sharingBtnText: defaultText });
+  }
+
+  public handleCheckHashtagValid(value: string): boolean {
+    if (this.state.sharingBtnHashtags.value.length > 0) {
+      return false;
+    }
+    return HASHTAG_PATTERN.test(value) && !(value.indexOf(' ') >= 0);
+  }
+
+  public handleHashtagChanged(hashtags: string[]): boolean {
+    return this.handleUpdate({ sharingBtnHashtags: hashtags });
+  }
+
+  private handleViewShareableButtons(): boolean {
+    return this.handleUpdate({ viewShareableButtons: !this.state.viewShareableButtons });
+  }
+
+  private renderSharingButtonsBox(): JSX.Element {
+    return (
+      <div className={styles.sharing_buttons}>
+        <div className={styles.sharing_buttons_default_text}>
+          <label className={styles.sharing_buttons_default_label}>
+            {i18n.t('forms.send_msg.sharing_buttons_default', 'Default text')}
+            <HelpIcon iconColor={variables.light_gray} iconSize="18px" dataFor="sharingBtnType">
+              <p>
+                Some social media application allow sharing to include default text. Type here the
+                text and hashtags if you wish to include default text.
+              </p>
+            </HelpIcon>
+          </label>
+          <TextInputElement
+            __className={styles.sharing_buttons_default_field}
+            name="Sharing Buttons Default Text"
+            showLabel={false}
+            onChange={this.handleSharingButtonDefaultText}
+            entry={this.state.sharingBtnText}
+            autocomplete={false}
+            focus={false}
+            textarea={true}
+          />
+        </div>
+        <div className={styles.sharing_buttons_hashtag}>
+          <label className={styles.sharing_buttons_default_label}>
+            {i18n.t('forms.send_msg.sharing_buttons_default', 'Hashtag')}
+          </label>
+          <div className={styles.sharing_buttons_default_field}>
+            <TaggingElement
+              name="Hashtag"
+              placeholder={i18n.t(
+                'forms.send_msg.sharing_buttons_hashtag_placeholder',
+                '(if available)'
+              )}
+              prompt={i18n.t('forms.send_msg.sharing_buttons_hashtag_prompt', 'Enter a hashtag')}
+              onCheckValid={this.handleCheckHashtagValid}
+              entry={this.state.sharingBtnHashtags}
+              onChange={this.handleHashtagChanged}
+              createPrompt={''}
+            />
+          </div>
+        </div>
+        <div>
+          <p className={styles.sharing_buttons_available}>
+            {i18n.t(
+              'forms.send_msg.sharing_buttons_available',
+              'Available sharing buttons to include'
+            )}
+          </p>
+          {this.renderSharingButtons()}
+        </div>
+      </div>
+    );
+  }
+
   public render(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
@@ -514,6 +890,40 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             entry={this.state.quickReplyEntry}
             onChange={this.handleQuickRepliesUpdate}
           />
+
+          {this.context.config.flowType === FlowTypes.MESSAGE ? (
+            <>
+              <p>
+                {/* eslint-disable-next-line */}
+                <a
+                  role="button"
+                  onClick={this.handleViewShareableButtons}
+                  className={styles.view_shareable_button}
+                >
+                  {this.state.viewShareableButtons ? (
+                    <span
+                      className={
+                        styles.tab_icon + ' fe-arrow-up ' + styles.view_shareable_button_icon
+                      }
+                    />
+                  ) : (
+                    <span
+                      className={
+                        styles.tab_icon + ' fe-plus-circle ' + styles.view_shareable_button_icon
+                      }
+                    />
+                  )}
+                  {i18n.t(
+                    'forms.send_msg.add_sharing_buttons',
+                    'Add sharing buttons (For WebChat only)'
+                  )}
+                </a>
+              </p>
+              {this.state.viewShareableButtons ? this.renderSharingButtonsBox() : null}
+            </>
+          ) : (
+            <></>
+          )}
         </>
       ),
       checked: this.state.quickReplies.value.length > 0,

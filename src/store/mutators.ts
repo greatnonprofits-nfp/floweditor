@@ -412,16 +412,18 @@ export const removeNode = (
       }
     }
 
-    const exitIdx = getExitIndex(fromNode.node, fromExitUUID);
-    updatedNodes = mutate(updatedNodes, {
-      [fromNodeUUID]: {
-        node: {
-          exits: {
-            [exitIdx]: { destination_uuid: set(destination) }
+    try {
+      const exitIdx = getExitIndex(fromNode.node, fromExitUUID);
+      updatedNodes = mutate(updatedNodes, {
+        [fromNodeUUID]: {
+          node: {
+            exits: {
+              [exitIdx]: { destination_uuid: set(destination) }
+            }
           }
         }
-      }
-    });
+      });
+    } catch {}
 
     // if we are setting a new destination, update the inboundConnections
     if (destination) {
@@ -577,6 +579,15 @@ export const updateStickyNote = (
   } else {
     return mutate(definition, { _ui: { stickies: unset([stickyUUID]) } });
   }
+};
+
+export const updateFlowStep = (nodes: RenderNodeMap, renderNode: RenderNode): RenderNodeMap => {
+  if (renderNode.node) {
+    return mutate(nodes, {
+      $merge: { [renderNode.node.uuid]: renderNode }
+    });
+  }
+  return nodes;
 };
 
 export const mergeNodeEditorSettings = (

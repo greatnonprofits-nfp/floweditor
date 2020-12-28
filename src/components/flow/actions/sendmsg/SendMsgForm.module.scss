@@ -20,7 +20,7 @@
   align-items: center;
 
   .upload {
-    
+
   }
 
   .remove_upload {
@@ -77,4 +77,60 @@
 
 temba-completion {
   --textarea-height: 120px;
+}
+
+.span_separator {
+  margin: 25px 0 0 0;
+  display: table;
+  width: 100%;
+}
+
+.sharing_buttons {
+  margin: 20px 0 0 0;
+}
+
+.sharing_buttons_default_text, .sharing_buttons_hashtag {
+  margin: 10px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sharing_buttons_default_label {
+  width: 20%;
+}
+
+.sharing_buttons_default_field {
+  width: 78%;
+}
+
+.sharing_buttons_box_items {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.sharing_buttons_items {
+  width: 25%;
+  flex: 1 0 21%;
+
+  img {
+    margin: 14px 10px 0 0;
+    float: left;
+  }
+
+}
+
+.view_shareable_button, .view_shareable_button:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.view_shareable_button_icon {
+  margin: 0 5px 0 0;
+}
+
+.sharing_buttons_available {
+  margin-bottom: -5px;
 }

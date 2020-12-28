@@ -21,6 +21,7 @@ export interface StickyPassedProps {
   uuid: string;
   sticky: StickyNote;
   selected: boolean;
+  mutable: boolean;
 }
 
 export interface StickyStoreProps {
@@ -119,13 +120,17 @@ export class Sticky extends React.Component<StickyProps, StickyState> {
   }
 
   private handleChangeTitle(event: React.FormEvent<HTMLTextAreaElement>): void {
-    this.setState({ title: event.currentTarget.value });
-    this.onUpdateText();
+    if (this.props.mutable) {
+      this.setState({ title: event.currentTarget.value });
+      this.onUpdateText();
+    }
   }
 
   private handleChangeBody(event: React.FormEvent<HTMLTextAreaElement>): void {
-    this.setState({ body: event.currentTarget.value });
-    this.onUpdateText();
+    if (this.props.mutable) {
+      this.setState({ body: event.currentTarget.value });
+      this.onUpdateText();
+    }
   }
 
   public handleClickRemove(event: React.MouseEvent<HTMLDivElement>): void {
@@ -162,23 +167,38 @@ export class Sticky extends React.Component<StickyProps, StickyState> {
   }
 
   private getColorChooser(): JSX.Element {
-    return (
-      <div className={styles.color_chooser_container}>
-        <div className={styles.color_chooser}>
-          {Object.keys(COLOR_OPTIONS).map((color: string) => {
-            return (
-              <div
-                key={this.props.uuid + color}
-                onClick={() => {
-                  this.handleChangeColor(color);
-                }}
-                className={styles.color_option + ' ' + COLOR_OPTIONS[color]}
-              />
-            );
-          })}
+    if (this.props.mutable) {
+      return (
+        <div className={styles.color_chooser_container}>
+          <div className={styles.color_chooser}>
+            {Object.keys(COLOR_OPTIONS).map((color: string) => {
+              return (
+                <div
+                  key={this.props.uuid + color}
+                  onClick={() => {
+                    this.handleChangeColor(color);
+                  }}
+                  className={styles.color_option + ' ' + COLOR_OPTIONS[color]}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+  }
+
+  private renderRemoveButton() {
+    if (this.props.mutable) {
+      return (
+        <>
+          <div className={styles.remove_button} onClick={this.handleClickRemove}>
+            <span className="fe-x" />
+          </div>
+          <div className={styles.confirmation}>Remove?</div>
+        </>
+      );
+    }
   }
 
   public render(): JSX.Element {
@@ -211,10 +231,7 @@ export class Sticky extends React.Component<StickyProps, StickyState> {
       >
         <div className={stickyClasses.join(' ')}>
           <div className={titleClasses.join(' ')}>
-            <div className={styles.remove_button} onClick={this.handleClickRemove}>
-              <span className="fe-x" />
-            </div>
-            <div className={styles.confirmation}>Remove?</div>
+            {this.renderRemoveButton()}
             <TextareaAutosize
               className={styles.title}
               value={this.state.title}

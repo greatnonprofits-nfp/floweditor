@@ -15,8 +15,8 @@ import { bindActionCreators } from 'redux';
 import Plumber from 'services/Plumber';
 import { DragSelection, DebugState } from 'store/editor';
 import { RenderNode } from 'store/flowContext';
-import { createEmptyNode, detectLoops, getOrderedNodes } from 'store/helpers';
-import { NodeEditorSettings } from 'store/nodeEditor';
+import { createEmptyNode, detectLoops, duplicateNode, getOrderedNodes } from 'store/helpers';
+import { NodeEditorSettings, StringEntry } from 'store/nodeEditor';
 import AppState from 'store/state';
 import {
   ConnectionEvent,
@@ -36,7 +36,9 @@ import {
   UpdateConnection,
   updateConnection,
   updateSticky,
-  UpdateSticky
+  UpdateSticky,
+  updateNode,
+  UpdateNode
 } from 'store/thunks';
 import {
   createUUID,
@@ -53,6 +55,11 @@ import styles from './Flow.module.scss';
 import { Trans } from 'react-i18next';
 import { PopTabType } from 'config/interfaces';
 import i18n from 'config/i18n';
+import { RefObject } from 'react';
+import { ContextMenu } from 'components/contextmenu/ContextMenu';
+import { TextInputElement } from 'components/form/textinput/TextInputElement';
+import Modal from 'components/modal/Modal';
+import Dialog from 'components/dialog/Dialog';
 
 declare global {
   interface Window {
@@ -81,6 +88,14 @@ export interface FlowStoreProps {
   resetNodeEditingState: NoParamsAC;
   onConnectionDrag: OnConnectionDrag;
   updateSticky: UpdateSticky;
+  updateNode: UpdateNode;
+}
+
+export interface FlowStoreState {
+  isClipboardAvailable?: boolean;
+  displayClipboardBuffer?: boolean;
+  clipboardBuffer?: StringEntry;
+  pastingModalCallback?: () => void;
 }
 
 export interface Translations {
@@ -113,7 +128,7 @@ export const getDragStyle = (drag: DragSelection) => {
   };
 };
 
-export class Flow extends React.PureComponent<FlowStoreProps, {}> {
+export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
   private Plumber: Plumber;
   private nodeContainerUUID: string;
 
@@ -130,6 +145,7 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
     this.nodeContainerUUID = createUUID();
 
     this.Plumber = new Plumber();
+    this.state = { clipboardBuffer: { value: '' } };
 
     /* istanbul ignore next */
     if (context.config.debug) {
@@ -156,7 +172,9 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
     });
 
     this.Plumber.bind('connectionDrag', (event: ConnectionEvent) => {
-      this.props.onConnectionDrag(event, this.context.config.flowType);
+      if (this.context.config.mutable) {
+        this.props.onConnectionDrag(event, this.context.config.flowType);
+      }
     });
 
     this.Plumber.bind('connectionDragStop', (event: ConnectionEvent) =>
@@ -167,7 +185,11 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
       (event: ConnectionEvent) => !this.props.translating && this.context.config.mutable
     );
     this.Plumber.bind('beforeDetach', (event: ConnectionEvent) => true);
-    this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => this.onBeforeConnectorDrop(event));
+    this.Plumber.bind('beforeDrop', (event: ConnectionEvent) => {
+      if (this.context.config.mutable) {
+        return this.onBeforeConnectorDrop(event);
+      }
+    });
     this.Plumber.triggerLoaded(this.context.config.onLoad);
 
     timeEnd('Loaded Flow');
@@ -257,6 +279,7 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
         key={props.uuid}
         data-spec={nodeSpecId}
         nodeUUID={props.uuid}
+        onNodeCopyClick={() => this.copyNodeToClipboard(renderNode.node.uuid)}
         plumberMakeTarget={this.Plumber.makeTarget}
         plumberRemove={this.Plumber.remove}
         plumberRecalculate={this.Plumber.recalculate}
@@ -277,6 +300,91 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
         idx
       };
     });
+  }
+
+  private copyNodeToClipboard(nodeUUID: string) {
+    let node = this.props.nodes[nodeUUID];
+    node.inboundConnections = {};
+    navigator.clipboard.writeText(JSON.stringify(node)).then(() => console.log('Copied!'));
+  }
+
+  private pasteNodeFromClipbord(left: number, top: number): void {
+    let callback = () => {
+      if (
+        !this.state.clipboardBuffer.validationFailures ||
+        this.state.clipboardBuffer.validationFailures.length === 0
+      ) {
+        this.processCreatingOfNewFlowStep(left, top, this.state.clipboardBuffer.value);
+        this.setState({
+          displayClipboardBuffer: false,
+          clipboardBuffer: { value: '' }
+        });
+      }
+    };
+    try {
+      navigator.clipboard
+        .readText()
+        .then(text => this.processCreatingOfNewFlowStep(left, top, text))
+        .catch(() => {
+          this.setState({
+            displayClipboardBuffer: true,
+            pastingModalCallback: callback
+          });
+        });
+    } catch {
+      this.setState({
+        displayClipboardBuffer: true,
+        pastingModalCallback: callback
+      });
+    }
+  }
+
+  private processCreatingOfNewFlowStep(left: number, top: number, text: string): void {
+    try {
+      let nodeData: RenderNode = JSON.parse(text);
+      if (!(nodeData.ui && nodeData.node)) {
+        throw Error('Failed to paste node!');
+      }
+      let duplicatedNode = duplicateNode(nodeData);
+      duplicatedNode.ui.position.left = left;
+      duplicatedNode.ui.position.top = top;
+      this.props.updateNode(duplicatedNode);
+    } catch {
+      this.props.mergeEditorState({
+        modalMessage: {
+          title: "Can't create a flow step.",
+          body: 'There are no valid data to be pasted. Please copy one of the flow steps first.'
+        },
+        saving: false
+      });
+    }
+  }
+
+  private chackIsPasteAvailable(): void {
+    try {
+      navigator.clipboard
+        .readText()
+        .then(text => {
+          this.setState({ isClipboardAvailable: this.validateStringifiedNode(text) });
+        })
+        .catch(() => {
+          this.setState({ isClipboardAvailable: true });
+        });
+    } catch {
+      this.setState({ isClipboardAvailable: true });
+    }
+  }
+
+  private validateStringifiedNode(text: string): boolean {
+    try {
+      let nodeData: RenderNode = JSON.parse(text);
+      if (!(nodeData.ui && nodeData.node)) {
+        throw Error('No node found in the clipboard!');
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private getStickies(): CanvasDraggableProps[] {
@@ -377,7 +485,7 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
     );
   }
 
-  /* 
+  /*
   public componentDidUpdate(prevProps: FlowStoreProps): void {
     traceUpdate(this, prevProps);
   }
@@ -397,16 +505,116 @@ export class Flow extends React.PureComponent<FlowStoreProps, {}> {
     this.Plumber.setContainer('canvas');
   }
 
+  private getContextMenu(reference: RefObject<any>): JSX.Element {
+    let menuItems = [
+      {
+        label: 'Create Message',
+        onClick: (event: MouseEvent) => {
+          // @ts-ignore
+          const flowEditor = event.currentTarget.parentElement.parentElement;
+          const emptyNode = createEmptyNode(null, null, 1, this.context.config.flowType);
+          emptyNode.ui.position.left = event.pageX - flowEditor.offsetLeft - 50 || 0;
+          emptyNode.ui.position.top = event.pageY - flowEditor.offsetTop - 250 || 0;
+          this.props.onOpenNodeEditor({
+            originalNode: emptyNode,
+            originalAction: emptyNode.node.actions[0]
+          });
+        }
+      },
+      {
+        label: 'Paste Step',
+        hidden: !this.state.isClipboardAvailable,
+        onClick: (event: MouseEvent) => {
+          // @ts-ignore
+          const flowEditor = event.currentTarget.parentElement.parentElement;
+          let left = event.pageX - flowEditor.offsetLeft - 50 || 0;
+          let top = event.pageY - flowEditor.offsetTop - 250 || 0;
+          this.pasteNodeFromClipbord(left, top);
+        }
+      }
+    ];
+    return (
+      <>
+        <ContextMenu ref={reference} items={menuItems} />
+        <Modal width="600px" show={this.state.displayClipboardBuffer}>
+          <Dialog
+            className={styles.alert_modal}
+            title="Create Flow Step"
+            headerClass="msg"
+            buttons={{
+              primary: {
+                name: 'Ok',
+                onClick: this.state.pastingModalCallback
+              },
+              secondary: {
+                name: 'Cancel',
+                onClick: () => this.setState({ displayClipboardBuffer: false })
+              }
+            }}
+          >
+            <div
+              className={styles.alert_body}
+              onContextMenu={e => {
+                e.stopPropagation();
+              }}
+            >
+              <div style={{ padding: '10px 0' }}>
+                Paste the copied text in the box below to duplicate the flow step. You will see a
+                long JSON string appear if you are successful. Click the OK button to complete the
+                process.
+              </div>
+              <TextInputElement
+                name=""
+                showLabel={false}
+                onChange={value =>
+                  this.setState({
+                    clipboardBuffer: {
+                      value: value,
+                      validationFailures: this.validateStringifiedNode(value)
+                        ? []
+                        : [{ message: 'Invalid flowstep data' }]
+                    }
+                  })
+                }
+                entry={this.state.clipboardBuffer}
+                autocomplete={false}
+                focus={true}
+                textarea={true}
+                typeConfig={null}
+                assetStore={null}
+                completionSchema={{ root: [], types: [] }}
+                functions={null}
+              />
+            </div>
+          </Dialog>
+        </Modal>
+      </>
+    );
+  }
+
   public render(): JSX.Element {
     const nodes = this.getNodes();
 
     const draggables = this.getStickies().concat(nodes);
+    const contextMenu = React.createRef<any>();
 
     return (
-      <div>
+      <div
+        onDoubleClick={this.onDoubleClick}
+        ref={this.onRef}
+        style={{ minWidth: document.body.scrollWidth }}
+        onContextMenu={e => {
+          if (this.context.config.mutable && !this.props.editorState.translating) {
+            this.chackIsPasteAvailable();
+            contextMenu.current.show(e);
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+      >
         {nodes.length === 0 ? this.getEmptyFlow() : <>{this.getSimulator()}</>}
         {this.getNodeEditor()}
-
+        {this.getContextMenu(contextMenu)}
         <Canvas
           mutable={this.context.config.mutable}
           draggingNew={!!this.props.ghostNode && !this.props.nodeEditorSettings}
@@ -458,7 +666,8 @@ const mapDispatchToProps = (dispatch: DispatchWithState) =>
       onUpdateCanvasPositions,
       onRemoveNodes,
       updateConnection,
-      updateSticky
+      updateSticky,
+      updateNode
     },
     dispatch
   );

@@ -92,3 +92,11 @@ $background_offset: ($grid_size / 2) + ($node_padding) + px;
   pointer-events: none;
   z-index: $z_selection;
 }
+
+// remove language buttons and poptab when we print the flow
+@media print {
+  .canvas_container  {
+    background-color: white;
+    background-image: none;
+  }
+}
