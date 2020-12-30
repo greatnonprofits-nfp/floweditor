@@ -4,7 +4,7 @@ import AssetSelector from 'components/form/assetselector/AssetSelector';
 import FormElement from 'components/form/FormElement';
 import TextInputElement from 'components/form/textinput/TextInputElement';
 import * as React from 'react';
-import { Asset } from 'store/flowContext';
+import { Asset, Assets } from 'store/flowContext';
 import { ValidationFailure } from 'store/nodeEditor';
 
 import styles from './CurrencyElement.module.scss';
@@ -17,6 +17,7 @@ export interface AirtimeTransfer {
 }
 
 export interface CurrencyElementProps {
+  assets?: Assets;
   currencies: any[];
   transfer: AirtimeTransferEntry;
   index: number;
@@ -111,6 +112,7 @@ export default class CurrencyElement extends React.Component<CurrencyElementProp
         <div className={styles.transfer}>
           <div className={styles.currency}>
             <AssetSelector
+              assets={this.props.assets}
               style={TembaSelectStyle.small}
               name={i18n.t('forms.currency', 'Currency')}
               shouldExclude={shouldExclude}

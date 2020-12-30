@@ -57,7 +57,7 @@ import { PopTabType } from 'config/interfaces';
 import i18n from 'config/i18n';
 import { RefObject } from 'react';
 import { ContextMenu } from 'components/contextmenu/ContextMenu';
-import { TextInputElement } from 'components/form/textinput/TextInputElement';
+import TextInputElement from 'components/form/textinput/TextInputElement';
 import Modal from 'components/modal/Modal';
 import Dialog from 'components/dialog/Dialog';
 
@@ -130,6 +130,7 @@ export const getDragStyle = (drag: DragSelection) => {
 
 export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
   private Plumber: Plumber;
+  private ele: HTMLDivElement;
   private nodeContainerUUID: string;
 
   // Refs
@@ -157,6 +158,10 @@ export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
     });
 
     timeStart('Loaded Flow');
+  }
+
+  private onRef(ref: HTMLDivElement): HTMLDivElement {
+    return (this.ele = ref);
   }
 
   private ghostRef(ref: any): any {
@@ -266,7 +271,15 @@ export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
   private handleStickyCreation(props: CanvasDraggableProps) {
     const stickyMap = this.props.definition._ui.stickies || {};
     const uuid = props.uuid;
-    return <Sticky key={uuid} uuid={uuid} sticky={stickyMap[uuid]} selected={props.selected} />;
+    return (
+      <Sticky
+        key={uuid}
+        uuid={uuid}
+        sticky={stickyMap[uuid]}
+        selected={props.selected}
+        mutable={this.context.config.mutable}
+      />
+    );
   }
 
   private handleNodeCreation(props: CanvasDraggableProps) {
@@ -279,7 +292,7 @@ export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
         key={props.uuid}
         data-spec={nodeSpecId}
         nodeUUID={props.uuid}
-        onNodeCopyClick={() => this.copyNodeToClipboard(renderNode.node.uuid)}
+        onNodeCopyClick={() => this.copyNodeToClipboard(props.uuid)}
         plumberMakeTarget={this.Plumber.makeTarget}
         plumberRemove={this.Plumber.remove}
         plumberRecalculate={this.Plumber.recalculate}
@@ -580,10 +593,6 @@ export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
                 autocomplete={false}
                 focus={true}
                 textarea={true}
-                typeConfig={null}
-                assetStore={null}
-                completionSchema={{ root: [], types: [] }}
-                functions={null}
               />
             </div>
           </Dialog>
@@ -600,11 +609,10 @@ export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
 
     return (
       <div
-        onDoubleClick={this.onDoubleClick}
         ref={this.onRef}
         style={{ minWidth: document.body.scrollWidth }}
         onContextMenu={e => {
-          if (this.context.config.mutable && !this.props.editorState.translating) {
+          if (this.context.config.mutable && !this.props.translating) {
             this.chackIsPasteAvailable();
             contextMenu.current.show(e);
             e.preventDefault();

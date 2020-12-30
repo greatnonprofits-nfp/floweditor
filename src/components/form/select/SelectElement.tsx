@@ -20,6 +20,7 @@ interface SelectElementProps extends FormElementProps {
   valueKey?: string;
 
   disabled?: boolean;
+  className?: string;
 }
 
 export interface SelectOption {

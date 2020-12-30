@@ -6,7 +6,6 @@ import { renderIf } from 'utils';
 import styles from './TimeoutControl.module.scss';
 import i18n from 'config/i18n';
 import TembaSelect, { TembaSelectStyle } from 'temba/TembaSelect';
-import { SelectOption } from '../select/SelectElement';
 
 export const TIMEOUT_OPTIONS = [
   { value: 10, name: '10 seconds' },
@@ -52,7 +51,7 @@ export default class TimeoutControl extends React.Component<TimeoutControlProps>
 
   private getSelected(timeout: number): any {
     for (const [idx, { value }] of TIMEOUT_OPTIONS.entries()) {
-      if (value === '' + timeout) {
+      if (value.toString() === '' + timeout) {
         return TIMEOUT_OPTIONS[idx];
       }
     }
@@ -72,7 +71,7 @@ export default class TimeoutControl extends React.Component<TimeoutControlProps>
     if (this.props.timeout > 0) {
       this.props.onChanged(0);
     } else {
-      this.props.onChanged(parseInt(DEFAULT_TIMEOUT.value));
+      this.props.onChanged(DEFAULT_TIMEOUT.value);
     }
   }
 

@@ -72,7 +72,7 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
 
   private options: any[] = [];
 
-  constructor(props: AssetSelectorProps) {
+  public constructor(props: AssetSelectorProps) {
     super(props);
     bindCallbacks(this, {
       include: [/^is/, /^handle/, /^get/]
@@ -91,7 +91,7 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
     }
 
     // if we don't have an endpoint, populate our options with items
-    if (!this.props.assets.endpoint) {
+    if (this.props.assets && !this.props.assets.endpoint) {
       this.options = this.options.concat(
         Object.keys(this.props.assets.items).map((id: string) => this.props.assets.items[id])
       );

@@ -15,7 +15,7 @@ export const TOPIC_OPTIONS: SelectOption[] = [
   { value: 'agent', name: 'Agent' }
 ];
 
-export const RECEIVE_ATTACHMENT_OPTIONS: SelectOption[] = [{ value: 'image', label: 'Image' }];
+export const RECEIVE_ATTACHMENT_OPTIONS: SelectOption[] = [{ value: 'image', name: 'Image' }];
 
 export const initializeForm = (
   settings: NodeEditorSettings,

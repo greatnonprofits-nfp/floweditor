@@ -68,9 +68,9 @@ const UNSUPPORTED_EMAIL_ATTACHMENTS = [
   'cab'
 ];
 
-const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', label: 'File URL' }];
+const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', name: 'File URL' }];
 
-const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
+const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', name: 'Upload Attachment' }]);
 
 const getAttachmentTypeOption = (type: string): SelectOption => {
   return TYPE_OPTIONS.find((option: SelectOption) => option.value === type);

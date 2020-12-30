@@ -507,7 +507,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         </p>
         <div className={styles.type_choice}>
           <SelectElement
-            styles={small as any}
+            styles={styles.small as any}
             name="ReceiveAttachment"
             entry={this.state.receiveAttachment}
             onChange={this.handleReceiveAttachmentUpdate}
@@ -891,7 +891,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             onChange={this.handleQuickRepliesUpdate}
           />
 
-          {this.context.config.flowType === FlowTypes.MESSAGE ? (
+          {this.context.config.flowType === FlowTypes.MESSAGING ? (
             <>
               <p>
                 {/* eslint-disable-next-line */}

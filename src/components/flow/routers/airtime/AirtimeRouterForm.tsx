@@ -131,6 +131,7 @@ export default class AirtimeRouterForm extends React.PureComponent<
   private renderAmount(index: number, entry: AirtimeTransferEntry): JSX.Element {
     return (
       <CurrencyElement
+        assets={this.props.assetStore.currencies}
         key={'currency_' + index}
         exclude={this.state.amounts}
         currencies={this.options}
