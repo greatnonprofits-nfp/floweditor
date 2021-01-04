@@ -153,6 +153,8 @@ export default class LookupRouterForm extends React.Component<
           entry={this.state.lookupDb}
           searchable={true}
           onChange={this.handleDbUpdate}
+          nameKey={'text'}
+          valueKey={'id'}
         />
         {this.state.lookupDb.value.id && (
           <LookQueryContext.Provider

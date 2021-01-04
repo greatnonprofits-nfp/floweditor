@@ -115,6 +115,8 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           entry={this.state.giftcardDb}
           name="Giftcard Database"
           onChange={this.handleGiftcardChanged}
+          nameKey={'text'}
+          valueKey={'id'}
         />
         <div style={customStyles}>
           <SelectElement
