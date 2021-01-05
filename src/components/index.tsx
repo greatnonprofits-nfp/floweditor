@@ -297,6 +297,26 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
               <ConnectedFlow />
             )}
 
+            <RevisionExplorer
+              loadFlowDefinition={this.props.loadFlowDefinition}
+              createNewRevision={this.props.createNewRevision}
+              assetStore={this.props.assetStore}
+              onToggled={this.handleTabPopped}
+              popped={this.props.popped}
+            />
+
+            {renderIf(Object.keys(this.props.issues).length > 0)(
+              <IssuesTab
+                issues={this.props.issues}
+                onIssueClicked={this.handleScrollToIssue}
+                onIssueOpened={this.handleOpenIssue}
+                languages={this.props.languages ? this.props.languages.items : {}}
+                nodes={this.props.nodes}
+                onToggled={this.handleTabPopped}
+                popped={this.props.popped}
+              />
+            )}
+
             {renderIf(this.props.definition && this.props.translating && !this.props.fetchingFlow)(
               <TranslatorTab
                 language={this.props.language}
@@ -312,26 +332,6 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
                 translationFilters={
                   this.props.definition ? this.props.definition._ui.translation_filters : null
                 }
-                nodes={this.props.nodes}
-                onToggled={this.handleTabPopped}
-                popped={this.props.popped}
-              />
-            )}
-
-            <RevisionExplorer
-              loadFlowDefinition={this.props.loadFlowDefinition}
-              createNewRevision={this.props.createNewRevision}
-              assetStore={this.props.assetStore}
-              onToggled={this.handleTabPopped}
-              popped={this.props.popped}
-            />
-
-            {renderIf(Object.keys(this.props.issues).length > 0)(
-              <IssuesTab
-                issues={this.props.issues}
-                onIssueClicked={this.handleScrollToIssue}
-                onIssueOpened={this.handleOpenIssue}
-                languages={this.props.languages ? this.props.languages.items : {}}
                 nodes={this.props.nodes}
                 onToggled={this.handleTabPopped}
                 popped={this.props.popped}
