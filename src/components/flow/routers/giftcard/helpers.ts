@@ -42,7 +42,8 @@ export const stateToNode = (
     result_name: formState.resultName.value,
     giftcard_db: {
       id: formState.giftcardDb.value.id,
-      text: formState.giftcardDb.value.name
+      // @ts-ignore
+      text: formState.giftcardDb.value.name || formState.giftcardDb.value.text
     },
     giftcard_type: formState.giftcardType.value,
     uuid: getActionUUID(nodeSettings, Types.call_giftcard)
