@@ -10,7 +10,7 @@ exports[`ClassifyRouterForm should render 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Classifier Input
            

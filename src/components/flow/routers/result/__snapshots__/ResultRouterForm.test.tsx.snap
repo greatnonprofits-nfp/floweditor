@@ -96,7 +96,7 @@ exports[`ResultRouterForm should render 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Advanced
            
@@ -315,7 +315,7 @@ exports[`ResultRouterForm should show delimit options 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Advanced
            

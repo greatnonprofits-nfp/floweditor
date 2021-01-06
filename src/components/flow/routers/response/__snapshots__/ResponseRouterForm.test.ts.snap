@@ -21,6 +21,193 @@ exports[`ResponseRouterForm initializes case config 1`] = `
     />
   }
   headerClass="wait_for_response"
+  tabs={
+    Array [
+      Object {
+        "body": <div
+          className="testingTab"
+        >
+          <div
+            className="liveTests"
+          >
+            <div
+              className="header"
+            >
+              Live Tests
+            </div>
+            <div
+              className="body"
+            >
+              <Unknown
+                className="languageSelect"
+                isSearchable={false}
+                name="Intent"
+                onChange={[Function]}
+                options={Array []}
+                placeholder="Language"
+                styles={
+                  Object {
+                    "control": [Function],
+                    "indicatorsContainer": [Function],
+                    "input": [Function],
+                    "menuList": [Function],
+                    "option": [Function],
+                    "singleValue": [Function],
+                    "valueContainer": [Function],
+                  }
+                }
+                value={
+                  Object {
+                    "label": "English",
+                    "value": "eng",
+                  }
+                }
+              />
+              <div
+                className="testLine"
+              >
+                <TextInputElement
+                  entry={
+                    Object {
+                      "value": "",
+                    }
+                  }
+                  name="arguments"
+                  onChange={[Function]}
+                  placeholder="Type text for testing"
+                />
+              </div>
+              <div
+                className="categoriesContainer"
+              >
+                <div
+                  className="categoryName"
+                >
+                  <Pill
+                    large={true}
+                    text="Red"
+                  />
+                </div>
+              </div>
+              <div
+                className="buttons"
+              >
+                <Button
+                  name="Save Test"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            className="automatedTests"
+          >
+            <div
+              className="header"
+            >
+              Automated Tests
+            </div>
+            <div
+              className="body"
+            >
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Test Text
+                    </th>
+                    <th>
+                      Current Category
+                    </th>
+                    <th>
+                      Confirm
+                    </th>
+                    <th>
+                      Confirmed Category
+                    </th>
+                    <th>
+                      Delete
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    className="testCorrect"
+                  >
+                    <td>
+                      <p
+                        className="text"
+                        title="red"
+                      >
+                        red
+                      </p>
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Red"
+                      >
+                        Red
+                      </p>
+                    </td>
+                    <td>
+                      <CheckboxElement
+                        name="checked"
+                        onChange={[Function]}
+                      />
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Red"
+                      >
+                        Red
+                      </p>
+                    </td>
+                    <td>
+                      <i
+                        className="fe-x"
+                        onClick={[Function]}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                className="buttons"
+              >
+                <Button
+                  name="Confirm All"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+                <Button
+                  name="Unconfirm All"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+                <Button
+                  name="Delete All"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+              </div>
+            </div>
+          </div>
+        </div>,
+        "checked": false,
+        "hasErrors": true,
+        "name": "Testing",
+        "nameStyle": "testingTabNameError",
+        "onClick": [Function],
+      },
+    ]
+  }
   title="Wait for Response"
 >
   <TypeList
@@ -46,6 +233,12 @@ exports[`ResponseRouterForm initializes case config 1`] = `
       }
     }
     onChange={[MockFunction]}
+  />
+  <SpellChecker
+    enabledSpell={false}
+    onEnabledChange={[Function]}
+    onSensitivityChange={[Function]}
+    spellSensitivity="70"
   />
   <div>
     If the message response...
@@ -131,6 +324,291 @@ exports[`ResponseRouterForm should render 1`] = `
     />
   }
   headerClass="wait_for_response"
+  tabs={
+    Array [
+      Object {
+        "body": <div
+          className="testingTab"
+        >
+          <div
+            className="liveTests"
+          >
+            <div
+              className="header"
+            >
+              Live Tests
+            </div>
+            <div
+              className="body"
+            >
+              <Unknown
+                className="languageSelect"
+                isSearchable={false}
+                name="Intent"
+                onChange={[Function]}
+                options={
+                  Array [
+                    Object {
+                      "label": "English",
+                      "value": "eng",
+                    },
+                  ]
+                }
+                placeholder="Language"
+                styles={
+                  Object {
+                    "control": [Function],
+                    "indicatorsContainer": [Function],
+                    "input": [Function],
+                    "menuList": [Function],
+                    "option": [Function],
+                    "singleValue": [Function],
+                    "valueContainer": [Function],
+                  }
+                }
+                value={
+                  Object {
+                    "label": "English",
+                    "value": "eng",
+                  }
+                }
+              />
+              <div
+                className="testLine"
+              >
+                <TextInputElement
+                  entry={
+                    Object {
+                      "value": "",
+                    }
+                  }
+                  name="arguments"
+                  onChange={[Function]}
+                  placeholder="Type text for testing"
+                />
+              </div>
+              <div
+                className="categoriesContainer"
+              >
+                <div
+                  className="categoryName"
+                >
+                  <Pill
+                    large={true}
+                    text="Red"
+                  />
+                </div>
+              </div>
+              <div
+                className="buttons"
+              >
+                <Button
+                  name="Save Test"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            className="automatedTests"
+          >
+            <div
+              className="header"
+            >
+              Automated Tests
+            </div>
+            <div
+              className="body"
+            >
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Test Text
+                    </th>
+                    <th>
+                      Current Category
+                    </th>
+                    <th>
+                      Confirm
+                    </th>
+                    <th>
+                      Confirmed Category
+                    </th>
+                    <th>
+                      Delete
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    className="testCorrect"
+                  >
+                    <td>
+                      <p
+                        className="text"
+                        title="red"
+                      >
+                        red
+                      </p>
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Red"
+                      >
+                        Red
+                      </p>
+                    </td>
+                    <td>
+                      <CheckboxElement
+                        checked={true}
+                        name="checked"
+                        onChange={[Function]}
+                      />
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Red"
+                      >
+                        Red
+                      </p>
+                    </td>
+                    <td>
+                      <i
+                        className="fe-x"
+                        onClick={[Function]}
+                      />
+                    </td>
+                  </tr>
+                  <tr
+                    className="testCorrect"
+                  >
+                    <td>
+                      <p
+                        className="text"
+                        title="maroon"
+                      >
+                        maroon
+                      </p>
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Red"
+                      >
+                        Red
+                      </p>
+                    </td>
+                    <td>
+                      <CheckboxElement
+                        checked={true}
+                        name="checked"
+                        onChange={[Function]}
+                      />
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Red"
+                      >
+                        Red
+                      </p>
+                    </td>
+                    <td>
+                      <i
+                        className="fe-x"
+                        onClick={[Function]}
+                      />
+                    </td>
+                  </tr>
+                  <tr
+                    className="testCorrect"
+                  >
+                    <td>
+                      <p
+                        className="text"
+                        title="green"
+                      >
+                        green
+                      </p>
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Green"
+                      >
+                        Green
+                      </p>
+                    </td>
+                    <td>
+                      <CheckboxElement
+                        checked={true}
+                        name="checked"
+                        onChange={[Function]}
+                      />
+                    </td>
+                    <td
+                      className="categoryName"
+                    >
+                      <p
+                        className="text"
+                        title="Green"
+                      >
+                        Green
+                      </p>
+                    </td>
+                    <td>
+                      <i
+                        className="fe-x"
+                        onClick={[Function]}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div
+                className="buttons"
+              >
+                <Button
+                  name="Confirm All"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+                <Button
+                  name="Unconfirm All"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+                <Button
+                  name="Delete All"
+                  onClick={[Function]}
+                  type="secondary"
+                />
+              </div>
+            </div>
+          </div>
+        </div>,
+        "checked": true,
+        "hasErrors": false,
+        "name": "Testing",
+        "nameStyle": "",
+        "onClick": [Function],
+      },
+    ]
+  }
   title="Wait for Response"
 >
   <TypeList
@@ -156,6 +634,12 @@ exports[`ResponseRouterForm should render 1`] = `
       }
     }
     onChange={[MockFunction]}
+  />
+  <SpellChecker
+    enabledSpell={false}
+    onEnabledChange={[Function]}
+    onSensitivityChange={[Function]}
+    spellSensitivity="70"
   />
   <div>
     If the message response...
@@ -209,6 +693,34 @@ exports[`ResponseRouterForm should render 1`] = `
 
 exports[`ResponseRouterForm updates should save changes 1`] = `
 Object {
+  "activeLocalizations": Array [
+    "eng",
+  ],
+  "automatedTestCases": Object {
+    "eng": Array [
+      Object {
+        "actualCategory": "Red",
+        "confirmed": true,
+        "confirmedCategory": "Red",
+        "testText": "red",
+        "type": 0,
+      },
+      Object {
+        "actualCategory": "Red",
+        "confirmed": true,
+        "confirmedCategory": "Red",
+        "testText": "maroon",
+        "type": 0,
+      },
+      Object {
+        "actualCategory": "Green",
+        "confirmed": true,
+        "confirmedCategory": "Green",
+        "testText": "green",
+        "type": 0,
+      },
+    ],
+  },
   "cases": Array [
     Object {
       "categoryName": "Red",
@@ -244,11 +756,70 @@ Object {
       "valid": true,
     },
   ],
+  "enabledSpell": false,
+  "liveTestText": Object {
+    "value": "",
+  },
+  "localizedCases": Object {
+    "eng": Array [
+      Object {
+        "categoryName": "Red",
+        "kase": Object {
+          "arguments": Array [
+            "red",
+          ],
+          "type": "has_any_word",
+        },
+        "uuid": "b1f332f3-bdd3-4891-aec5-1843a712dbf1",
+        "valid": true,
+      },
+      Object {
+        "categoryName": "Red",
+        "kase": Object {
+          "arguments": Array [
+            "maroon",
+          ],
+          "type": "has_any_word",
+        },
+        "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+        "valid": true,
+      },
+      Object {
+        "categoryName": "Green",
+        "kase": Object {
+          "arguments": Array [
+            "green",
+          ],
+          "type": "has_any_word",
+        },
+        "uuid": "1dce2b34-9aab-4e20-81c4-3f0408dcb671",
+        "valid": true,
+      },
+    ],
+  },
   "resultName": Object {
     "validationFailures": Array [],
     "value": "Favorite Color",
   },
+  "spellSensitivity": "70",
+  "testResults": Object {
+    "eng": true,
+  },
+  "testingLang": Object {
+    "label": "English",
+    "value": "eng",
+  },
+  "testingLangs": Array [
+    Object {
+      "label": "English",
+      "value": "eng",
+    },
+  ],
   "timeout": 180,
+  "timezoneData": Object {
+    "dateFormat": null,
+    "timeZone": null,
+  },
   "valid": true,
 }
 `;
@@ -319,6 +890,33 @@ Array [
             "uuid": "132de855-4042-4dc1-a18f-cc2e6a8f790a",
           },
         ],
+        "config": Object {
+          "test_cases": Object {
+            "eng": Array [
+              Object {
+                "actualCategory": "Red",
+                "confirmed": true,
+                "confirmedCategory": "Red",
+                "testText": "red",
+                "type": 0,
+              },
+              Object {
+                "actualCategory": "Red",
+                "confirmed": true,
+                "confirmedCategory": "Red",
+                "testText": "maroon",
+                "type": 0,
+              },
+              Object {
+                "actualCategory": "Green",
+                "confirmed": true,
+                "confirmedCategory": "Green",
+                "testText": "green",
+                "type": 0,
+              },
+            ],
+          },
+        },
         "default_category_uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
         "operand": "@input.text",
         "result_name": "Favorite Color",
@@ -346,6 +944,12 @@ Array [
 
 exports[`ResponseRouterForm updates should save save config for relative dates 1`] = `
 Object {
+  "activeLocalizations": Array [
+    "eng",
+  ],
+  "automatedTestCases": Object {
+    "eng": Array [],
+  },
   "cases": Array [
     Object {
       "categoryName": "In the Zone",
@@ -359,10 +963,47 @@ Object {
       "valid": true,
     },
   ],
+  "enabledSpell": false,
+  "liveTestText": Object {
+    "value": "",
+  },
+  "localizedCases": Object {
+    "eng": Array [
+      Object {
+        "categoryName": "In the Zone",
+        "kase": Object {
+          "arguments": Array [
+            "5",
+          ],
+          "type": "has_date_gt",
+        },
+        "uuid": "b1f332f3-bdd3-4891-aec5-1843a712dbf1",
+        "valid": true,
+      },
+    ],
+  },
   "resultName": Object {
     "value": "",
   },
+  "spellSensitivity": "70",
+  "testResults": Object {
+    "eng": true,
+  },
+  "testingLang": Object {
+    "label": "English",
+    "value": "eng",
+  },
+  "testingLangs": Array [
+    Object {
+      "label": "English",
+      "value": "eng",
+    },
+  ],
   "timeout": 0,
+  "timezoneData": Object {
+    "dateFormat": null,
+    "timeZone": null,
+  },
   "valid": true,
 }
 `;
@@ -403,6 +1044,11 @@ Array [
             "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
           },
         ],
+        "config": Object {
+          "test_cases": Object {
+            "eng": Array [],
+          },
+        },
         "default_category_uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
         "operand": "@input.text",
         "type": "switch",

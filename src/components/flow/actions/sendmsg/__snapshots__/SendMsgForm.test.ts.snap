@@ -66,6 +66,20 @@ exports[`SendMsgForm render should render 1`] = `
             name="Quick Reply"
             onChange={[Function]}
           />
+          <React.Fragment>
+            <p>
+              <a
+                className="view_shareable_button"
+                onClick={[Function]}
+                role="button"
+              >
+                <span
+                  className="tab_icon fe-plus-circle view_shareable_button_icon"
+                />
+                Add sharing buttons (For WebChat only)
+              </a>
+            </p>
+          </React.Fragment>
         </React.Fragment>,
         "checked": false,
         "hasErrors": false,
@@ -74,6 +88,8 @@ exports[`SendMsgForm render should render 1`] = `
       Object {
         "body": <React.Fragment>
           <p>
+            Send attachment: 
+            <br />
             Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
           </p>
           <div
@@ -114,7 +130,7 @@ exports[`SendMsgForm render should render 1`] = `
                     },
                   ]
                 }
-                placeholder="Add Attachment"
+                placeholder="Send Attachment"
                 style="small"
               />
             </div>
@@ -128,6 +144,40 @@ exports[`SendMsgForm render should render 1`] = `
             }
             type="file"
           />
+          <span
+            className="span_separator"
+          />
+          <p>
+            Receive attachment: 
+            <br />
+            Select a type of attachment to receive from a user as an answer choice. 
+            <br />
+            Note: only available for channels with file upload capabilities.
+          </p>
+          <div
+            className="type_choice"
+          >
+            <SelectElement
+              clearable={true}
+              entry={
+                Object {
+                  "value": undefined,
+                }
+              }
+              name="ReceiveAttachment"
+              onChange={[Function]}
+              options={
+                Array [
+                  Object {
+                    "name": "Image",
+                    "value": "image",
+                  },
+                ]
+              }
+              placeholder="Receive Attachment"
+              styles="small"
+            />
+          </div>
         </React.Fragment>,
         "checked": false,
         "name": "Attachments",
@@ -204,10 +254,15 @@ Array [
 exports[`SendMsgForm updates should save changes 1`] = `
 Object {
   "attachments": Array [],
+  "downloadSharing": false,
+  "emailSharing": false,
+  "facebookSharing": false,
+  "lineSharing": false,
   "message": Object {
     "validationFailures": Array [],
     "value": "What is your favorite color?",
   },
+  "pinterestSharing": false,
   "quickReplies": Object {
     "validationFailures": Array [],
     "value": Array [
@@ -219,7 +274,17 @@ Object {
   "quickReplyEntry": Object {
     "value": "",
   },
+  "receiveAttachment": Object {
+    "value": undefined,
+  },
   "sendAll": true,
+  "sharingBtnHashtags": Object {
+    "value": Array [],
+  },
+  "sharingBtnText": Object {
+    "value": "",
+  },
+  "telegramSharing": false,
   "template": Object {
     "value": null,
   },
@@ -227,7 +292,10 @@ Object {
   "topic": Object {
     "value": undefined,
   },
+  "twitterSharing": false,
   "valid": true,
+  "viewShareableButtons": false,
+  "whatsappSharing": false,
 }
 `;
 

@@ -129,7 +129,7 @@ export default class ResponseRouterForm extends React.Component<
       } else {
         message = 'You have unconfirmed test results. Please confirm the results before saving.';
       }
-      // @ts-ignore
+
       this.props.mergeEditorState({
         modalMessage: {
           title: "This data can't be saved",
@@ -203,7 +203,6 @@ export default class ResponseRouterForm extends React.Component<
             testText: this.state.liveTestText.value,
             actualCategory: matched.join(', '),
             confirmedCategory: matched.join(', '),
-            categoriesMatch: false,
             confirmed: false
           }
         ]
@@ -409,13 +408,16 @@ export default class ResponseRouterForm extends React.Component<
               />
             </div>
             <div className={styles.categoriesContainer}>
-              {Object.entries(cases).map(([key, value]) => {
+              {Object.entries(cases).map(([key, value], index) => {
                 // eslint-disable-next-line
                 if (key === '') return;
 
                 return (
-                  // @ts-ignore
-                  <div className={value.matched ? styles.categoryMatched : styles.categoryName}>
+                  <div
+                    // @ts-ignore
+                    className={value.matched ? styles.categoryMatched : styles.categoryName}
+                    key={`category-${index}`}
+                  >
                     <Pill large={true} text={key || 'Other'} />
                   </div>
                 );
@@ -448,6 +450,7 @@ export default class ResponseRouterForm extends React.Component<
                   (test, index: number) =>
                     !test.deleted ? (
                       <tr
+                        key={`test-case-${index}`}
                         className={
                           test.actualCategory === test.confirmedCategory
                             ? styles.testCorrect

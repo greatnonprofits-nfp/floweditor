@@ -32,12 +32,23 @@ export const TEST_DEFINITION: FlowDefinition = {
 export const EMPTY_TEST_ASSETS = {
   channels: { items: {}, type: AssetType.Channel },
   fields: { items: {}, type: AssetType.Field },
-  languages: { items: {}, type: AssetType.Language },
+  languages: {
+    items: {
+      eng: {
+        id: 'eng',
+        name: 'English',
+        type: AssetType.Language,
+        order: 0
+      }
+    },
+    type: AssetType.Language
+  },
   labels: { items: {}, type: AssetType.Label },
   results: { items: {}, type: AssetType.Result },
   flows: { items: {}, type: AssetType.Flow },
   recipients: { items: {}, type: AssetType.Contact || AssetType.Group || AssetType.URN },
-  ticketers: { items: {}, type: AssetType.Ticketer }
+  ticketers: { items: {}, type: AssetType.Ticketer },
+  environment: { items: {}, type: AssetType.Environment }
 };
 
 const initial = initialState;

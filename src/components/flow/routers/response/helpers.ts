@@ -58,7 +58,6 @@ export interface AutomatedTestCase {
   testText: string;
   actualCategory: string;
   confirmedCategory: string;
-  categoriesMatch: boolean;
   confirmed: boolean;
   deleted: boolean;
 }
@@ -362,7 +361,7 @@ export const getLocalizedCases = (
     props.nodeSettings.originalNode.node,
     null,
     props.assetStore.languages.items[isoLang],
-    props.nodeSettings.localization[isoLang]
+    props.nodeSettings.localization ? props.nodeSettings.localization[isoLang] : {}
   );
   let localizedCases = new Map<string, any>();
   let localizedCategories = new Map<string, string>();

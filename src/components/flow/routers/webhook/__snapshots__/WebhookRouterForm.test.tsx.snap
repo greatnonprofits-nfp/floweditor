@@ -5,6 +5,7 @@ exports[`WebhookRouterForm should render 1`] = `
   buttons={
     Object {
       "primary": Object {
+        "disabled": true,
         "name": "Ok",
         "onClick": [Function],
       },
@@ -374,7 +375,7 @@ exports[`WebhookRouterForm updates should save changes 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           HTTP Headers
            
@@ -383,7 +384,7 @@ exports[`WebhookRouterForm updates should save changes 1`] = `
           />
         </div>
         <div
-          class="tab "
+          class="tab  "
         >
           GET Body
            
@@ -546,7 +547,7 @@ exports[`WebhookRouterForm updates should save changes 1`] = `
               Cancel
             </div>
             <div
-              class="btn primary  "
+              class="btn primary disabled "
               style="margin-left: 10px; margin-top: 0px;"
             >
               Ok

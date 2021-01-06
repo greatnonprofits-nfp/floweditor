@@ -478,9 +478,13 @@ export const getRouterFormProps = (renderNode: RenderNode): RouterFormProps => (
   issues: [],
   typeConfig: determineTypeConfig({ originalNode: renderNode }),
   assetStore: EMPTY_TEST_ASSETS,
+  mergeEditorState: jest.fn(),
   nodeSettings: {
     originalNode: renderNode,
-    originalAction: null
+    originalAction: null,
+    localization: { eng: {} },
+    localizations: [],
+    defaultLanguage: 'eng'
   }
 });
 

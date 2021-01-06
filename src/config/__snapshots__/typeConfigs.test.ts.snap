@@ -109,6 +109,10 @@ Array [
     ],
     "name": "Send Broadcast",
     "type": "send_broadcast",
+    "visibility": Array [
+      "messaging",
+      "voice",
+    ],
   },
   Object {
     "component": [Function],
@@ -216,7 +220,8 @@ Array [
     "name": "Call Lookup",
     "type": "call_lookup",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -233,7 +238,8 @@ Array [
     "name": "Call Giftcard",
     "type": "call_giftcard",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -250,7 +256,8 @@ Array [
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -522,7 +529,8 @@ Object {
     "name": "Call Giftcard",
     "type": "call_giftcard",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "call_lookup": Object {
@@ -539,7 +547,8 @@ Object {
     "name": "Call Lookup",
     "type": "call_lookup",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "call_resthook": Object {
@@ -575,7 +584,8 @@ Object {
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "call_webhook": Object {
@@ -680,6 +690,10 @@ Object {
     ],
     "name": "Send Broadcast",
     "type": "send_broadcast",
+    "visibility": Array [
+      "messaging",
+      "voice",
+    ],
   },
   "send_email": Object {
     "component": [Function],
@@ -838,7 +852,8 @@ Object {
     "name": "Call Giftcard",
     "type": "call_giftcard",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "split_by_groups": Object {
@@ -884,7 +899,8 @@ Object {
     "name": "Call Lookup",
     "type": "call_lookup",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "split_by_random": Object {
@@ -968,7 +984,8 @@ Object {
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "split_by_subflow": Object {

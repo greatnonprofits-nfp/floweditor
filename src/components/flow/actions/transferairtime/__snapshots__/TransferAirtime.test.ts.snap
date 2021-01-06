@@ -8,7 +8,8 @@ exports[`TransferAirtimeComp render should render self 1`] = `
     <div
       className="amount"
     >
-      1.5
+      0
+      0
     </div>
     <div
       className="code"

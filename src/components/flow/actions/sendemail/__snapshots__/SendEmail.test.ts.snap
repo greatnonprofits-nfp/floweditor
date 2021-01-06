@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SendEmailComp render should render self, children 1`] = `
-<div>
-  New Sign Up
-</div>
+<Fragment>
+  <div>
+    New Sign Up
+  </div>
+  <div />
+</Fragment>
 `;

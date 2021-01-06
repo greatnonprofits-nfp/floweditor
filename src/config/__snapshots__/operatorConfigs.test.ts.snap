@@ -54,6 +54,16 @@ Array [
     ],
   },
   Object {
+    "categoryName": "Has an image",
+    "operands": 0,
+    "type": "has_image",
+    "verboseName": "has an image",
+    "visibility": Array [
+      "messaging",
+      "messaging_offline",
+    ],
+  },
+  Object {
     "categoryName": "Has Number",
     "operands": 0,
     "type": "has_number",
@@ -313,6 +323,16 @@ Object {
     "verboseName": "is in the group",
     "visibility": Array [
       "-",
+    ],
+  },
+  "has_image": Object {
+    "categoryName": "Has an image",
+    "operands": 0,
+    "type": "has_image",
+    "verboseName": "has an image",
+    "visibility": Array [
+      "messaging",
+      "messaging_offline",
     ],
   },
   "has_intent": Object {

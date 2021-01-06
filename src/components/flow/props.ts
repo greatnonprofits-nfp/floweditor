@@ -43,6 +43,9 @@ export interface RouterFormProps extends IssueProps {
   // update handlers
   updateRouter(renderNode: RenderNode): void;
 
+  // alert notifications
+  mergeEditorState?: MergeEditorState;
+
   // modal notifiers
   onTypeChange(config: Type): void;
   onClose(canceled: boolean): void;
