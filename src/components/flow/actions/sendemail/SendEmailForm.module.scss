@@ -32,7 +32,6 @@
     display: inline-block;
     margin-left: 8px;
     width: 329px;
-    margin-right: 10px;
 
     input {
       vertical-align: top;
@@ -41,16 +40,11 @@
       width: 100%;
       font-size: 12px;
     }
-
-    [class*='Pill_pill'] {
-      margin-bottom: 5px;
-    }
   }
 
   .remove {
-    vertical-align: super;
-    display: inline-block;
     margin-top: 5px;
+    margin-left: 8px;
   }
 
   .loader {

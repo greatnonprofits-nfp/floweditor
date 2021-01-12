@@ -6,7 +6,7 @@ import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
 import { ActionFormProps } from 'components/flow/props';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
 import TaggingElement from 'components/form/select/tags/TaggingElement';
-import TextInputElement from 'components/form/textinput/TextInputElement';
+import TextInputElement, { TextInputStyle } from 'components/form/textinput/TextInputElement';
 import Pill from 'components/pill/Pill';
 import TypeList from 'components/nodeeditor/TypeList';
 import i18n from 'config/i18n';
@@ -17,12 +17,12 @@ import * as React from 'react';
 import { FormState, mergeForm, StringArrayEntry, StringEntry } from 'store/nodeEditor';
 import { shouldRequireIf, validate } from 'store/validators';
 import { createUUID } from 'utils';
-import { small } from 'utils/reactselect';
 
 import { initializeForm, stateToAction } from './helpers';
 import styles from './SendEmailForm.module.scss';
 import { renderIssues } from '../helpers';
 import Loading from 'components/loading/Loading';
+import { TembaSelectStyle } from '../../../../temba/TembaSelect';
 
 const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
@@ -268,34 +268,32 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         <div className={styles.type_choice}>
           <SelectElement
             name="Type"
-            styles={small as any}
+            style={TembaSelectStyle.small}
             entry={{
               value: { label: attachment.type }
             }}
             options={TYPE_OPTIONS}
           />
         </div>
-        <div className={styles.url}>
-          <span className={styles.upload}>
-            <Pill
-              icon="fe-download"
-              text=" Download"
-              large={true}
-              onClick={() => {
-                window.open(attachment.url, '_blank');
-              }}
-            />
-            <div className={styles.remove_upload}>
-              <Pill
-                icon="fe-x"
-                text=" Remove"
-                large={true}
-                onClick={() => {
-                  this.handleAttachmentRemoved(index);
-                }}
-              />
-            </div>
-          </span>
+        <div className={styles.remove}>
+          <Pill
+            icon="fe-download"
+            text=" Download"
+            large={true}
+            onClick={() => {
+              window.open(attachment.url, '_blank');
+            }}
+          />
+        </div>
+        <div className={styles.remove}>
+          <Pill
+            icon="fe-x"
+            text=" Remove"
+            large={true}
+            onClick={() => {
+              this.handleAttachmentRemoved(index);
+            }}
+          />
         </div>
       </div>
     );
@@ -310,7 +308,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
       >
         <div className={styles.type_choice}>
           <SelectElement
-            styles={small as any}
+            style={TembaSelectStyle.small}
             name="Type Options"
             placeholder="Add Attachment"
             entry={{
@@ -345,6 +343,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
               <TextInputElement
                 placeholder="URL"
                 name="url"
+                style={TextInputStyle.small}
                 onChange={(value: string) => {
                   attachments = mutate(attachments, {
                     [index]: { $set: { type: attachment.type, url: value, verified: false } }

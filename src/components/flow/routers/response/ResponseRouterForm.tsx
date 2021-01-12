@@ -8,15 +8,15 @@ import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import CaseList, { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import {
-  nodeToState,
-  stateToNode,
-  matchResponseTextWithCategory,
+  ALLOWED_AUTO_TESTS,
+  ALLOWED_TESTS,
   AutomatedTestCase,
   AutomatedTestCaseType,
   generateAutomatedTest,
-  ALLOWED_TESTS,
-  ALLOWED_AUTO_TESTS,
   getLocalizedCases,
+  matchResponseTextWithCategory,
+  nodeToState,
+  stateToNode,
   TimezoneData
 } from 'components/flow/routers/response/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
@@ -28,14 +28,13 @@ import { WAIT_LABEL } from 'components/flow/routers/constants';
 import { SpellChecker } from 'components/spellchecker/SpellChecker';
 import { fakePropType } from 'config/ConfigProvider';
 import styles from './ResponseRouterForm.module.scss';
-import Select from 'react-select';
 import { SelectOption } from 'components/form/select/SelectElement';
-import { small } from 'utils/reactselect';
 import TextInputElement from 'components/form/textinput/TextInputElement';
 import Pill from 'components/pill/Pill';
 import Button, { ButtonTypes } from 'components/button/Button';
 import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import mutate from 'immutability-helper';
+import TembaSelect, { TembaSelectStyle } from '../../../../temba/TembaSelect';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -387,24 +386,22 @@ export default class ResponseRouterForm extends React.Component<
         <div className={styles.liveTests}>
           <div className={styles.header}>Live Tests</div>
           <div className={styles.body}>
-            <Select
-              name="Intent"
+            <TembaSelect
+              name="Language"
               value={this.state.testingLang}
               options={this.state.testingLangs.filter(lang =>
                 this.state.activeLocalizations.has(lang.value)
               )}
               onChange={this.onTestingLangChanged}
               placeholder="Language"
-              isSearchable={false}
-              className={styles.languageSelect}
-              styles={small as any}
-            ></Select>
+              style={TembaSelectStyle.small}
+            ></TembaSelect>
             <div className={styles.testLine}>
               <TextInputElement
                 name="arguments"
+                placeholder="Type text for testing"
                 onChange={text => this.setState({ liveTestText: { value: text } })}
                 entry={this.state.liveTestText}
-                placeholder={'Type text for testing'}
               />
             </div>
             <div className={styles.categoriesContainer}>
@@ -487,7 +484,7 @@ export default class ResponseRouterForm extends React.Component<
                         </td>
                       </tr>
                     ) : (
-                      <></>
+                      <tr key={`test-case-${index}`}></tr>
                     )
                 )}
               </tbody>

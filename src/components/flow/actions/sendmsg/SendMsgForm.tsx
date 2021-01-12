@@ -507,7 +507,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         </p>
         <div className={styles.type_choice}>
           <SelectElement
-            styles={styles.small as any}
+            style={TembaSelectStyle.small}
             name="ReceiveAttachment"
             entry={this.state.receiveAttachment}
             onChange={this.handleReceiveAttachmentUpdate}
