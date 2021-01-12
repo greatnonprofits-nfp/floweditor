@@ -5,6 +5,7 @@
     --temba-select-selected-padding: 7px;
     --temba-select-selected-line-height: 13px;
     --temba-select-selected-font-size: 12px;
+    --temba-select-container-min-height: 25px;
     --search-input-height: 7px !important;
   }
 }
@@ -13,6 +14,7 @@
   temba-select {
     --temba-select-selected-padding: 9px;
     --temba-select-selected-font-size: 13px;
+    --temba-select-container-min-height: 32px;
   }
 }
 
