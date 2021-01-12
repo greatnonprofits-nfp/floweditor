@@ -1,11 +1,4 @@
-import {
-  FlowDefinition,
-  FlowNode,
-  UINode,
-  FlowMetadata,
-  FlowIssue,
-  FlowIssueType
-} from 'flowTypes';
+import { FlowDefinition, FlowNode, UINode, FlowMetadata, FlowIssue } from 'flowTypes';
 import { combineReducers, Action } from 'redux';
 import ActionTypes, {
   UpdateAssetsAction,
@@ -13,25 +6,20 @@ import ActionTypes, {
   UpdateContactFieldsAction,
   UpdateDefinitionAction,
   UpdateNodesAction,
-  UpdateMetadataAction
+  UpdateMetadataAction,
+  UpdateIssuesAction
 } from 'store/actionTypes';
 import Constants from 'store/constants';
 import { Type } from 'config/interfaces';
-
-/**
- * Some issues are ignored in the editor
- */
-const filterIssues = (metadata: FlowMetadata) => {
-  if (metadata && metadata.issues) {
-    metadata.issues = metadata.issues.filter(
-      (issue: FlowIssue) => issue.type !== FlowIssueType.LEGACY_EXTRA
-    );
-  }
-};
+import { TembaStore } from 'temba-components';
 
 // tslint:disable:no-shadowed-variable
 export interface RenderNodeMap {
   [uuid: string]: RenderNode;
+}
+
+export interface FlowIssueMap {
+  [uuid: string]: FlowIssue[];
 }
 
 export interface RenderNode {
@@ -79,6 +67,7 @@ export enum AssetType {
   Global = 'global',
   GiftCard = 'giftcard',
   Group = 'group',
+  GroupNameMatch = 'group_match',
   Label = 'label',
   Lookup = 'lookup',
   Language = 'language',
@@ -89,6 +78,7 @@ export enum AssetType {
   Scheme = 'scheme',
   Template = 'template',
   TrackableLink = 'shorten_url',
+  Ticketer = 'ticketer',
   Trigger = 'keyword_trigger',
   URN = 'urn'
 }
@@ -151,6 +141,7 @@ export interface FlowContext {
   contactFields: ContactFields;
   definition: FlowDefinition;
   nodes: { [uuid: string]: RenderNode };
+  issues: FlowIssueMap;
   assetStore: AssetStore;
 }
 
@@ -167,6 +158,7 @@ export const initialState: FlowContext = {
   },
   contactFields: {},
   nodes: {},
+  issues: {},
   assetStore: {}
 };
 
@@ -185,8 +177,14 @@ export const updateNodes = (nodes: RenderNodeMap): UpdateNodesAction => ({
   }
 });
 
+export const updateIssues = (issues: FlowIssueMap): UpdateIssuesAction => ({
+  type: Constants.UPDATE_ISSUES,
+  payload: {
+    issues
+  }
+});
+
 export const updateMetadata = (metadata: FlowMetadata): UpdateMetadataAction => {
-  filterIssues(metadata);
   return {
     type: Constants.UPDATE_METADATA,
     payload: {
@@ -209,12 +207,19 @@ export const updateContactFields = (contactFields: ContactFields): UpdateContact
   }
 });
 
-export const updateAssets = (assets: AssetStore): UpdateAssetsAction => ({
-  type: Constants.UPDATE_ASSET_MAP,
-  payload: {
-    assets
+export const updateAssets = (assets: AssetStore): UpdateAssetsAction => {
+  const store: TembaStore = document.querySelector('temba-store');
+  if (store) {
+    store.setKeyedAssets('results', Object.keys(assets['results'].items));
   }
-});
+
+  return {
+    type: Constants.UPDATE_ASSET_MAP,
+    payload: {
+      assets
+    }
+  };
+};
 
 // Reducers
 export const definition = (
@@ -233,6 +238,15 @@ export const nodes = (state: {} = initialState.nodes, action: ActionTypes) => {
   switch (action.type) {
     case Constants.UPDATE_NODES:
       return action.payload.nodes;
+    default:
+      return state;
+  }
+};
+
+export const issues = (state: {} = initialState.issues, action: ActionTypes) => {
+  switch (action.type) {
+    case Constants.UPDATE_ISSUES:
+      return action.payload.issues;
     default:
       return state;
   }
@@ -281,6 +295,7 @@ export const contactFields = (
 export default combineReducers({
   definition,
   nodes,
+  issues,
   metadata,
   assetStore,
   baseLanguage,

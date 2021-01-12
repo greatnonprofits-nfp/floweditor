@@ -53,7 +53,8 @@ export const stateToNode = (
     result_name: state.resultName.value,
     shorten_url: {
       id: state.shortenUrl.value.id,
-      text: state.shortenUrl.value.name
+      // @ts-ignore
+      text: state.shortenUrl.value.name || state.shortenUrl.value.text
     },
     type: Types.call_shorten_url,
     uuid: getActionUUID(settings, Types.call_shorten_url)

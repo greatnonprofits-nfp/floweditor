@@ -63,7 +63,7 @@ Array [
     "name": "Wait for Audio",
     "type": "wait_for_audio",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
       "voice",
     ],
   },
@@ -75,7 +75,7 @@ Array [
     "localizeableKeys": Array [
       "text",
       "quick_replies",
-      "templating",
+      "templating.variables",
     ],
     "massageForDisplay": [Function],
     "name": "Send Message",
@@ -89,14 +89,14 @@ Array [
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
-      "exits",
+      "categories",
       "cases",
     ],
     "name": "Wait for Response",
     "type": "wait_for_response",
     "visibility": Array [
-      "message",
-      "message_offline",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -109,6 +109,10 @@ Array [
     ],
     "name": "Send Broadcast",
     "type": "send_broadcast",
+    "visibility": Array [
+      "messaging",
+      "voice",
+    ],
   },
   Object {
     "component": [Function],
@@ -143,6 +147,7 @@ Array [
       "set_contact_name",
       "set_contact_language",
       "set_contact_channel",
+      "set_contact_status",
     ],
     "component": [Function],
     "description": "Update the contact",
@@ -162,7 +167,7 @@ Array [
     "name": "Send Email",
     "type": "send_email",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -197,7 +202,7 @@ Array [
     "name": "Call Webhook",
     "type": "call_webhook",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -215,7 +220,8 @@ Array [
     "name": "Call Lookup",
     "type": "call_lookup",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -232,7 +238,8 @@ Array [
     "name": "Call Giftcard",
     "type": "call_giftcard",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -249,7 +256,8 @@ Array [
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   Object {
@@ -267,7 +275,7 @@ Array [
     "name": "Call Zapier",
     "type": "call_resthook",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -296,7 +304,26 @@ Array [
     "name": "Start Somebody Else",
     "type": "start_session",
     "visibility": Array [
-      "message",
+      "messaging",
+      "voice",
+    ],
+  },
+  Object {
+    "aliases": Array [
+      "split_by_ticket",
+    ],
+    "component": [Function],
+    "description": "Open a ticket with a human agent",
+    "filter": "ticketer",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Open Ticket",
+    "type": "open_ticket",
+    "visibility": Array [
+      "messaging",
       "voice",
     ],
   },
@@ -315,7 +342,7 @@ Array [
     "name": "Send Airtime",
     "type": "transfer_airtime",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -329,7 +356,7 @@ Array [
     "name": "Wait for Image",
     "type": "wait_for_image",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
     ],
   },
   Object {
@@ -342,7 +369,7 @@ Array [
     "name": "Wait for Video",
     "type": "wait_for_video",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
     ],
   },
   Object {
@@ -355,7 +382,7 @@ Array [
     "name": "Wait for Location",
     "type": "wait_for_location",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
     ],
   },
   Object {
@@ -373,7 +400,7 @@ Array [
     "name": "Split by Intent",
     "type": "split_by_intent",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -484,7 +511,7 @@ Object {
     "name": "Split by Intent",
     "type": "split_by_intent",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -502,7 +529,8 @@ Object {
     "name": "Call Giftcard",
     "type": "call_giftcard",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "call_lookup": Object {
@@ -519,7 +547,8 @@ Object {
     "name": "Call Lookup",
     "type": "call_lookup",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "call_resthook": Object {
@@ -537,7 +566,7 @@ Object {
     "name": "Call Zapier",
     "type": "call_resthook",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -555,7 +584,8 @@ Object {
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "call_webhook": Object {
@@ -572,7 +602,7 @@ Object {
     "name": "Call Webhook",
     "type": "call_webhook",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -597,6 +627,25 @@ Object {
     "type": "missing",
     "visibility": Array [
       "-",
+    ],
+  },
+  "open_ticket": Object {
+    "aliases": Array [
+      "split_by_ticket",
+    ],
+    "component": [Function],
+    "description": "Open a ticket with a human agent",
+    "filter": "ticketer",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Open Ticket",
+    "type": "open_ticket",
+    "visibility": Array [
+      "messaging",
+      "voice",
     ],
   },
   "play_audio": Object {
@@ -641,6 +690,10 @@ Object {
     ],
     "name": "Send Broadcast",
     "type": "send_broadcast",
+    "visibility": Array [
+      "messaging",
+      "voice",
+    ],
   },
   "send_email": Object {
     "component": [Function],
@@ -654,7 +707,7 @@ Object {
     "name": "Send Email",
     "type": "send_email",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -666,7 +719,7 @@ Object {
     "localizeableKeys": Array [
       "text",
       "quick_replies",
-      "templating",
+      "templating.variables",
     ],
     "massageForDisplay": [Function],
     "name": "Send Message",
@@ -677,6 +730,7 @@ Object {
       "set_contact_name",
       "set_contact_language",
       "set_contact_channel",
+      "set_contact_status",
     ],
     "component": [Function],
     "description": "Update the contact",
@@ -689,6 +743,7 @@ Object {
       "set_contact_name",
       "set_contact_language",
       "set_contact_channel",
+      "set_contact_status",
     ],
     "component": [Function],
     "description": "Update the contact",
@@ -701,6 +756,7 @@ Object {
       "set_contact_name",
       "set_contact_language",
       "set_contact_channel",
+      "set_contact_status",
     ],
     "component": [Function],
     "description": "Update the contact",
@@ -713,6 +769,20 @@ Object {
       "set_contact_name",
       "set_contact_language",
       "set_contact_channel",
+      "set_contact_status",
+    ],
+    "component": [Function],
+    "description": "Update the contact",
+    "form": [Function],
+    "name": "Update Contact",
+    "type": "set_contact_field",
+  },
+  "set_contact_status": Object {
+    "aliases": Array [
+      "set_contact_name",
+      "set_contact_language",
+      "set_contact_channel",
+      "set_contact_status",
     ],
     "component": [Function],
     "description": "Update the contact",
@@ -742,7 +812,7 @@ Object {
     "name": "Send Airtime",
     "type": "transfer_airtime",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -782,7 +852,8 @@ Object {
     "name": "Call Giftcard",
     "type": "call_giftcard",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "split_by_groups": Object {
@@ -810,7 +881,7 @@ Object {
     "name": "Split by Intent",
     "type": "split_by_intent",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -828,7 +899,8 @@ Object {
     "name": "Call Lookup",
     "type": "call_lookup",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "split_by_random": Object {
@@ -856,7 +928,7 @@ Object {
     "name": "Call Zapier",
     "type": "call_resthook",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -912,7 +984,8 @@ Object {
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
     "visibility": Array [
-      "message",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "split_by_subflow": Object {
@@ -929,6 +1002,25 @@ Object {
     "name": "Enter a Flow",
     "type": "enter_flow",
   },
+  "split_by_ticket": Object {
+    "aliases": Array [
+      "split_by_ticket",
+    ],
+    "component": [Function],
+    "description": "Open a ticket with a human agent",
+    "filter": "ticketer",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Open Ticket",
+    "type": "open_ticket",
+    "visibility": Array [
+      "messaging",
+      "voice",
+    ],
+  },
   "split_by_webhook": Object {
     "aliases": Array [
       "split_by_webhook",
@@ -943,7 +1035,7 @@ Object {
     "name": "Call Webhook",
     "type": "call_webhook",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -958,7 +1050,7 @@ Object {
     "name": "Start Somebody Else",
     "type": "start_session",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -970,14 +1062,14 @@ Object {
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
-      "exits",
+      "categories",
       "cases",
     ],
     "name": "Wait for Response",
     "type": "wait_for_response",
     "visibility": Array [
-      "message",
-      "message_offline",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "transfer_airtime": Object {
@@ -995,7 +1087,7 @@ Object {
     "name": "Send Airtime",
     "type": "transfer_airtime",
     "visibility": Array [
-      "message",
+      "messaging",
       "voice",
     ],
   },
@@ -1009,7 +1101,7 @@ Object {
     "name": "Wait for Audio",
     "type": "wait_for_audio",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
       "voice",
     ],
   },
@@ -1037,7 +1129,7 @@ Object {
     "name": "Wait for Image",
     "type": "wait_for_image",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
     ],
   },
   "wait_for_location": Object {
@@ -1050,7 +1142,7 @@ Object {
     "name": "Wait for Location",
     "type": "wait_for_location",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
     ],
   },
   "wait_for_menu": Object {
@@ -1074,14 +1166,14 @@ Object {
     "form": [Function],
     "localization": [Function],
     "localizeableKeys": Array [
-      "exits",
+      "categories",
       "cases",
     ],
     "name": "Wait for Response",
     "type": "wait_for_response",
     "visibility": Array [
-      "message",
-      "message_offline",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "wait_for_video": Object {
@@ -1094,7 +1186,7 @@ Object {
     "name": "Wait for Video",
     "type": "wait_for_video",
     "visibility": Array [
-      "message_offline",
+      "messaging_offline",
     ],
   },
 }

@@ -154,7 +154,8 @@ exports[`ChangeGroupsComp render should limit div to max number of groups 1`] = 
     key="ellipses"
   >
     +
-    2
+    0
+    0
      more
   </div>
 </div>

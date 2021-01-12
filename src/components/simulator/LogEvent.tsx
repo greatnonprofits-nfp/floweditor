@@ -68,6 +68,9 @@ export interface EventProps {
   http_logs?: WebRequestLog[];
   extra?: any;
   urns?: string[];
+  service?: string;
+  classifier?: { uuid: string; name: string };
+  ticketer?: { uuid: string; name: string };
 }
 
 interface FlowEvent {
@@ -130,6 +133,34 @@ const renderAttachment = (attachment: string): JSX.Element => {
       );
     } else if (type.startsWith('image')) {
       return <img src={url} alt="Attachment" />;
+    } else if (type.startsWith('application')) {
+      return (
+        <div
+          onClick={() => {
+            window.open(url);
+          }}
+          style={{
+            cursor: 'pointer',
+            textDecoration: 'none',
+            padding: '10px 12px',
+            background: '#e6e6e6',
+            color: '#666'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className="fe-document-file-pdf"
+              style={{
+                textDecoration: 'none',
+                fontSize: '20px'
+              }}
+            />
+            <div style={{ marginLeft: '5px', lineHeight: '16px' }}>
+              {i18n.t('document', 'Document')}
+            </div>
+          </div>
+        </div>
+      );
     } else if (type.startsWith('geo')) {
       return <img src={MAP_THUMB} alt="Attachment" />;
     } else if (type.startsWith('video')) {
@@ -145,19 +176,23 @@ const renderAttachment = (attachment: string): JSX.Element => {
 
 const renderMessage = (text: string, attachments: string[], direction: Direction): JSX.Element => {
   const attaches = attachments || [];
+
   return (
     <div className={getStyleForDirection(direction)}>
       {attaches.map((attachment: string) => (
         <div key={text + attachment}>{renderAttachment(attachment)}</div>
       ))}
       {text
-        ? text.split('\n').map((item, key) => {
-            return (
-              <div key={createUUID()} className={styles.msg_text}>
-                {item}
-              </div>
-            );
-          })
+        ? text
+            .trim()
+            .split('\n')
+            .map((item, key) => {
+              return (
+                <div key={createUUID()} className={styles.msg_text}>
+                  {item}
+                </div>
+              );
+            })
         : null}
     </div>
   );
@@ -341,12 +376,21 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
       case 'contact_urns_changed':
         return renderInfo('Added a URN for the contact');
       case 'contact_field_changed':
-        return renderInfo(
-          i18n.t('simulator.contact_field_changed', 'Set contact "[[field]]" to "[[value]]"', {
-            field: this.props.field.name,
-            value: this.getValue(this.props.value)
-          })
-        );
+        const value = this.getValue(this.props.value);
+        if (value !== '') {
+          return renderInfo(
+            i18n.t('simulator.contact_field_changed', 'Set contact "[[field]]" to "[[value]]"', {
+              field: this.props.field.name,
+              value: this.getValue(this.props.value)
+            })
+          );
+        } else {
+          return renderInfo(
+            i18n.t('simulator.contact_field_cleared', 'Cleared contact "[[field]]"', {
+              field: this.props.field.name
+            })
+          );
+        }
       case 'run_result_changed':
         return renderInfo(
           i18n.t('simulator.run_result_changed', 'Set result "[[field]]" to "[[value]]"', {
@@ -375,8 +419,11 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
             resthook: this.props.resthook
           })
         );
-      case 'classifier_called':
-        return this.renderWebhook(Types.call_classifier);
+      case 'service_called':
+        if (this.props.service === 'classifier') {
+          return this.renderWebhook(Types.call_classifier);
+        }
+        break;
       case 'webhook_called':
         return this.renderWebhook(Types.call_webhook);
       case 'flow_entered':
@@ -397,12 +444,24 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
             language: this.props.language
           })
         );
+      case 'contact_status_changed':
+        return renderInfo(
+          i18n.t('simulator.contact_status_changed', 'Set status to "[[status]]"', {
+            status: this.props.status
+          })
+        );
       case 'info':
         return renderInfo(this.props.text);
       case 'input_labels_added':
         return this.renderLabelsAdded();
       case 'environment_refreshed':
         return null;
+      case 'ticket_opened':
+        return renderInfo(
+          i18n.t('simulator.ticket_opened', 'Ticket opened with subject "[[subject]]"', {
+            subject: this.props.subject
+          })
+        );
       case 'airtime_transferred':
         const event = this.props as AirtimeTransferEvent;
         return (
@@ -449,7 +508,12 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
   /**
    * Helper for value fields which can be an object (contact_field_changed) or string (run_result_changed)
    */
-  private getValue(value: string | { text: string }): string {
-    return typeof value === 'string' ? value : value.text;
+  private getValue(value: string | { text: string } | null): string {
+    if (!value) {
+      return '';
+    } else if (typeof value === 'string') {
+      return value;
+    }
+    return value.text;
   }
 }

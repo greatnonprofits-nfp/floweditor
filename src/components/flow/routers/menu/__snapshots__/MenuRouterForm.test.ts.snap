@@ -46,12 +46,12 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        1
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -69,12 +69,13 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        2
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -92,12 +93,15 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        3
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -115,12 +119,19 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        4
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -138,12 +149,27 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        5
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -161,12 +187,43 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        6
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -184,12 +241,75 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        7
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -207,12 +327,139 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        8
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -230,12 +477,267 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="digit"
       >
-        9
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
       </div>
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",
@@ -258,7 +760,7 @@ exports[`MenuRouterForm should render 1`] = `
       <div
         className="category"
       >
-        <Connect(TextInputElement)
+        <TextInputElement
           entry={
             Object {
               "value": "",

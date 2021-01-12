@@ -1,8 +1,15 @@
 export enum FlowTypes {
-  MESSAGE = 'message',
+  MESSAGING = 'messaging',
+  MESSAGING_OFFLINE = 'messaging_offline',
   VOICE = 'voice',
-  SURVEY = 'message_offline',
   NONE = '-'
+}
+
+export enum ContactStatus {
+  ACTIVE = 'active',
+  BLOCKED = 'blocked',
+  STOPPED = 'stopped',
+  ARCHIVED = 'archived'
 }
 
 export enum Types {
@@ -16,10 +23,12 @@ export enum Types {
   set_contact_field = 'set_contact_field',
   set_contact_name = 'set_contact_name',
   set_contact_language = 'set_contact_language',
+  set_contact_status = 'set_contact_status',
   set_run_result = 'set_run_result',
   call_classifier = 'call_classifier',
   call_resthook = 'call_resthook',
   call_webhook = 'call_webhook',
+  open_ticket = 'open_ticket',
   call_lookup = 'call_lookup',
   call_shorten_url = 'call_shorten_url',
   send_msg = 'send_msg',
@@ -37,6 +46,7 @@ export enum Types {
   split_by_intent = 'split_by_intent',
   split_by_random = 'split_by_random',
   split_by_resthook = 'split_by_resthook',
+  split_by_ticket = 'split_by_ticket',
   split_by_scheme = 'split_by_scheme',
   split_by_subflow = 'split_by_subflow',
   split_by_webhook = 'split_by_webhook',
@@ -96,6 +106,7 @@ export enum FeatureFilter {
   HAS_WHATSAPP = 'whatsapp',
   HAS_AIRTIME = 'airtime',
   HAS_CLASSIFIER = 'classifier',
+  HAS_TICKETER = 'ticketer',
   HAS_FACEBOOK = 'facebook'
 }
 
@@ -107,7 +118,8 @@ export interface FlowTypeVisibility {
 export enum PopTabType {
   SIMULATOR = 'Simulator',
   REVISION_HISTORY = 'Revision History',
-  ISSUES_TAB = 'Issues Tab'
+  ISSUES_TAB = 'Issues Tab',
+  TRANSLATOR_TAB = 'Translator Tab'
 }
 
 export interface Type extends FlowTypeVisibility {
@@ -135,9 +147,8 @@ export interface OperatorMap {
   [propName: string]: Operator;
 }
 
-export const HIDDEN = [FlowTypes.NONE];
-export const VOICE = [FlowTypes.VOICE];
-export const SURVEY = [FlowTypes.SURVEY];
-export const TEXT_TYPES = [FlowTypes.MESSAGE, FlowTypes.SURVEY];
-export const ONLINE = [FlowTypes.MESSAGE, FlowTypes.VOICE];
-export const MESSAGE = [FlowTypes.MESSAGE];
+export const VISIBILITY_MESSAGING = [FlowTypes.MESSAGING, FlowTypes.MESSAGING_OFFLINE];
+export const VISIBILITY_VOICE = [FlowTypes.VOICE];
+export const VISIBILITY_ONLINE = [FlowTypes.MESSAGING, FlowTypes.VOICE];
+export const VISIBILITY_SURVEYOR = [FlowTypes.MESSAGING_OFFLINE];
+export const VISIBILITY_HIDDEN = [FlowTypes.NONE];

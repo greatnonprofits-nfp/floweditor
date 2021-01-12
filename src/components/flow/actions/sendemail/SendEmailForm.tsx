@@ -6,7 +6,7 @@ import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
 import { ActionFormProps } from 'components/flow/props';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
 import TaggingElement from 'components/form/select/tags/TaggingElement';
-import TextInputElement from 'components/form/textinput/TextInputElement';
+import TextInputElement, { TextInputStyle } from 'components/form/textinput/TextInputElement';
 import Pill from 'components/pill/Pill';
 import TypeList from 'components/nodeeditor/TypeList';
 import i18n from 'config/i18n';
@@ -17,12 +17,12 @@ import * as React from 'react';
 import { FormState, mergeForm, StringArrayEntry, StringEntry } from 'store/nodeEditor';
 import { shouldRequireIf, validate } from 'store/validators';
 import { createUUID } from 'utils';
-import { small } from 'utils/reactselect';
 
 import { initializeForm, stateToAction } from './helpers';
 import styles from './SendEmailForm.module.scss';
 import { renderIssues } from '../helpers';
 import Loading from 'components/loading/Loading';
+import { TembaSelectStyle } from '../../../../temba/TembaSelect';
 
 const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
@@ -68,9 +68,9 @@ const UNSUPPORTED_EMAIL_ATTACHMENTS = [
   'cab'
 ];
 
-const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', label: 'File URL' }];
+const TYPE_OPTIONS: SelectOption[] = [{ value: 'image', name: 'File URL' }];
 
-const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
+const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', name: 'Upload Attachment' }]);
 
 const getAttachmentTypeOption = (type: string): SelectOption => {
   return TYPE_OPTIONS.find((option: SelectOption) => option.value === type);
@@ -129,15 +129,21 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
     const updates: Partial<SendEmailFormState> = {};
 
     if (keys.hasOwnProperty('recipients')) {
-      updates.recipients = validate('Recipients', keys.recipients!, [shouldRequireIf(submitting)]);
+      updates.recipients = validate(i18n.t('forms.recipients', 'Recipients'), keys.recipients!, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     if (keys.hasOwnProperty('subject')) {
-      updates.subject = validate('Subject', keys.subject!, [shouldRequireIf(submitting)]);
+      updates.subject = validate(i18n.t('forms.subject', 'Subject'), keys.subject!, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     if (keys.hasOwnProperty('body')) {
-      updates.body = validate('Body', keys.body!, [shouldRequireIf(submitting)]);
+      updates.body = validate(i18n.t('forms.body', 'Body'), keys.body!, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     const updated = mergeForm(this.state, updates);
@@ -262,34 +268,32 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         <div className={styles.type_choice}>
           <SelectElement
             name="Type"
-            styles={small as any}
+            style={TembaSelectStyle.small}
             entry={{
               value: { label: attachment.type }
             }}
             options={TYPE_OPTIONS}
           />
         </div>
-        <div className={styles.url}>
-          <span className={styles.upload}>
-            <Pill
-              icon="fe-download"
-              text=" Download"
-              large={true}
-              onClick={() => {
-                window.open(attachment.url, '_blank');
-              }}
-            />
-            <div className={styles.remove_upload}>
-              <Pill
-                icon="fe-x"
-                text=" Remove"
-                large={true}
-                onClick={() => {
-                  this.handleAttachmentRemoved(index);
-                }}
-              />
-            </div>
-          </span>
+        <div className={styles.remove}>
+          <Pill
+            icon="fe-download"
+            text=" Download"
+            large={true}
+            onClick={() => {
+              window.open(attachment.url, '_blank');
+            }}
+          />
+        </div>
+        <div className={styles.remove}>
+          <Pill
+            icon="fe-x"
+            text=" Remove"
+            large={true}
+            onClick={() => {
+              this.handleAttachmentRemoved(index);
+            }}
+          />
         </div>
       </div>
     );
@@ -304,7 +308,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
       >
         <div className={styles.type_choice}>
           <SelectElement
-            styles={small as any}
+            style={TembaSelectStyle.small}
             name="Type Options"
             placeholder="Add Attachment"
             entry={{
@@ -339,6 +343,7 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
               <TextInputElement
                 placeholder="URL"
                 name="url"
+                style={TextInputStyle.small}
                 onChange={(value: string) => {
                   attachments = mutate(attachments, {
                     [index]: { $set: { type: attachment.type, url: value, verified: false } }
@@ -606,9 +611,9 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <div className={styles.ele}>
           <TaggingElement
-            name={i18n.t('forms.send_email.recipient_name', 'Recipient')}
-            placeholder={i18n.t('forms.send_email.recipient_placeholder', 'To')}
-            prompt={i18n.t('forms.send_email.recipient_prompt', 'Enter email address')}
+            name={i18n.t('forms.email_recipient_name', 'Recipient')}
+            placeholder={i18n.t('forms.email_recipient_placeholder', 'To')}
+            prompt={i18n.t('forms.email_recipient_prompt', 'Enter email address')}
             onCheckValid={this.handleCheckValid}
             entry={this.state.recipients}
             onChange={this.handleRecipientsChanged}
@@ -616,15 +621,15 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
           />
           <TextInputElement
             __className={styles.subject}
-            name={i18n.t('forms.send_email.subject_name', 'Subject')}
-            placeholder={i18n.t('forms.send_email.subject_placeholder', 'Subject')}
+            name={i18n.t('forms.subject', 'Subject')}
+            placeholder={i18n.t('forms.subject', 'Subject')}
             onChange={this.handleSubjectChanged}
             entry={this.state.subject}
             autocomplete={true}
           />
           <TextInputElement
             __className={styles.message}
-            name={i18n.t('forms.send_email.message_name', 'Message')}
+            name={i18n.t('forms.message', 'Message')}
             showLabel={false}
             onChange={this.handleBodyChanged}
             entry={this.state.body}

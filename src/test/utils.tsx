@@ -32,11 +32,23 @@ export const TEST_DEFINITION: FlowDefinition = {
 export const EMPTY_TEST_ASSETS = {
   channels: { items: {}, type: AssetType.Channel },
   fields: { items: {}, type: AssetType.Field },
-  languages: { items: {}, type: AssetType.Language },
+  languages: {
+    items: {
+      eng: {
+        id: 'eng',
+        name: 'English',
+        type: AssetType.Language,
+        order: 0
+      }
+    },
+    type: AssetType.Language
+  },
   labels: { items: {}, type: AssetType.Label },
   results: { items: {}, type: AssetType.Result },
   flows: { items: {}, type: AssetType.Flow },
-  recipients: { items: {}, type: AssetType.Contact || AssetType.Group || AssetType.URN }
+  recipients: { items: {}, type: AssetType.Contact || AssetType.Group || AssetType.URN },
+  ticketers: { items: {}, type: AssetType.Ticketer },
+  environment: { items: {}, type: AssetType.Environment }
 };
 
 const initial = initialState;
@@ -58,6 +70,13 @@ const customRender = (ui: any, options?: any) =>
 
 export const fireChangeText = (ele: any, value: string): void => {
   fireEvent.change(ele, { currentTarget: { value }, target: { value } });
+};
+
+export const fireTembaSelect = (ele: HTMLElement, value: any) => {
+  (ele as any).values = Array.isArray(value) ? value : [{ value }];
+  var evt = document.createEvent('HTMLEvents');
+  evt.initEvent('change', false, true);
+  ele.dispatchEvent(evt);
 };
 
 export const mock = <T extends {}, K extends keyof T>(object: T, property: K, value: T[K]) => {

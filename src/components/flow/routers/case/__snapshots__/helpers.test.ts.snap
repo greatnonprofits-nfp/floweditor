@@ -92,7 +92,7 @@ Object {
   "min": Object {
     "validationFailures": Array [
       Object {
-        "message": "Minimum value must be a less than the maximum",
+        "message": "Minimum value must be less than the maximum",
       },
     ],
     "value": "50",
@@ -146,8 +146,8 @@ Object {
     "type": "has_any_word",
     "verboseName": "has any of the words",
     "visibility": Array [
-      "message",
-      "message_offline",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "state": Object {
@@ -242,8 +242,8 @@ Object {
     "type": "has_any_word",
     "verboseName": "has any of the words",
     "visibility": Array [
-      "message",
-      "message_offline",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "state": Object {
@@ -335,8 +335,8 @@ Object {
     "type": "has_text",
     "verboseName": "has some text",
     "visibility": Array [
-      "message",
-      "message_offline",
+      "messaging",
+      "messaging_offline",
     ],
   },
   "state": Object {

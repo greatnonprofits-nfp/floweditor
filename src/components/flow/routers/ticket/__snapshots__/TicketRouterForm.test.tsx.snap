@@ -1,0 +1,399 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TicketRouterForm render should render 1`] = `
+<body>
+  <div>
+    <div
+      class="dialog"
+    >
+      <div
+        class="header open_ticket"
+      >
+        <div
+          class="title_container"
+        >
+          <div
+            class="title"
+          >
+            Open Ticket
+          </div>
+          <div
+            class="subtitle"
+          />
+        </div>
+      </div>
+      <div
+        class="content"
+      >
+        <div
+          class=" type_list"
+        >
+          <p>
+            When a contact arrives at this point in your flow...
+          </p>
+          <div>
+            <div
+              class="normal "
+            >
+              <temba-select
+                data-testid="temba_select_type"
+                errors="[]"
+                expressions=""
+                name="type"
+                namekey="description"
+                searchable="true"
+                valuekey="type"
+                values="[{\\"type\\":\\"open_ticket\\",\\"name\\":\\"Open Ticket\\",\\"description\\":\\"Open a ticket with a human agent\\",\\"localizeableKeys\\":[\\"exits\\"],\\"aliases\\":[\\"split_by_ticket\\"],\\"visibility\\":[\\"messaging\\",\\"voice\\"],\\"filter\\":\\"ticketer\\"}]"
+              />
+            </div>
+          </div>
+        </div>
+        <p>
+          <span>
+            Open ticket via... 
+          </span>
+        </p>
+        <div
+          class="ele"
+        >
+          <div
+            class="normal "
+          >
+            <temba-select
+              cachekey="0"
+              data-testid="temba_select_ticketer"
+              errors="[]"
+              expressions=""
+              name="Ticketer"
+              namekey="name"
+              placeholder="Select the ticketing service to use"
+              valuekey="uuid"
+              values="[{\\"name\\":\\"Email (bob@acme.com)\\",\\"uuid\\":\\"1165a73a-2ee0-4891-895e-768645194862\\"}]"
+            />
+          </div>
+        </div>
+        <div
+          class="subject"
+        >
+          <div
+            class="ele"
+          >
+            <div
+              class="wrapper normal"
+            >
+              <input
+                data-testid="Subject"
+                name="Subject"
+                placeholder="Enter a subject"
+                value="Need help"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="body"
+        >
+          <div
+            class="ele"
+          >
+            <div
+              class="wrapper normal"
+            >
+              <input
+                data-testid="Body"
+                name="Body"
+                placeholder="Enter a body"
+                value="Where are my cookies"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="optional_text_input"
+        >
+          <div
+            class="ele"
+          >
+            <div
+              class="label"
+            >
+              Result Name
+            </div>
+            <div
+              class="wrapper normal"
+            >
+              <input
+                data-testid="Result Name"
+                name="Result Name"
+                value="Result"
+              />
+            </div>
+            <div
+              class="help_text"
+            >
+              By naming the result, you can reference it later using @results.result
+               
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="footer"
+      >
+        <div
+          class="buttons"
+        >
+          <div
+            class="right_buttons"
+          >
+            <div
+              class="btn secondary  "
+              style="margin-left: 0px; margin-top: 0px;"
+            >
+              Cancel
+            </div>
+            <div
+              class="btn primary  "
+              style="margin-left: 10px; margin-top: 0px;"
+            >
+              Ok
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`TicketRouterForm updates should save changes 1`] = `
+<body>
+  <div>
+    <div
+      class="dialog"
+    >
+      <div
+        class="header open_ticket"
+      >
+        <div
+          class="title_container"
+        >
+          <div
+            class="title"
+          >
+            Open Ticket
+          </div>
+          <div
+            class="subtitle"
+          />
+        </div>
+      </div>
+      <div
+        class="content"
+      >
+        <div
+          class=" type_list"
+        >
+          <p>
+            When a contact arrives at this point in your flow...
+          </p>
+          <div>
+            <div
+              class="normal "
+            >
+              <temba-select
+                data-testid="temba_select_type"
+                errors="[]"
+                expressions=""
+                name="type"
+                namekey="description"
+                searchable="true"
+                valuekey="type"
+                values="[{\\"type\\":\\"open_ticket\\",\\"name\\":\\"Open Ticket\\",\\"description\\":\\"Open a ticket with a human agent\\",\\"localizeableKeys\\":[\\"exits\\"],\\"aliases\\":[\\"split_by_ticket\\"],\\"visibility\\":[\\"messaging\\",\\"voice\\"],\\"filter\\":\\"ticketer\\"}]"
+              />
+            </div>
+          </div>
+        </div>
+        <p>
+          <span>
+            Open ticket via... 
+          </span>
+        </p>
+        <div
+          class="ele"
+        >
+          <div
+            class="normal "
+          >
+            <temba-select
+              cachekey="0"
+              data-testid="temba_select_ticketer"
+              errors="[]"
+              expressions=""
+              name="Ticketer"
+              namekey="name"
+              placeholder="Select the ticketing service to use"
+              valuekey="uuid"
+              values="[{\\"name\\":\\"Email (bob@acme.com)\\",\\"uuid\\":\\"1165a73a-2ee0-4891-895e-768645194862\\"}]"
+            />
+          </div>
+        </div>
+        <div
+          class="subject"
+        >
+          <div
+            class="ele"
+          >
+            <div
+              class="wrapper normal"
+            >
+              <input
+                data-testid="Subject"
+                name="Subject"
+                placeholder="Enter a subject"
+                value="Need help"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="body"
+        >
+          <div
+            class="ele"
+          >
+            <div
+              class="wrapper normal"
+            >
+              <input
+                data-testid="Body"
+                name="Body"
+                placeholder="Enter a body"
+                value="Where are my cookies"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="optional_text_input"
+        >
+          <div
+            class="ele"
+          >
+            <div
+              class="label"
+            >
+              Result Name
+            </div>
+            <div
+              class="wrapper normal"
+            >
+              <input
+                data-testid="Result Name"
+                name="Result Name"
+                value="Result"
+              />
+            </div>
+            <div
+              class="help_text"
+            >
+              By naming the result, you can reference it later using @results.result
+               
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="footer"
+      >
+        <div
+          class="buttons"
+        >
+          <div
+            class="right_buttons"
+          >
+            <div
+              class="btn secondary  "
+              style="margin-left: 0px; margin-top: 0px;"
+            >
+              Cancel
+            </div>
+            <div
+              class="btn primary  "
+              style="margin-left: 10px; margin-top: 0px;"
+            >
+              Ok
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`TicketRouterForm updates should save changes 2`] = `
+Array [
+  Object {
+    "inboundConnections": Object {},
+    "node": Object {
+      "actions": Array [
+        Object {
+          "body": "Where are my cookies",
+          "result_name": "My Ticket Result",
+          "subject": "Need help",
+          "ticketer": Object {
+            "name": "Email (bob@acme.com)",
+            "uuid": "1165a73a-2ee0-4891-895e-768645194862",
+          },
+          "type": "open_ticket",
+          "uuid": "b1f332f3-bdd3-4891-aec5-1843a712dbf1",
+        },
+      ],
+      "exits": Array [
+        Object {
+          "destination_uuid": null,
+          "uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+        },
+        Object {
+          "destination_uuid": null,
+          "uuid": "1dce2b34-9aab-4e20-81c4-3f0408dcb671",
+        },
+      ],
+      "router": Object {
+        "cases": Array [
+          Object {
+            "arguments": Array [
+              "Success",
+            ],
+            "category_uuid": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
+            "type": "has_category",
+            "uuid": "1e47a1e1-3c67-4df5-adf1-da542c789adb",
+          },
+        ],
+        "categories": Array [
+          Object {
+            "exit_uuid": "061fc171-8b79-4636-b892-bd0ea5aa9b42",
+            "name": "Success",
+            "uuid": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
+          },
+          Object {
+            "exit_uuid": "1dce2b34-9aab-4e20-81c4-3f0408dcb671",
+            "name": "Failure",
+            "uuid": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
+          },
+        ],
+        "default_category_uuid": "477ac8b4-25e2-483a-8686-2d1332c4da1c",
+        "operand": "@results.my_ticket_result",
+        "type": "switch",
+      },
+      "uuid": "132de855-4042-4dc1-a18f-cc2e6a8f790a",
+    },
+    "ui": Object {
+      "config": Object {},
+      "position": null,
+      "type": "split_by_ticket",
+    },
+  },
+]
+`;

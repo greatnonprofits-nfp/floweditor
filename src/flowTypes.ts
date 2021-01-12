@@ -1,5 +1,5 @@
 import { Methods } from 'components/flow/routers/webhook/helpers';
-import { FlowTypes, Operators, Types } from 'config/interfaces';
+import { FlowTypes, Operators, Types, ContactStatus } from 'config/interfaces';
 
 // we don't concern ourselves with patch versions
 export const SPEC_VERSION = '13.1';
@@ -38,6 +38,7 @@ export interface Endpoints {
   labels: string;
   channels: string;
   classifiers: string;
+  ticketers: string;
   environment: string;
   languages: string;
   templates: string;
@@ -62,6 +63,7 @@ export interface FlowEditorConfig {
   headers?: any;
   onLoad?: () => void;
   onActivityClicked?: (uuid: string) => void;
+  onChangeLanguage?: (code: string, name: string) => void;
 
   // help links
   help: { [key: string]: string };
@@ -241,8 +243,9 @@ export interface Wait {
 }
 
 export interface Group {
-  uuid: string;
-  name: string;
+  uuid?: string;
+  name?: string;
+  name_match?: string;
 }
 
 export interface Contact {
@@ -298,7 +301,16 @@ export interface SetContactChannel extends Action {
   channel: Channel;
 }
 
-export type SetContactProperty = SetContactName | SetContactLanguage | SetContactChannel;
+export interface SetContactStatus extends Action {
+  type: Types.set_contact_status;
+  status: ContactStatus;
+}
+
+export type SetContactProperty =
+  | SetContactName
+  | SetContactLanguage
+  | SetContactChannel
+  | SetContactStatus;
 
 export type SetContactAttribute = SetContactField | SetContactProperty;
 
@@ -393,6 +405,11 @@ export interface Classifier {
   name: string;
 }
 
+export interface Ticketer {
+  uuid: string;
+  name: string;
+}
+
 export interface TransferAirtime extends Action {
   amounts: { [name: string]: number };
   result_name: string;
@@ -415,6 +432,13 @@ export interface CallWebhook extends Action {
   result_name: string;
   body?: string;
   headers?: Headers;
+}
+
+export interface OpenTicket extends Action {
+  ticketer: Ticketer;
+  subject: string;
+  body: string;
+  result_name: string;
 }
 
 export interface LookupDB {
@@ -481,6 +505,7 @@ export interface StartSession extends RecipientsAction {
 export interface UIMetaData {
   nodes: { [key: string]: UINode };
   languages: { [iso: string]: string }[];
+  translation_filters?: { categories: boolean; rules: boolean };
 }
 
 export interface FlowPosition {
@@ -555,6 +580,7 @@ export enum ContactProperties {
   Org = 'org',
   Name = 'name',
   Language = 'language',
+  Status = 'status',
   Timezone = 'timezone',
   Channel = 'channel',
   Email = 'email',

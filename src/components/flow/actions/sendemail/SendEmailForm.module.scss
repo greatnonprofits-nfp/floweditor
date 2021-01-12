@@ -1,57 +1,53 @@
 .ele {
-    .subject {
-        margin-top: 8px;
-    }
-    .message {
-        margin-top: 8px;
-    }
+  .subject {
+    margin-top: 8px;
+  }
+
+  .message {
+    margin-top: 8px;
+  }
 }
 
 .url_attachment {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    min-height: 28px;
-  
-    .upload {
-      	vertical-align: super;
-    }
-  
-    .remove_upload {
-      	display: inline-block;
-      	margin-left: 8px;
-    }
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  min-height: 28px;
 
-    .type_choice {
-    	display: inline-block;
-    	width: 180px;
-    }
-  
-    .url {
-		display: inline-block;
-		margin-left: 8px;
-		margin-bottom: -15px;
-		width: 329px;
-		margin-right: 10px;
-      input {
-        vertical-align: top;
-        height: 28px !important;
-        margin-top: -5px;
-        width: 100%;
-        font-size: 12px;
-      }
-      [class*='Pill_pill'] {
-        margin-bottom: 5px;
-      }
-    }
-  
-    .remove {
-		  vertical-align: super;
-      display: inline-block;
-      margin-top: 10px;
-    }
+  .upload {
+    vertical-align: super;
+  }
 
-    .loader {
-      margin: auto;
+  .remove_upload {
+    display: inline-block;
+    margin-left: 8px;
+  }
+
+  .type_choice {
+    display: inline-block;
+    width: 180px;
+  }
+
+  .url {
+    display: inline-block;
+    margin-left: 8px;
+    width: 329px;
+
+    input {
+      vertical-align: top;
+      height: 28px !important;
+      margin-top: -5px;
+      width: 100%;
+      font-size: 12px;
     }
   }
+
+  .remove {
+    margin-top: 5px;
+    margin-left: 8px;
+  }
+
+  .loader {
+    margin: auto;
+  }
+}

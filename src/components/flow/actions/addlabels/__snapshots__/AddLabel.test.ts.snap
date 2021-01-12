@@ -42,7 +42,8 @@ exports[`AddLabelsComp should display labels on action 1`] = `
     key="ellipses"
   >
     +
-    2
+    0
+    0
      more
   </div>
 </Fragment>

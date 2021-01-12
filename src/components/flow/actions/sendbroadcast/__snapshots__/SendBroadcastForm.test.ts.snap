@@ -42,6 +42,10 @@ exports[`SendBroadcastForm render should render an empty form with no action 2`]
         ],
         "name": "Send Broadcast",
         "type": "send_broadcast",
+        "visibility": Array [
+          "messaging",
+          "voice",
+        ],
       }
     }
     onChange={[MockFunction]}
@@ -53,56 +57,20 @@ exports[`SendBroadcastForm render should render an empty form with no action 2`]
         "type": "contact",
       }
     }
-    completion={
-      Object {
-        "assetStore": Object {
-          "channels": Object {
-            "items": Object {},
-            "type": "channel",
-          },
-          "fields": Object {
-            "items": Object {},
-            "type": "field",
-          },
-          "flows": Object {
-            "items": Object {},
-            "type": "flow",
-          },
-          "labels": Object {
-            "items": Object {},
-            "type": "label",
-          },
-          "languages": Object {
-            "items": Object {},
-            "type": "language",
-          },
-          "recipients": Object {
-            "items": Object {},
-            "type": "contact",
-          },
-          "results": Object {
-            "items": Object {},
-            "type": "result",
-          },
-        },
-        "schema": Object {
-          "root": Array [],
-          "types": Array [],
-        },
-      }
-    }
     entry={
       Object {
         "value": Array [],
       }
     }
+    expressions={true}
     multi={true}
     name="Recipients"
     onChange={[Function]}
+    placeholder="Select Contacts"
     searchable={true}
   />
   <p />
-  <Connect(TextInputElement)
+  <TextInputElement
     autocomplete={true}
     count="SMS"
     entry={
@@ -149,6 +117,10 @@ exports[`SendBroadcastForm render should render self, children with base props 1
         ],
         "name": "Send Broadcast",
         "type": "send_broadcast",
+        "visibility": Array [
+          "messaging",
+          "voice",
+        ],
       }
     }
     onChange={[MockFunction]}
@@ -158,44 +130,6 @@ exports[`SendBroadcastForm render should render self, children with base props 1
       Object {
         "items": Object {},
         "type": "contact",
-      }
-    }
-    completion={
-      Object {
-        "assetStore": Object {
-          "channels": Object {
-            "items": Object {},
-            "type": "channel",
-          },
-          "fields": Object {
-            "items": Object {},
-            "type": "field",
-          },
-          "flows": Object {
-            "items": Object {},
-            "type": "flow",
-          },
-          "labels": Object {
-            "items": Object {},
-            "type": "label",
-          },
-          "languages": Object {
-            "items": Object {},
-            "type": "language",
-          },
-          "recipients": Object {
-            "items": Object {},
-            "type": "contact",
-          },
-          "results": Object {
-            "items": Object {},
-            "type": "result",
-          },
-        },
-        "schema": Object {
-          "root": Array [],
-          "types": Array [],
-        },
       }
     }
     entry={
@@ -232,13 +166,15 @@ exports[`SendBroadcastForm render should render self, children with base props 1
         ],
       }
     }
+    expressions={true}
     multi={true}
     name="Recipients"
     onChange={[Function]}
+    placeholder="Select Contacts"
     searchable={true}
   />
   <p />
-  <Connect(TextInputElement)
+  <TextInputElement
     autocomplete={true}
     count="SMS"
     entry={

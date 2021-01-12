@@ -113,7 +113,7 @@ describe('Flow Manipulation', () => {
         definition: { ...boring, _ui: undefined as any },
         metadata: null
       };
-      store.dispatch(loadFlowDefinition(missingUI, emptyAssetStore, () => {}));
+      store.dispatch(loadFlowDefinition(missingUI, emptyAssetStore));
       const action = getActionFromStore(store, Constants.UPDATE_NODES);
 
       // should have some default ui in our render nodes
@@ -197,7 +197,7 @@ describe('Flow Manipulation', () => {
             source: null,
             sourceId: 'node0:node0_exit0'
           },
-          FlowTypes.MESSAGE
+          FlowTypes.MESSAGING
         )
       );
       expect(store.getActions()).toMatchSnapshot();
@@ -301,7 +301,7 @@ describe('Flow Manipulation', () => {
     it('should replace router node with a single-action node', () => {
       const { node1: originalRenderNode } = testNodes;
       const incomingAction = createSendMsgAction();
-      const { renderNodeMap } = getFlowComponents(boring, {});
+      const { renderNodeMap } = getFlowComponents(boring);
 
       store = createMockStore(
         mutate(initialState, {

@@ -48,11 +48,15 @@ export default class SendBroadcastForm extends React.Component<
     const updates: Partial<SendBroadcastFormState> = {};
 
     if (keys.hasOwnProperty('recipients')) {
-      updates.recipients = validate('Recipients', keys.recipients!, [shouldRequireIf(submitting)]);
+      updates.recipients = validate(i18n.t('forms.recipients', 'Recipients'), keys.recipients!, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     if (keys.hasOwnProperty('text')) {
-      updates.message = validate('Message', keys.text!, [shouldRequireIf(submitting)]);
+      updates.message = validate(i18n.t('forms.message', 'Message'), keys.text!, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     const updated = mergeForm(this.state, updates);
@@ -94,17 +98,18 @@ export default class SendBroadcastForm extends React.Component<
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <AssetSelector
-          name="Recipients"
+          name={i18n.t('forms.recipients', 'Recipients')}
+          placeholder={i18n.t('forms.select_contacts', 'Select Contacts')}
           assets={this.props.assetStore.recipients}
           entry={this.state.recipients}
-          completion={{ assetStore: this.props.assetStore, schema: this.props.completionSchema }}
           searchable={true}
           multi={true}
+          expressions={true}
           onChange={this.handleRecipientsChanged}
         />
         <p />
         <TextInputElement
-          name="Message"
+          name={i18n.t('forms.message', 'Message')}
           showLabel={false}
           count={Count.SMS}
           onChange={this.handleMessageUpdate}

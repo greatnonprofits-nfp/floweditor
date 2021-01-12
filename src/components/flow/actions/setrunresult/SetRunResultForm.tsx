@@ -15,6 +15,7 @@ import { initializeForm, stateToAction } from './helpers';
 import styles from './SetRunResultForm.module.scss';
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
+import { SelectOption } from 'components/form/select/SelectElement';
 
 export interface SetRunResultFormState extends FormState {
   name: AssetEntry;
@@ -26,6 +27,8 @@ export default class SetRunResultForm extends React.PureComponent<
   ActionFormProps,
   SetRunResultFormState
 > {
+  options: SelectOption[] = [];
+
   constructor(props: ActionFormProps) {
     super(props);
 
@@ -33,6 +36,13 @@ export default class SetRunResultForm extends React.PureComponent<
 
     bindCallbacks(this, {
       include: [/^handle/, /^on/]
+    });
+  }
+
+  public componentDidMount(): void {
+    const items = this.props.assetStore.results.items;
+    this.options = Object.keys(items).map((key: string) => {
+      return { name: items[key].name, value: key };
     });
   }
 
@@ -59,7 +69,7 @@ export default class SetRunResultForm extends React.PureComponent<
     const updates: Partial<SetRunResultFormState> = {};
 
     if (keys.hasOwnProperty('name')) {
-      updates.name = validate('Name', keys.name, [
+      updates.name = validate(i18n.t('forms.name', 'Name'), keys.name, [
         shouldRequireIf(submitting),
         Alphanumeric,
         StartIsNonNumeric
@@ -67,11 +77,11 @@ export default class SetRunResultForm extends React.PureComponent<
     }
 
     if (keys.hasOwnProperty('value')) {
-      updates.value = validate('Value', keys.value, []);
+      updates.value = validate(i18n.t('forms.value', 'Value'), keys.value, []);
     }
 
     if (keys.hasOwnProperty('category')) {
-      updates.category = validate('Category', keys.category, []);
+      updates.category = validate(i18n.t('forms.category', 'Category'), keys.category, []);
     }
 
     const updated = mergeForm(this.state, updates);
@@ -121,15 +131,18 @@ export default class SetRunResultForm extends React.PureComponent<
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <div className={styles.form}>
           <AssetSelector
-            name="Result"
+            name={i18n.t('forms.result', 'Result')}
             assets={this.props.assetStore.results}
             entry={this.state.name}
             searchable={true}
-            createPrefix={i18n.t('forms.set_run_result.create_prefix', 'New: ')}
+            createPrefix={i18n.t('forms.create_prefix', 'New: ')}
             onChange={this.handleNameUpdate}
             createAssetFromInput={this.handleCreateAssetFromInput}
             formClearable={true}
             showLabel={true}
+            valueKey="value"
+            nameKey="name"
+            additionalOptions={this.options}
             helpText={
               <Trans
                 i18nKey="forms.result_name_help"
@@ -142,7 +155,7 @@ export default class SetRunResultForm extends React.PureComponent<
 
           <TextInputElement
             __className={styles.value}
-            name="Value"
+            name={i18n.t('forms.value', 'Value')}
             showLabel={true}
             onChange={this.handleValueUpdate}
             entry={this.state.value}
@@ -151,7 +164,7 @@ export default class SetRunResultForm extends React.PureComponent<
           />
           <TextInputElement
             __className={styles.category}
-            name="Category"
+            name={i18n.t('forms.category', 'Category')}
             placeholder="Optional"
             showLabel={true}
             onChange={this.handleCategoryUpdate}

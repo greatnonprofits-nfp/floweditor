@@ -42,6 +42,14 @@ describe(LogEvent.name, () => {
       ...commonEventProps
     });
   });
+  it('should render contact_field_changed event with null value', () => {
+    testEventRender({
+      type: 'contact_field_changed',
+      field: { key: 'age', name: 'Age' },
+      value: null,
+      ...commonEventProps
+    });
+  });
   it('should render contact_groups_changed event', () => {
     testEventRender({
       type: 'contact_groups_changed',
@@ -67,6 +75,13 @@ describe(LogEvent.name, () => {
     testEventRender({
       type: 'contact_language_changed',
       language: 'eng',
+      ...commonEventProps
+    });
+  });
+  it('should render contact_status_changed event', () => {
+    testEventRender({
+      type: 'contact_status_changed',
+      status: 'blocked',
       ...commonEventProps
     });
   });
@@ -164,6 +179,33 @@ describe(LogEvent.name, () => {
       type: 'run_result_changed',
       name: 'Response 1',
       value: 'yes',
+      ...commonEventProps
+    });
+  });
+  it('should render service_called event', () => {
+    testEventRender({
+      type: 'service_called',
+      service: 'classifier',
+      classifier: { uuid: 'a67d9cc0-15bb-4a92-b387-554e28726472', name: 'Booking (Wit)' },
+      http_logs: [
+        {
+          url: 'https://api.wit.ai/message?v=20170307&q=Hi+everybody',
+          request:
+            'GET /message?v=20170307&q=Hi+everybody HTTP/1.1\r\nHost: api.wit.ai\r\nUser-Agent: Go-http-client/1.1\r\nAuthorization: Bearer 123456789\r\nAccept-Encoding: gzip\r\n\r\n',
+          response:
+            'HTTP/1.0 200 OK\r\nContent-Length: 127\r\n\r\n{"_text":"Hi everyone","entities":{"intent":[{"confidence":0.84709152161066,"value":"greeting"}]},"msg_id":"1M7fAcDWag76OmgDI"}'
+        }
+      ],
+      ...commonEventProps
+    });
+  });
+  it('should render ticket_opened event', () => {
+    testEventRender({
+      type: 'ticket_opened',
+      ticketer: { uuid: '15892014-144c-4721-a611-c80b38481055', name: 'Email Support' },
+      subject: 'Need help',
+      body: 'Where are my cookies?',
+      result_name: 'Ticket',
       ...commonEventProps
     });
   });

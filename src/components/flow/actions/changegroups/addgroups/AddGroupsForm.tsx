@@ -34,9 +34,9 @@ export default class AddGroupsForm extends React.Component<ActionFormProps, Chan
     }
   }
 
-  public handleGroupsChanged(groups: Asset[], submitting: boolean = false): boolean {
+  public handleGroupsChanged(groups: any[], submitting: boolean = false): boolean {
     const updates: Partial<ChangeGroupsFormState> = {
-      groups: validate('Groups', groups, [shouldRequireIf(submitting)])
+      groups: validate(i18n.t('forms.groups', 'Groups'), groups, [shouldRequireIf(submitting)])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -72,11 +72,11 @@ export default class AddGroupsForm extends React.Component<ActionFormProps, Chan
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <p data-spec={labelSpecId}>
-          <Trans i18nKey="forms.add_groups.summary">Select the groups to add the contact to.</Trans>
+          <Trans i18nKey="forms.add_groups_summary">Select the groups to add the contact to.</Trans>
         </p>
 
         <AssetSelector
-          name={i18n.t('groups', 'Groups')}
+          name={i18n.t('forms.groups', 'Groups')}
           multi={true}
           noOptionsMessage={i18n.t('enter_to_create_group', 'Enter a name to create a new group')}
           assets={this.props.assetStore.groups}
@@ -84,6 +84,8 @@ export default class AddGroupsForm extends React.Component<ActionFormProps, Chan
           onChange={this.handleGroupsChanged}
           searchable={true}
           shouldExclude={excludeDynamicGroups}
+          placeholder={i18n.t('select_groups', 'Select Groups')}
+          expressions={true}
           // Groups can be created on the fly
           createPrefix={i18n.t('create_group', 'Create Group') + ': '}
           createAssetFromInput={this.handleCreateAssetFromInput}

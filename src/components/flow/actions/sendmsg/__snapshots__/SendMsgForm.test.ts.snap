@@ -29,7 +29,7 @@ exports[`SendMsgForm render should render 1`] = `
               }
             }
             formClearable={true}
-            name="Template"
+            name="template"
             noOptionsMessage="No templates found"
             onChange={[Function]}
             searchable={true}
@@ -53,7 +53,7 @@ exports[`SendMsgForm render should render 1`] = `
             }
             helpText={
               <Trans
-                i18nKey="forms.send_msg.add_quick_reply"
+                i18nKey="forms.add_quick_reply"
               >
                 Add a new Quick Reply and press enter.
               </Trans>
@@ -64,10 +64,22 @@ exports[`SendMsgForm render should render 1`] = `
               }
             }
             name="Quick Reply"
-            onEntryChanged={[Function]}
-            onItemAdded={[Function]}
-            onRemoved={[Function]}
+            onChange={[Function]}
           />
+          <React.Fragment>
+            <p>
+              <a
+                className="view_shareable_button"
+                onClick={[Function]}
+                role="button"
+              >
+                <span
+                  className="tab_icon fe-plus-circle view_shareable_button_icon"
+                />
+                Add sharing buttons (For WebChat only)
+              </a>
+            </p>
+          </React.Fragment>
         </React.Fragment>,
         "checked": false,
         "hasErrors": false,
@@ -76,7 +88,9 @@ exports[`SendMsgForm render should render 1`] = `
       Object {
         "body": <React.Fragment>
           <p>
-            Add up to 3 attachments to each message. Each attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
+            Send attachment: 
+            <br />
+            Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
           </p>
           <div
             className="url_attachment"
@@ -95,35 +109,29 @@ exports[`SendMsgForm render should render 1`] = `
                 options={
                   Array [
                     Object {
-                      "label": "Image URL",
+                      "name": "Image URL",
                       "value": "image",
                     },
                     Object {
-                      "label": "Audio URL",
+                      "name": "Audio URL",
                       "value": "audio",
                     },
                     Object {
-                      "label": "Video URL",
+                      "name": "Video URL",
                       "value": "video",
                     },
                     Object {
-                      "label": "Upload Attachment",
+                      "name": "PDF Document URL",
+                      "value": "application",
+                    },
+                    Object {
+                      "name": "Upload Attachment",
                       "value": "upload",
                     },
                   ]
                 }
-                placeholder="Add Attachment"
-                styles={
-                  Object {
-                    "control": [Function],
-                    "indicatorsContainer": [Function],
-                    "input": [Function],
-                    "menuList": [Function],
-                    "option": [Function],
-                    "singleValue": [Function],
-                    "valueContainer": [Function],
-                  }
-                }
+                placeholder="Send Attachment"
+                style="small"
               />
             </div>
           </div>
@@ -136,6 +144,40 @@ exports[`SendMsgForm render should render 1`] = `
             }
             type="file"
           />
+          <span
+            className="span_separator"
+          />
+          <p>
+            Receive attachment: 
+            <br />
+            Select a type of attachment to receive from a user as an answer choice. 
+            <br />
+            Note: only available for channels with file upload capabilities.
+          </p>
+          <div
+            className="type_choice"
+          >
+            <SelectElement
+              clearable={true}
+              entry={
+                Object {
+                  "value": undefined,
+                }
+              }
+              name="ReceiveAttachment"
+              onChange={[Function]}
+              options={
+                Array [
+                  Object {
+                    "name": "Image",
+                    "value": "image",
+                  },
+                ]
+              }
+              placeholder="Receive Attachment"
+              styles="small"
+            />
+          </div>
         </React.Fragment>,
         "checked": false,
         "name": "Attachments",
@@ -143,7 +185,7 @@ exports[`SendMsgForm render should render 1`] = `
       Object {
         "body": <CheckboxElement
           checked={false}
-          description="Send a message to all destinations known for this contact. If you aren't sure what this means, leave it unchecked."
+          description="All Destinations"
           labelClassName="checkbox"
           name="All Destinations"
           onChange={[Function]}
@@ -167,7 +209,7 @@ exports[`SendMsgForm render should render 1`] = `
         "localizeableKeys": Array [
           "text",
           "quick_replies",
-          "templating",
+          "templating.variables",
         ],
         "massageForDisplay": [Function],
         "name": "Send Message",
@@ -176,9 +218,9 @@ exports[`SendMsgForm render should render 1`] = `
     }
     onChange={[MockFunction]}
   />
-  <Connect(TextInputElement)
+  <TextInputElement
     autocomplete={true}
-    count="SMS"
+    counter=".sms-counter"
     entry={
       Object {
         "value": "Hey!",
@@ -189,6 +231,9 @@ exports[`SendMsgForm render should render 1`] = `
     onChange={[Function]}
     showLabel={false}
     textarea={true}
+  />
+  <temba-charcount
+    class="sms-counter"
   />
 </Dialog>
 `;
@@ -209,10 +254,15 @@ Array [
 exports[`SendMsgForm updates should save changes 1`] = `
 Object {
   "attachments": Array [],
+  "downloadSharing": false,
+  "emailSharing": false,
+  "facebookSharing": false,
+  "lineSharing": false,
   "message": Object {
     "validationFailures": Array [],
     "value": "What is your favorite color?",
   },
+  "pinterestSharing": false,
   "quickReplies": Object {
     "validationFailures": Array [],
     "value": Array [
@@ -224,7 +274,17 @@ Object {
   "quickReplyEntry": Object {
     "value": "",
   },
+  "receiveAttachment": Object {
+    "value": undefined,
+  },
   "sendAll": true,
+  "sharingBtnHashtags": Object {
+    "value": Array [],
+  },
+  "sharingBtnText": Object {
+    "value": "",
+  },
+  "telegramSharing": false,
   "template": Object {
     "value": null,
   },
@@ -232,7 +292,10 @@ Object {
   "topic": Object {
     "value": undefined,
   },
+  "twitterSharing": false,
   "valid": true,
+  "viewShareableButtons": false,
+  "whatsappSharing": false,
 }
 `;
 

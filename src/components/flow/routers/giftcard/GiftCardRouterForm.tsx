@@ -25,8 +25,8 @@ export interface GiftCardRouterFormState extends FormState {
 }
 
 const GIFTCARD_OPTIONS: { [key: string]: SelectOption } = {
-  GIFTCARD_ASSIGNING: { value: 'GIFTCARD_ASSIGNING', label: 'Assign Gift Card' },
-  GIFTCARD_CHECK: { value: 'GIFTCARD_CHECK', label: 'Check Status' }
+  GIFTCARD_ASSIGNING: { value: 'GIFTCARD_ASSIGNING', name: 'Assign Gift Card' },
+  GIFTCARD_CHECK: { value: 'GIFTCARD_CHECK', name: 'Check Status' }
 };
 
 const customStyles: React.CSSProperties = {
@@ -103,9 +103,9 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
     const entry: SelectOption = GIFTCARD_OPTIONS[this.state.giftcardType.value]
       ? {
           value: this.state.giftcardType.value,
-          label: GIFTCARD_OPTIONS[this.state.giftcardType.value]!.label
+          name: GIFTCARD_OPTIONS[this.state.giftcardType.value].name
         }
-      : { label: '', value: '' };
+      : { name: '', value: '' };
     return (
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
@@ -115,6 +115,9 @@ class GiftCardRouterForm extends React.PureComponent<RouterFormProps, GiftCardRo
           entry={this.state.giftcardDb}
           name="Giftcard Database"
           onChange={this.handleGiftcardChanged}
+          searchable={true}
+          nameKey={'text'}
+          valueKey={'id'}
         />
         <div style={customStyles}>
           <SelectElement

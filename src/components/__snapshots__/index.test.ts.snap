@@ -5,7 +5,7 @@ Array [
   Object {
     "activity": "",
     "attachments": "/assets/attachments.json",
-    "attachments_validation": "/assets/attachments_validation.json",
+    "attachments_validation": "/assets/validate_attachment_url.json",
     "channels": "/assets/channels.json",
     "classifiers": "/assets/classifiers.json",
     "completion": "/assets/completion.json",
@@ -14,10 +14,13 @@ Array [
     "fields": "/assets/fields.json",
     "flows": "/assets/flows.json",
     "functions": "/assets/functions.json",
+    "giftcard": "",
     "globals": "/assets/globals.json",
     "groups": "/assets/groups.json",
     "labels": "/assets/labels.json",
     "languages": "/assets/languages.json",
+    "link": "",
+    "lookups": "",
     "recents": "/assets/recents.json",
     "recipients": "/assets/recipients.json",
     "resthooks": "/assets/resthooks.json",
@@ -25,9 +28,9 @@ Array [
     "simulateResume": "",
     "simulateStart": "",
     "templates": "/assets/templates.json",
+    "ticketers": "/assets/ticketers.json",
   },
   "a4f64f1b-85bc-477e-b706-de313a022979",
-  undefined,
   undefined,
 ]
 `;
@@ -58,15 +61,18 @@ exports[`Root render should apply translating style if passed a truthy translati
       className="editor"
       data-spec="editor"
     >
-      <Connect(LanguageSelector) />
       <RevisionExplorer
         assetStore={null}
         createNewRevision={[MockFunction]}
         loadFlowDefinition={[MockFunction]}
         onToggled={[Function]}
+        popped={null}
       />
       <div
         id="portal-root"
+      />
+      <div
+        id="canvas-portal"
       />
     </div>
   </div>
@@ -98,16 +104,19 @@ exports[`Root render should render flow if passed a definition, language 1`] = `
       className="editor"
       data-spec="editor"
     >
-      <Connect(LanguageSelector) />
       <Connect(Flow) />
       <RevisionExplorer
         assetStore={null}
         createNewRevision={[MockFunction]}
         loadFlowDefinition={[MockFunction]}
         onToggled={[Function]}
+        popped={null}
       />
       <div
         id="portal-root"
+      />
+      <div
+        id="canvas-portal"
       />
     </div>
   </div>
@@ -139,15 +148,18 @@ exports[`Root render should render self, children with required props 1`] = `
       className="editor"
       data-spec="editor"
     >
-      <Connect(LanguageSelector) />
       <RevisionExplorer
         assetStore={null}
         createNewRevision={[MockFunction]}
         loadFlowDefinition={[MockFunction]}
         onToggled={[Function]}
+        popped={null}
       />
       <div
         id="portal-root"
+      />
+      <div
+        id="canvas-portal"
       />
     </div>
   </div>

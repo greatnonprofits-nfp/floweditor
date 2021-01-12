@@ -15,132 +15,21 @@ exports[`CaseElement operator changes should handle updates 1`] = `
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_phone\\",\\"verboseName\\":\\"has a phone number\\",\\"operands\\":0,\\"categoryName\\":\\"Has Phone\\"}]"
+            />
+          </div>
         </div>
         <div
           class="single_operand"
@@ -158,37 +47,13 @@ exports[`CaseElement operator changes should handle updates 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value="Has Phone"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -217,132 +82,21 @@ exports[`CaseElement operator changes should should set arguments for numeric ra
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_number_between\\",\\"verboseName\\":\\"has a number between\\",\\"operands\\":2}]"
+            />
+          </div>
         </div>
         <div
           class="multi_operand"
@@ -351,37 +105,13 @@ exports[`CaseElement operator changes should should set arguments for numeric ra
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
+                data-testid="arguments"
                 name="arguments"
-                type="text"
                 value=""
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <span
@@ -394,37 +124,13 @@ exports[`CaseElement operator changes should should set arguments for numeric ra
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
+                data-testid="arguments"
                 name="arguments"
-                type="text"
                 value=""
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -441,37 +147,13 @@ exports[`CaseElement operator changes should should set arguments for numeric ra
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value=""
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -500,132 +182,21 @@ exports[`CaseElement operator changes shouldnt update exit if it has been edited
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_number\\",\\"verboseName\\":\\"has a number\\",\\"operands\\":0,\\"categoryName\\":\\"Has Number\\"}]"
+            />
+          </div>
         </div>
         <div
           class="single_operand"
@@ -643,37 +214,13 @@ exports[`CaseElement operator changes shouldnt update exit if it has been edited
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value="My Exit Name"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -702,132 +249,21 @@ exports[`CaseElement render renders no argument rules 1`] = `
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_number\\",\\"verboseName\\":\\"has a number\\",\\"operands\\":0,\\"categoryName\\":\\"Has Number\\"}]"
+            />
+          </div>
         </div>
         <div
           class="single_operand"
@@ -845,37 +281,13 @@ exports[`CaseElement render renders no argument rules 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value="Has Number"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -904,132 +316,21 @@ exports[`CaseElement render should render empty case 1`] = `
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_any_word\\",\\"verboseName\\":\\"has any of the words\\",\\"operands\\":1,\\"visibility\\":[\\"messaging\\",\\"messaging_offline\\"]}]"
+            />
+          </div>
         </div>
         <div
           class="single_operand"
@@ -1038,38 +339,14 @@ exports[`CaseElement render should render empty case 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
+                data-testid="arguments"
                 name="arguments"
                 placeholder=""
-                type="text"
                 value=""
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1086,37 +363,13 @@ exports[`CaseElement render should render empty case 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value=""
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1145,132 +398,21 @@ exports[`CaseElement update handles argument change 1`] = `
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_any_word\\",\\"verboseName\\":\\"has any of the words\\",\\"operands\\":1,\\"visibility\\":[\\"messaging\\",\\"messaging_offline\\"]}]"
+            />
+          </div>
         </div>
         <div
           class="single_operand"
@@ -1279,38 +421,14 @@ exports[`CaseElement update handles argument change 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
+                data-testid="arguments"
                 name="arguments"
                 placeholder=""
-                type="text"
                 value="Purple, p"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1327,37 +445,13 @@ exports[`CaseElement update handles argument change 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value="Purple"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1386,132 +480,21 @@ exports[`CaseElement update handles multiple argument change 1`] = `
           data-draggable="true"
         />
         <div
-          class="choice select-medium"
+          class="choice"
         >
-          <select
-            data-testid="select"
+          <div
+            class="small "
           >
-            <option
-              value="has_any_word"
-            >
-              has any of the words
-            </option>
-            <option
-              value="has_all_words"
-            >
-              has all of the words
-            </option>
-            <option
-              value="has_phrase"
-            >
-              has the phrase
-            </option>
-            <option
-              value="has_only_phrase"
-            >
-              has only the phrase
-            </option>
-            <option
-              value="has_beginning"
-            >
-              starts with
-            </option>
-            <option
-              value="has_text"
-            >
-              has some text
-            </option>
-            <option
-              value="has_number"
-            >
-              has a number
-            </option>
-            <option
-              value="has_number_between"
-            >
-              has a number between
-            </option>
-            <option
-              value="has_number_lt"
-            >
-              has a number below
-            </option>
-            <option
-              value="has_number_lte"
-            >
-              has a number at or below
-            </option>
-            <option
-              value="has_number_eq"
-            >
-              has a number equal to
-            </option>
-            <option
-              value="has_number_gte"
-            >
-              has a number at or above
-            </option>
-            <option
-              value="has_number_gt"
-            >
-              has a number above
-            </option>
-            <option
-              value="has_date"
-            >
-              has a date
-            </option>
-            <option
-              value="has_date_lt"
-            >
-              has a date before
-            </option>
-            <option
-              value="has_date_eq"
-            >
-              has a date equal to
-            </option>
-            <option
-              value="has_date_gt"
-            >
-              has a date after
-            </option>
-            <option
-              value="has_time"
-            >
-              has a time
-            </option>
-            <option
-              value="has_phone"
-            >
-              has a phone number
-            </option>
-            <option
-              value="has_email"
-            >
-              has an email
-            </option>
-            <option
-              value="has_state"
-            >
-              has state
-            </option>
-            <option
-              value="has_district"
-            >
-              has district
-            </option>
-            <option
-              value="has_ward"
-            >
-              has ward
-            </option>
-            <option
-              value="has_pattern"
-            >
-              matches regex
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_operator"
+              errors="[]"
+              expressions=""
+              name="operator"
+              namekey="verboseName"
+              valuekey="type"
+              values="[{\\"type\\":\\"has_number_between\\",\\"verboseName\\":\\"has a number between\\",\\"operands\\":2}]"
+            />
+          </div>
         </div>
         <div
           class="multi_operand"
@@ -1520,37 +503,13 @@ exports[`CaseElement update handles multiple argument change 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
+                data-testid="arguments"
                 name="arguments"
-                type="text"
                 value="1"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <span
@@ -1563,37 +522,13 @@ exports[`CaseElement update handles multiple argument change 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
+                data-testid="arguments"
                 name="arguments"
-                type="text"
                 value="100"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1610,37 +545,13 @@ exports[`CaseElement update handles multiple argument change 1`] = `
             class="ele"
           >
             <div
-              class="wrapper"
+              class="wrapper small"
             >
               <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="36"
-                name="exitName"
-                type="text"
+                data-testid="Exit Name"
+                name="Exit Name"
                 value="1 - 100"
               />
-              <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
-              >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

@@ -32,188 +32,44 @@ exports[`SchemeRouterForm should render 1`] = `
             When a contact arrives at this point in your flow...
           </p>
           <div>
-            <select
-              data-testid="select"
+            <div
+              class="normal "
             >
-              <option
-                value="send_msg"
-              >
-                Send the contact a message
-              </option>
-              <option
-                value="wait_for_response"
-              >
-                Wait for the contact to respond
-              </option>
-              <option
-                value="send_broadcast"
-              >
-                Send somebody else a message
-              </option>
-              <option
-                value="add_input_labels"
-              >
-                Label the incoming message
-              </option>
-              <option
-                value="add_contact_urn"
-              >
-                Add a URN for the contact
-              </option>
-              <option
-                value="add_contact_groups"
-              >
-                Add the contact to a group
-              </option>
-              <option
-                value="remove_contact_groups"
-              >
-                Remove the contact from a group
-              </option>
-              <option
-                value="set_contact_field"
-              >
-                Update the contact
-              </option>
-              <option
-                value="send_email"
-              >
-                Send an email
-              </option>
-              <option
-                value="set_run_result"
-              >
-                Save a result for this flow
-              </option>
-              <option
-                value="call_webhook"
-              >
-                Call a webhook
-              </option>
-              <option
-                value="call_resthook"
-              >
-                Call Zapier
-              </option>
-              <option
-                value="enter_flow"
-              >
-                Enter another flow
-              </option>
-              <option
-                value="start_session"
-              >
-                Start somebody else in a flow
-              </option>
-              <option
-                value="transfer_airtime"
-              >
-                Send the contact airtime
-              </option>
-              <option
-                value="split_by_intent"
-              >
-                Split by intent
-              </option>
-              <option
-                value="split_by_expression"
-              >
-                Split by a custom expression
-              </option>
-              <option
-                value="split_by_contact_field"
-              >
-                Split by a contact field
-              </option>
-              <option
-                value="split_by_run_result"
-              >
-                Split by a result in the flow
-              </option>
-              <option
-                value="split_by_random"
-              >
-                Split by random chance
-              </option>
-              <option
-                value="split_by_groups"
-              >
-                Split by group membership
-              </option>
-              <option
-                value="split_by_scheme"
-              >
-                Split by URN type
-              </option>
-            </select>
+              <temba-select
+                data-testid="temba_select_type"
+                errors="[]"
+                expressions=""
+                name="type"
+                namekey="description"
+                searchable="true"
+                valuekey="type"
+                values="[{\\"type\\":\\"split_by_scheme\\",\\"name\\":\\"Split by URN Type\\",\\"description\\":\\"Split by URN type\\",\\"localizeableKeys\\":[\\"exits\\"]}]"
+              />
+            </div>
           </div>
         </div>
         <p>
-          Channel types
+          The contact's URN is the address they used to reach you such as their phone number or a Facebook ID. Select which URN types to split by below.
         </p>
         <div
           class="ele"
         >
-          <select
-            data-testid="select"
-            multiple=""
+          <div
+            class="normal "
           >
-            <option
-              value="tel"
-            >
-              SMS
-            </option>
-            <option
-              value="whatsapp"
-            >
-              WhatsApp
-            </option>
-            <option
-              value="facebook"
-            >
-              Facebook
-            </option>
-            <option
-              value="twitterid"
-            >
-              Twitter
-            </option>
-            <option
-              value="telegram"
-            >
-              Telegram
-            </option>
-            <option
-              value="viber"
-            >
-              Viber
-            </option>
-            <option
-              value="line"
-            >
-              Line
-            </option>
-            <option
-              value="wechat"
-            >
-              Wechat
-            </option>
-            <option
-              value="fcm"
-            >
-              Firebase
-            </option>
-            <option
-              value="jiochat"
-            >
-              Jiochat
-            </option>
-            <option
-              value="ext"
-            >
-              External
-            </option>
-          </select>
+            <temba-select
+              data-testid="temba_select_channel_type"
+              errors="[]"
+              expressions=""
+              hideerrors="true"
+              multi="true"
+              name="Channel Type"
+              namekey="name"
+              placeholder="Select the channels to split by"
+              valuekey="value"
+              values="[{\\"value\\":\\"tel\\",\\"name\\":\\"SMS\\"},{\\"value\\":\\"whatsapp\\",\\"name\\":\\"WhatsApp\\"},{\\"value\\":\\"facebook\\",\\"name\\":\\"Facebook\\"}]"
+            />
+          </div>
         </div>
         <div
           class="optional_text_input"
@@ -221,6 +77,7 @@ exports[`SchemeRouterForm should render 1`] = `
           <span
             class="toggle_link"
             data-spec="toggle-link"
+            data-testid="toggle-link"
           >
             Save as..
           </span>

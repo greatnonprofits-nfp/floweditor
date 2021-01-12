@@ -17,27 +17,26 @@ import { hasUseableTranslation } from 'components/form/assetselector/helpers';
 import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import MultiChoiceInput from 'components/form/multichoice/MultiChoice';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
-import TextInputElement, { Count } from 'components/form/textinput/TextInputElement';
+import TextInputElement, { TextInputStyle } from 'components/form/textinput/TextInputElement';
 import HelpIcon from 'components/helpicon/HelpIcon';
 import TypeList from 'components/nodeeditor/TypeList';
 import Pill from 'components/pill/Pill';
 import { fakePropType } from 'config/ConfigProvider';
 import { fetchAsset, getCookie } from 'external';
-import { Template, TemplateOptions, TemplateTranslation } from 'flowTypes';
+import { Template, TemplateTranslation } from 'flowTypes';
 import mutate from 'immutability-helper';
 import * as React from 'react';
 import { Asset } from 'store/flowContext';
 import {
-  AssetEntry,
   FormState,
   mergeForm,
   StringArrayEntry,
   StringEntry,
-  SelectOptionEntry
+  SelectOptionEntry,
+  FormEntry
 } from 'store/nodeEditor';
 import { MaxOfTenItems, Required, shouldRequireIf, validate } from 'store/validators';
 import { createUUID, range } from 'utils';
-import { small, large } from 'utils/reactselect';
 
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
@@ -47,6 +46,7 @@ import variables from 'variables.module.scss';
 
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
+import { TembaSelectStyle } from 'temba/TembaSelect';
 
 const FACEBOOK_ICON = require('static/images/facebook.png');
 const TELEGRAM_ICON = require('static/images/telegram.png');
@@ -62,12 +62,13 @@ const MAX_ATTACHMENTS = 3;
 const HASHTAG_PATTERN = /(?:\s|^)#[A-Za-z0-9\\.\\_]+(?:\s|$)/;
 
 const TYPE_OPTIONS: SelectOption[] = [
-  { value: 'image', label: 'Image URL' },
-  { value: 'audio', label: 'Audio URL' },
-  { value: 'video', label: 'Video URL' }
+  { value: 'image', name: i18n.t('forms.image_url', 'Image URL') },
+  { value: 'audio', name: i18n.t('forms.audio_url', 'Audio URL') },
+  { value: 'video', name: i18n.t('forms.video_url', 'Video URL') },
+  { value: 'application', name: i18n.t('forms.pdf_url', 'PDF Document URL') }
 ];
 
-const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', label: 'Upload Attachment' }]);
+const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', name: 'Upload Attachment' }]);
 
 const getAttachmentTypeOption = (type: string): SelectOption => {
   return TYPE_OPTIONS.find((option: SelectOption) => option.value === type);
@@ -85,7 +86,7 @@ export interface SendMsgFormState extends FormState {
   quickReplyEntry: StringEntry;
   sendAll: boolean;
   attachments: Attachment[];
-  template: AssetEntry;
+  template: FormEntry;
   topic: SelectOptionEntry;
   templateVariables: StringEntry[];
   templateTranslation?: TemplateTranslation;
@@ -116,10 +117,10 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
     // intialize our templates if we have them
     if (this.state.template.value !== null) {
-      fetchAsset(this.props.assetStore.templates, this.state.template.value.id).then(
+      fetchAsset(this.props.assetStore.templates, this.state.template.value.uuid).then(
         (asset: Asset) => {
           if (asset !== null) {
-            this.handleTemplateChanged([asset]);
+            this.handleTemplateChanged([{ ...this.state.template.value, ...asset.content }]);
           }
         }
       );
@@ -151,7 +152,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
   ): boolean {
     const updates: Partial<SendMsgFormState> = {};
     if (keys.hasOwnProperty('text')) {
-      updates.message = validate('Message', keys.text, [shouldRequireIf(submitting)]);
+      updates.message = validate(i18n.t('forms.message', 'Message'), keys.text, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     if (keys.hasOwnProperty('sendAll')) {
@@ -159,7 +162,11 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     }
 
     if (keys.hasOwnProperty('quickReplies')) {
-      updates.quickReplies = validate('Quick Replies', keys.quickReplies, [MaxOfTenItems]);
+      updates.quickReplies = validate(
+        i18n.t('forms.quick_replies', 'Quick Replies'),
+        keys.quickReplies,
+        [MaxOfTenItems]
+      );
     }
 
     if (keys.hasOwnProperty('sharingBtnText')) {
@@ -210,6 +217,10 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
     this.setState(updated);
     return updated.valid;
+  }
+
+  public handleMessageInput(event: React.KeyboardEvent) {
+    return this.handleUpdate({ text: (event.target as any).value }, false);
   }
 
   public handleMessageUpdate(message: string, name: string, submitting = false): boolean {
@@ -280,19 +291,21 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       >
         <div className={styles.type_choice}>
           <SelectElement
-            name="Type"
-            styles={small as any}
+            key={'attachment_type_' + index}
+            name={i18n.t('forms.type', 'Type')}
+            style={TembaSelectStyle.small}
             entry={{
-              value: { label: attachment.type }
+              value: { name: attachment.type }
             }}
             options={TYPE_OPTIONS}
+            disabled={true}
           />
         </div>
         <div className={styles.url}>
           <span className={styles.upload}>
             <Pill
               icon="fe-download"
-              text=" Download"
+              text="Download"
               large={true}
               onClick={() => {
                 window.open(attachment.url, '_blank');
@@ -301,7 +314,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             <div className={styles.remove_upload}>
               <Pill
                 icon="fe-x"
-                text=" Remove"
+                text="Remove"
                 large={true}
                 onClick={() => {
                   this.handleAttachmentRemoved(index);
@@ -319,7 +332,10 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
     // if we have a csrf in our cookie, pass it along as a header
     const csrf = getCookie('csrftoken');
-    const headers = csrf ? { 'X-CSRFToken': csrf } : {};
+    const headers: any = csrf ? { 'X-CSRFToken': csrf } : {};
+
+    // mark us as ajax
+    headers['X-Requested-With'] = 'XMLHttpRequest';
 
     if (!this.isAttachmentsValid(files)) {
       return null;
@@ -387,8 +403,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       >
         <div className={styles.type_choice}>
           <SelectElement
-            styles={small as any}
-            name="Type Options"
+            key={'attachment_type_' + index}
+            style={TembaSelectStyle.small}
+            name={i18n.t('forms.type_options', 'Type Options')}
             placeholder="Send Attachment"
             entry={{
               value: index > -1 ? getAttachmentTypeOption(attachment.type) : null
@@ -421,7 +438,8 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             <div className={styles.url}>
               <TextInputElement
                 placeholder="URL"
-                name="url"
+                name={i18n.t('forms.url', 'URL')}
+                style={TextInputStyle.small}
                 onChange={(value: string) => {
                   attachments = mutate(attachments, {
                     [index]: { $set: { type: attachment.type, url: value } }
@@ -464,7 +482,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         <p>
           Send attachment: <br />
           {i18n.t(
-            'forms.send_msg.summary',
+            'forms.send_msg_summary',
             'Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
             { count: MAX_ATTACHMENTS }
           )}
@@ -489,7 +507,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         </p>
         <div className={styles.type_choice}>
           <SelectElement
-            styles={small as any}
+            style={TembaSelectStyle.small}
             name="ReceiveAttachment"
             entry={this.state.receiveAttachment}
             onChange={this.handleReceiveAttachmentUpdate}
@@ -506,7 +524,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     this.setState({ receiveAttachment: { value: option } });
   }
 
-  private handleTemplateChanged(selected: Asset[]): void {
+  private handleTemplateChanged(selected: any[]): void {
     const template = selected ? selected[0] : null;
 
     if (!template) {
@@ -516,8 +534,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         templateVariables: []
       });
     } else {
-      const templateOptions = template.content as TemplateOptions;
-      const templateTranslation = templateOptions.translations[0];
+      const templateTranslation = template.translations[0];
 
       const templateVariables =
         this.state.templateVariables.length === 0 ||
@@ -545,8 +562,8 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     this.setState({ templateVariables });
   }
 
-  private handleShouldExcludeTemplate(asset: Asset): boolean {
-    return !hasUseableTranslation(asset.content as Template);
+  private handleShouldExcludeTemplate(template: any): boolean {
+    return !hasUseableTranslation(template as Template);
   }
 
   private renderTopicConfig(): JSX.Element {
@@ -554,18 +571,18 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       <>
         <p>
           {i18n.t(
-            'forms.send_msg.facebook.warning',
+            'forms.send_msg_facebook_warning',
             'Sending bulk messages over a Facebook channel requires that a topic be specified if the user has not sent a message in the last 24 hours. Setting a topic to use over Facebook is especially important for the first message in your flow.'
           )}
         </p>
         <SelectElement
-          styles={large as any}
-          name="MethodMap"
+          key={'fb_method_select'}
+          name={i18n.t('forms.method', 'Method')}
           entry={this.state.topic}
           onChange={this.handleTopicUpdate}
           options={TOPIC_OPTIONS}
           placeholder={i18n.t(
-            'forms.send_message.facebook.topic_placeholder',
+            'forms.send_msg_facebook_topic_placeholder',
             'Select a topic to use over Facebook'
           )}
           clearable={true}
@@ -583,12 +600,12 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       <>
         <p>
           {i18n.t(
-            'forms.send_msg.whatsapp_warning',
+            'forms.whatsapp_warning',
             'Sending messages over a WhatsApp channel requires that a template be used if you have not received a message from a contact in the last 24 hours. Setting a template to use over WhatsApp is especially important for the first message in your flow.'
           )}
         </p>
         <AssetSelector
-          name="Template"
+          name={i18n.t('forms.template', 'template')}
           noOptionsMessage="No templates found"
           assets={this.props.assetStore.templates}
           entry={this.state.template}
@@ -604,9 +621,9 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
               return (
                 <div className={styles.variable} key={'tr_arg_' + num}>
                   <TextInputElement
-                    name={`Variable ${num + 1}`}
+                    name={`${i18n.t('forms.variable', 'Variable')} ${num + 1}`}
                     showLabel={false}
-                    placeholder={`Variable ${num + 1}`}
+                    placeholder={`${i18n.t('forms.variable', 'Variable')} ${num + 1}`}
                     onChange={(updatedText: string) => {
                       this.handleTemplateVariableChanged(updatedText, num);
                     }}
@@ -859,26 +876,22 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         <>
           <p>
             {i18n.t(
-              'forms.send_msg.quick_replies',
+              'forms.quick_replies_summary',
               'Quick Replies are made into buttons for supported channels. For example, when asking a question, you might add a Quick Reply for "Yes" and one for "No".'
             )}
           </p>
 
           <MultiChoiceInput
-            name="Quick Reply"
+            name={i18n.t('forms.quick_reply', 'quick_reply')}
             helpText={
-              <Trans i18nKey="forms.send_msg.add_quick_reply">
-                Add a new Quick Reply and press enter.
-              </Trans>
+              <Trans i18nKey="forms.add_quick_reply">Add a new Quick Reply and press enter.</Trans>
             }
             items={this.state.quickReplies}
             entry={this.state.quickReplyEntry}
-            onRemoved={this.handleRemoveQuickReply}
-            onItemAdded={this.handleAddQuickReply}
-            onEntryChanged={this.handleQuickReplyEntry}
+            onChange={this.handleQuickRepliesUpdate}
           />
 
-          {this.context.config.flowType === FlowTypes.MESSAGE ? (
+          {this.context.config.flowType === FlowTypes.MESSAGING ? (
             <>
               <p>
                 {/* eslint-disable-next-line */}
@@ -927,12 +940,12 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       name: 'Advanced',
       body: (
         <CheckboxElement
-          name="All Destinations"
+          name={i18n.t('forms.all_destinations', 'All Destinations')}
           title="All Destinations"
           labelClassName={styles.checkbox}
           checked={this.state.sendAll}
           description={i18n.t(
-            'forms.send_msg.all_destinations',
+            'forms.all_destinations',
             "Send a message to all destinations known for this contact. If you aren't sure what this means, leave it unchecked."
           )}
           onChange={this.handleSendAllUpdate}
@@ -971,15 +984,16 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
       >
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <TextInputElement
-          name="Message"
+          name={i18n.t('forms.message', 'Message')}
           showLabel={false}
-          count={Count.SMS}
+          counter=".sms-counter"
           onChange={this.handleMessageUpdate}
           entry={this.state.message}
           autocomplete={true}
           focus={true}
           textarea={true}
         />
+        <temba-charcount class="sms-counter"></temba-charcount>
         {renderIssues(this.props)}
       </Dialog>
     );

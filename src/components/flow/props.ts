@@ -43,6 +43,9 @@ export interface RouterFormProps extends IssueProps {
   // update handlers
   updateRouter(renderNode: RenderNode): void;
 
+  // alert notifications
+  mergeEditorState?: MergeEditorState;
+
   // modal notifiers
   onTypeChange(config: Type): void;
   onClose(canceled: boolean): void;
@@ -71,5 +74,11 @@ export const CHANNEL_PROPERTY: Asset = {
 export const LANGUAGE_PROPERTY: Asset = {
   name: titleCase(ContactProperties.Language),
   id: ContactProperties.Language,
+  type: AssetType.ContactProperty
+};
+
+export const STATUS_PROPERTY: Asset = {
+  name: titleCase(ContactProperties.Status),
+  id: ContactProperties.Status,
   type: AssetType.ContactProperty
 };

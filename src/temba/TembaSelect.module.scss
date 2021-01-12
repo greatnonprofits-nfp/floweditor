@@ -1,0 +1,27 @@
+@import 'variables.module.scss';
+
+.small {
+  temba-select {
+    --temba-select-selected-padding: 7px;
+    --temba-select-selected-line-height: 13px;
+    --temba-select-selected-font-size: 12px;
+    --temba-select-container-min-height: 25px;
+    --search-input-height: 7px !important;
+  }
+}
+
+.normal {
+  temba-select {
+    --temba-select-selected-padding: 9px;
+    --temba-select-selected-font-size: 13px;
+    --temba-select-container-min-height: 32px;
+  }
+}
+
+.error {
+  temba-select {
+    --color-widget-border: tomato;
+    --color-focus: tomato;
+    --widget-box-shadow-focused: 0 0 0 3px rgba(var(--error-rgb), 0.3);
+  }
+}

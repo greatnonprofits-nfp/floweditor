@@ -51,6 +51,7 @@ export const getResultName = (node: FlowNode) => {
     if (
       action.type === Types.call_webhook ||
       action.type === Types.call_resthook ||
+      action.type === Types.open_ticket ||
       action.type === Types.call_lookup ||
       action.type === Types.transfer_airtime
     ) {

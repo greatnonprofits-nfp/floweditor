@@ -20,7 +20,8 @@ const baseProps: StickyProps = {
   sticky,
   definition,
   selected: false,
-  updateSticky: jest.fn()
+  updateSticky: jest.fn(),
+  mutable: true
 };
 
 const { setup } = composeComponentTestUtils(

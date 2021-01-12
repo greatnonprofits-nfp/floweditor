@@ -6,7 +6,7 @@ import TypeList from 'components/nodeeditor/TypeList';
 import { fakePropType } from 'config/ConfigProvider';
 import * as React from 'react';
 import { Asset } from 'store/flowContext';
-import { AssetArrayEntry, FormState, mergeForm } from 'store/nodeEditor';
+import { FormState, mergeForm } from 'store/nodeEditor';
 import { shouldRequireIf, validate } from 'store/validators';
 
 import { initializeForm, stateToAction } from './helpers';
@@ -15,7 +15,7 @@ import { Trans } from 'react-i18next';
 import { renderIssues } from '../helpers';
 
 export interface AddLabelsFormState extends FormState {
-  labels: AssetArrayEntry;
+  labels: any;
 }
 
 export const controlLabelSpecId = 'label';
@@ -49,7 +49,7 @@ export default class AddLabelsForm extends React.PureComponent<
 
   public handleLabelsChanged(selected: Asset[], submitting: boolean = false): boolean {
     const updates: Partial<AddLabelsFormState> = {
-      labels: validate('Labels', selected, [shouldRequireIf(submitting)])
+      labels: validate(i18n.t('forms.labels', 'Labels'), selected, [shouldRequireIf(submitting)])
     };
 
     const updated = mergeForm(this.state, updates);
@@ -84,13 +84,13 @@ export default class AddLabelsForm extends React.PureComponent<
       <Dialog title={typeConfig.name} headerClass={typeConfig.type} buttons={this.getButtons()}>
         <TypeList __className="" initialType={typeConfig} onChange={this.props.onTypeChange} />
         <p data-spec={controlLabelSpecId}>
-          <Trans i18nKey="forms.add_labels.summary">
+          <Trans i18nKey="forms.add_labels_summary">
             Select the labels to apply to the incoming message.
           </Trans>
         </p>
 
         <AssetSelector
-          name="Labels"
+          name={i18n.t('forms.labels', 'Labels')}
           placeholder={i18n.t(
             'enter_to_create_label',
             'Enter the name of an existing label or create a new one'

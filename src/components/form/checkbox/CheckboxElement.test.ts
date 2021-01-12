@@ -38,7 +38,7 @@ describe(CheckboxElement.name, () => {
     wrapper.find('label').prop('onClick')();
     wrapper.update();
 
-    expect(setStateSpy).toHaveBeenCalledTimes(1);
+    expect(setStateSpy).toHaveBeenCalled();
     expect(setStateSpy).toMatchCallSnapshot();
     expect(props.onChange).toHaveBeenCalledTimes(1);
     expect(getSpecWrapper(wrapper, checkboxSpecId).hasClass(checkedBoxIco)).toBeTruthy();

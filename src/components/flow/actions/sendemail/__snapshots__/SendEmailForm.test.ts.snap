@@ -15,6 +15,74 @@ exports[`SendEmailForm render should render 1`] = `
     }
   }
   headerClass="send_email"
+  tabs={
+    Array [
+      Object {
+        "body": <React.Fragment>
+          <p>
+            Add up to 3 attachments to each message. Each attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
+          </p>
+          <p>
+            Warning: The combined size of all attachments should not exceed 25MB. If you need to send larger files, we suggest sending links to those files in the body of the email.
+          </p>
+          <div
+            className="url_attachment"
+          >
+            <div
+              className="type_choice"
+            >
+              <SelectElement
+                entry={
+                  Object {
+                    "value": null,
+                  }
+                }
+                name="Type Options"
+                onChange={[Function]}
+                options={
+                  Array [
+                    Object {
+                      "name": "File URL",
+                      "value": "image",
+                    },
+                    Object {
+                      "name": "Upload Attachment",
+                      "value": "upload",
+                    },
+                  ]
+                }
+                placeholder="Add Attachment"
+                styles={
+                  Object {
+                    "control": [Function],
+                    "indicatorsContainer": [Function],
+                    "input": [Function],
+                    "menuList": [Function],
+                    "option": [Function],
+                    "singleValue": [Function],
+                    "valueContainer": [Function],
+                  }
+                }
+              />
+            </div>
+          </div>
+          <React.Fragment />
+          <input
+            onChange={[Function]}
+            style={
+              Object {
+                "display": "none",
+              }
+            }
+            type="file"
+          />
+        </React.Fragment>,
+        "checked": false,
+        "hasErrors": true,
+        "name": "Attachments",
+      },
+    ]
+  }
   title="Send Email"
 >
   <TypeList
@@ -32,7 +100,7 @@ exports[`SendEmailForm render should render 1`] = `
         "name": "Send Email",
         "type": "send_email",
         "visibility": Array [
-          "message",
+          "messaging",
           "voice",
         ],
       }
@@ -57,7 +125,7 @@ exports[`SendEmailForm render should render 1`] = `
       placeholder="To"
       prompt="Enter email address"
     />
-    <Connect(TextInputElement)
+    <TextInputElement
       __className="subject"
       autocomplete={true}
       entry={
@@ -69,7 +137,7 @@ exports[`SendEmailForm render should render 1`] = `
       onChange={[Function]}
       placeholder="Subject"
     />
-    <Connect(TextInputElement)
+    <TextInputElement
       __className="message"
       autocomplete={true}
       entry={
@@ -86,23 +154,11 @@ exports[`SendEmailForm render should render 1`] = `
 </Dialog>
 `;
 
-exports[`SendEmailForm updates should allow switching from router 1`] = `
-Array [
-  Object {
-    "addresses": Array [
-      "joe@domain.com",
-      "jane@domain.com",
-    ],
-    "body": "What is a group of tigers called?",
-    "subject": "URGENT: I have a question",
-    "type": "send_email",
-    "uuid": "763e4844-3e1b-407a-a1b5-5fdfcd308b41",
-  },
-]
-`;
+exports[`SendEmailForm updates should allow switching from router 1`] = `undefined`;
 
 exports[`SendEmailForm updates should save changes 1`] = `
 Object {
+  "attachments": Array [],
   "body": Object {
     "validationFailures": Array [],
     "value": "What is a group of tigers called?",
@@ -129,6 +185,7 @@ Array [
       "joe@domain.com",
       "jane@domain.com",
     ],
+    "attachments": Array [],
     "body": "What is a group of tigers called?",
     "subject": "URGENT: I have a question",
     "type": "send_email",

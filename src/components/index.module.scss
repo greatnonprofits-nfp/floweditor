@@ -5,8 +5,8 @@
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   color: $text_color; // height: 100vh;
-  height: 100%;
-  width: 100%;
+  // height: 100%;
+  // width: 100%;
   font-size: 13px;
   line-height: 1.2;
   margin: 0;
@@ -76,9 +76,10 @@
   align-items: center;
   position: fixed;
   right: -62px;
-  top: 240px;
+  top: 243px;
   z-index: 1000;
-  padding: 5px 8px;
+  padding: 0 8px;
+  height: 46px;
   width: 100px;
   border: none;
   font-family: inherit;

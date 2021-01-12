@@ -41,7 +41,8 @@ import {
   updateContactFields,
   updateDefinition,
   updateNodes,
-  updateMetadata
+  updateMetadata,
+  updateIssues
 } from 'store/flowContext';
 import {
   createEmptyNode,
@@ -52,7 +53,8 @@ import {
   getLocalizations,
   getNode,
   guessNodeType,
-  mergeAssetMaps
+  mergeAssetMaps,
+  createFlowIssueMap
 } from 'store/helpers';
 import * as mutators from 'store/mutators';
 import {
@@ -65,6 +67,7 @@ import AppState from 'store/state';
 import { createUUID, hasString, NODE_SPACING, timeEnd, timeStart, ACTIVITY_INTERVAL } from 'utils';
 import { AxiosError } from 'axios';
 import i18n from 'config/i18n';
+import { TembaStore } from 'temba-components';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -79,6 +82,11 @@ export type AsyncThunk = Thunk<Promise<void>>;
 export type OnAddToNode = (node: FlowNode) => Thunk<void>;
 
 export type HandleTypeConfigChange = (typeConfig: Type) => Thunk<void>;
+
+export type UpdateTranslationFilters = (translationFilters: {
+  categories: boolean;
+  rules: boolean;
+}) => Thunk<void>;
 
 export type OnOpenNodeEditor = (settings: NodeEditorSettings) => Thunk<void>;
 
@@ -95,15 +103,10 @@ export type UpdateDimensions = (uuid: string, dimensions: Dimensions) => Thunk<v
 export type FetchFlow = (
   endpoints: Endpoints,
   uuid: string,
-  onLoad: () => void,
   forceSave: boolean
 ) => Thunk<Promise<void>>;
 
-export type LoadFlowDefinition = (
-  details: FlowDetails,
-  assetStore: AssetStore,
-  onLoad?: () => void
-) => Thunk<void>;
+export type LoadFlowDefinition = (details: FlowDetails, assetStore: AssetStore) => Thunk<void>;
 
 export type CreateNewRevision = () => Thunk<void>;
 
@@ -208,7 +211,7 @@ export const createDirty = (
   }
 
   const {
-    flowContext: { definition, nodes, assetStore },
+    flowContext: { definition, nodes, assetStore, issues },
     editorState: { currentRevision }
   } = getState();
 
@@ -235,6 +238,7 @@ export const createDirty = (
 
         if (result.metadata) {
           dispatch(updateMetadata(result.metadata));
+          dispatch(updateIssues(createFlowIssueMap(issues, result.metadata.issues)));
         }
 
         const updatedAssets = mutators.addRevision(assetStore, revision);
@@ -286,16 +290,16 @@ export const createNewRevision = () => (dispatch: DispatchWithState, getState: G
   markDirty(0);
 };
 
-export const loadFlowDefinition = (
-  details: FlowDetails,
-  assetStore: AssetStore,
-  onLoad: () => void
-) => (dispatch: DispatchWithState, getState: GetState): void => {
+export const loadFlowDefinition = (details: FlowDetails, assetStore: AssetStore) => (
+  dispatch: DispatchWithState,
+  getState: GetState
+): void => {
   // first see if we need our asset store initialized
 
   const definition = details.definition;
 
   const {
+    flowContext: { issues },
     editorState: { fetchingFlow }
   } = getState();
 
@@ -322,7 +326,7 @@ export const loadFlowDefinition = (
   }
 
   // add assets we found in our flow to our asset store
-  const components = getFlowComponents(definition, assetStore);
+  const components = getFlowComponents(definition);
   mergeAssetMaps(assetStore.fields.items, components.fields);
   mergeAssetMaps(assetStore.groups.items, components.groups);
   mergeAssetMaps(assetStore.labels.items, components.labels);
@@ -340,6 +344,12 @@ export const loadFlowDefinition = (
     mergeAssetMaps(assetStore.languages.items, { base: DEFAULT_LANGUAGE });
   }
 
+  if (details.metadata && details.metadata.issues) {
+    dispatch(updateIssues(createFlowIssueMap(issues, details.metadata.issues)));
+  } else {
+    dispatch(updateIssues({}));
+  }
+
   dispatch(updateBaseLanguage(language));
   dispatch(updateMetadata(details.metadata));
 
@@ -351,9 +361,9 @@ export const loadFlowDefinition = (
   dispatch(updateAssets(assetStore));
   dispatch(mergeEditorState({ language, fetchingFlow: false }));
 
-  // fire our callback for who is embedding us
-  if (onLoad) {
-    onLoad();
+  const store: TembaStore = document.querySelector('temba-store');
+  if (store) {
+    store.setKeyedAssets('results', Object.keys(assetStore.results.items));
   }
 };
 
@@ -362,12 +372,10 @@ export const loadFlowDefinition = (
  * @param endpoints where our assets live
  * @param uuid the uuid for the flow to fetch
  */
-export const fetchFlow = (
-  endpoints: Endpoints,
-  uuid: string,
-  onLoad: () => void,
-  forceSave = false
-) => async (dispatch: DispatchWithState, getState: GetState) => {
+export const fetchFlow = (endpoints: Endpoints, uuid: string, forceSave = false) => async (
+  dispatch: DispatchWithState,
+  getState: GetState
+) => {
   // mark us as underway
   dispatch(mergeEditorState({ fetchingFlow: true }));
 
@@ -395,7 +403,7 @@ export const fetchFlow = (
         ? response
         : { definition: response as FlowDefinition, metadata: { issues: [] } };
 
-      dispatch(loadFlowDefinition(details, assetStore, onLoad));
+      dispatch(loadFlowDefinition(details, assetStore));
       dispatch(
         mergeEditorState({
           currentRevision: details.definition.revision,
@@ -430,6 +438,12 @@ export const addAsset: AddAsset = (assetType: string, asset: Asset) => (
   const updated = mutate(assetStore, {
     [assetType]: { items: { $merge: { [asset.id]: asset } } }
   });
+
+  // update our temba store if we have one
+  const store: TembaStore = document.querySelector('temba-store');
+  if (store) {
+    store.setKeyedAssets(assetType, Object.keys(updated[assetType]));
+  }
 
   dispatch(updateAssets(updated));
 };
@@ -1089,4 +1103,17 @@ export const onOpenNodeEditor = (settings: NodeEditorSettings) => (
   dispatch(handleTypeConfigChange(typeConfig));
   dispatch(updateNodeEditorSettings(settings));
   dispatch(mergeEditorState(EMPTY_DRAG_STATE));
+};
+
+export const updateTranslationFilters = (translationFilters: {
+  categories: boolean;
+  rules: boolean;
+}) => (dispatch: DispatchWithState, getState: GetState): void => {
+  const {
+    flowContext: { definition }
+  } = getState();
+
+  definition._ui.translation_filters = translationFilters;
+  dispatch(updateDefinition(definition));
+  markDirty();
 };

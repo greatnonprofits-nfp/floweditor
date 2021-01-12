@@ -32,135 +32,20 @@ exports[`AddURNForm renders 1`] = `
             When a contact arrives at this point in your flow...
           </p>
           <div>
-            <select
-              data-testid="select"
+            <div
+              class="normal "
             >
-              <option
-                value="send_msg"
-              >
-                Send the contact a message
-              </option>
-              <option
-                value="wait_for_response"
-              >
-                Wait for the contact to respond
-              </option>
-              <option
-                value="send_broadcast"
-              >
-                Send somebody else a message
-              </option>
-              <option
-                value="add_input_labels"
-              >
-                Label the incoming message
-              </option>
-              <option
-                value="add_contact_urn"
-              >
-                Add a URN for the contact
-              </option>
-              <option
-                value="add_contact_groups"
-              >
-                Add the contact to a group
-              </option>
-              <option
-                value="remove_contact_groups"
-              >
-                Remove the contact from a group
-              </option>
-              <option
-                value="set_contact_field"
-              >
-                Update the contact
-              </option>
-              <option
-                value="send_email"
-              >
-                Send an email
-              </option>
-              <option
-                value="set_run_result"
-              >
-                Save a result for this flow
-              </option>
-              <option
-                value="call_webhook"
-              >
-                Call a webhook
-              </option>
-              <option
-                value="call_lookup"
-              >
-                Call Lookup
-              </option>
-              <option
-                value="call_giftcard"
-              >
-                Call Giftcard
-              </option>
-              <option
-                value="call_shorten_url"
-              >
-                Shorten Trackable Link
-              </option>
-              <option
-                value="call_resthook"
-              >
-                Call Zapier
-              </option>
-              <option
-                value="enter_flow"
-              >
-                Enter another flow
-              </option>
-              <option
-                value="start_session"
-              >
-                Start somebody else in a flow
-              </option>
-              <option
-                value="transfer_airtime"
-              >
-                Send the contact airtime
-              </option>
-              <option
-                value="split_by_intent"
-              >
-                Split by intent
-              </option>
-              <option
-                value="split_by_expression"
-              >
-                Split by a custom expression
-              </option>
-              <option
-                value="split_by_contact_field"
-              >
-                Split by a contact field
-              </option>
-              <option
-                value="split_by_run_result"
-              >
-                Split by a result in the flow
-              </option>
-              <option
-                value="split_by_random"
-              >
-                Split by random chance
-              </option>
-              <option
-                value="split_by_groups"
-              >
-                Split by group membership
-              </option>
-              <option
-                value="split_by_scheme"
-              >
-                Split by URN type
-              </option>
-            </select>
+              <temba-select
+                data-testid="temba_select_type"
+                errors="[]"
+                expressions=""
+                name="type"
+                namekey="description"
+                searchable="true"
+                valuekey="type"
+                values="[{\\"type\\":\\"add_contact_urn\\",\\"name\\":\\"Add URN\\",\\"description\\":\\"Add a URN for the contact\\"}]"
+              />
+            </div>
           </div>
         </div>
         <p
@@ -169,120 +54,44 @@ exports[`AddURNForm renders 1`] = `
           Add a new URN to reach the contact such as a phone number.
         </p>
         <div
-          class="scheme_selection"
+          style="display: flex; align-items: flex-end;"
         >
           <div
-            class="ele"
-          >
-            <select
-              data-testid="select"
-            >
-              <option
-                value="tel"
-              >
-                Phone Number
-              </option>
-              <option
-                value="whatsapp"
-              >
-                WhatsApp Number
-              </option>
-              <option
-                value="facebook"
-              >
-                Facebook
-              </option>
-              <option
-                value="twitterid"
-              >
-                Twitter ID
-              </option>
-              <option
-                value="telegram"
-              >
-                Telegram ID
-              </option>
-              <option
-                value="viber"
-              >
-                Viber ID
-              </option>
-              <option
-                value="line"
-              >
-                Line ID
-              </option>
-              <option
-                value="wechat"
-              >
-                Wechat ID
-              </option>
-              <option
-                value="fcm"
-              >
-                Firebase ID
-              </option>
-              <option
-                value="jiochat"
-              >
-                Jiochat ID
-              </option>
-              <option
-                value="mailto"
-              >
-                Email Address
-              </option>
-              <option
-                value="twitter"
-              >
-                Twitter Handle
-              </option>
-              <option
-                value="ext"
-              >
-                External ID
-              </option>
-            </select>
-          </div>
-        </div>
-        <div
-          class="path"
-        >
-          <div
-            class="ele"
+            class="scheme_selection"
           >
             <div
-              class="wrapper"
+              class="ele"
             >
-              <input
-                class="textinput"
-                data-spec="input"
-                data-testid="input"
-                maxlength="-1"
-                name="URN"
-                placeholder="Enter the URN value"
-                type="text"
-                value="+12065551212"
-              />
               <div
-                class="completion_container hidden"
-                data-spec="completion-options"
-                style="top: 0px; left: 0px;"
+                class="normal "
               >
-                <div
-                  class="options_wrapper"
-                >
-                  <ul
-                    class="option_list"
-                    data-spec="completion-list"
-                  />
-                  <div
-                    class="help"
-                    data-spec="completion-help"
-                  >
-                    Tab to complete, enter to select
-                  </div>
-                </div>
+                <temba-select
+                  data-testid="temba_select_urn_type"
+                  errors="[]"
+                  expressions=""
+                  name="URN Type"
+                  namekey="name"
+                  valuekey="value"
+                  values="[{\\"value\\":\\"tel\\",\\"name\\":\\"Phone Number\\"}]"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="path"
+          >
+            <div
+              class="ele"
+            >
+              <div
+                class="wrapper normal"
+              >
+                <input
+                  data-testid="URN"
+                  name="URN"
+                  placeholder="Enter the URN value"
+                  value="+12065551212"
+                />
               </div>
             </div>
           </div>

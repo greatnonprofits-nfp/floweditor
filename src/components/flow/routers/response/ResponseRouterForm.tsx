@@ -8,15 +8,15 @@ import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import { RouterFormProps } from 'components/flow/props';
 import CaseList, { CaseProps } from 'components/flow/routers/caselist/CaseList';
 import {
-  nodeToState,
-  stateToNode,
-  matchResponseTextWithCategory,
+  ALLOWED_AUTO_TESTS,
+  ALLOWED_TESTS,
   AutomatedTestCase,
   AutomatedTestCaseType,
   generateAutomatedTest,
-  ALLOWED_TESTS,
-  ALLOWED_AUTO_TESTS,
   getLocalizedCases,
+  matchResponseTextWithCategory,
+  nodeToState,
+  stateToNode,
   TimezoneData
 } from 'components/flow/routers/response/helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
@@ -28,14 +28,13 @@ import { WAIT_LABEL } from 'components/flow/routers/constants';
 import { SpellChecker } from 'components/spellchecker/SpellChecker';
 import { fakePropType } from 'config/ConfigProvider';
 import styles from './ResponseRouterForm.module.scss';
-import Select from 'react-select';
 import { SelectOption } from 'components/form/select/SelectElement';
-import { small } from 'utils/reactselect';
 import TextInputElement from 'components/form/textinput/TextInputElement';
 import Pill from 'components/pill/Pill';
 import Button, { ButtonTypes } from 'components/button/Button';
 import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import mutate from 'immutability-helper';
+import TembaSelect, { TembaSelectStyle } from '../../../../temba/TembaSelect';
 
 // TODO: Remove use of Function
 // tslint:disable:ban-types
@@ -86,7 +85,10 @@ export default class ResponseRouterForm extends React.Component<
   };
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate('Result Name', value, [Alphanumeric, StartIsNonNumeric]);
+    const resultName = validate(i18n.t('forms.result_name', 'Result Name'), value, [
+      Alphanumeric,
+      StartIsNonNumeric
+    ]);
     this.setState({
       resultName,
       valid: this.state.valid && !hasErrors(resultName)
@@ -126,7 +128,7 @@ export default class ResponseRouterForm extends React.Component<
       } else {
         message = 'You have unconfirmed test results. Please confirm the results before saving.';
       }
-      // @ts-ignore
+
       this.props.mergeEditorState({
         modalMessage: {
           title: "This data can't be saved",
@@ -200,7 +202,6 @@ export default class ResponseRouterForm extends React.Component<
             testText: this.state.liveTestText.value,
             actualCategory: matched.join(', '),
             confirmedCategory: matched.join(', '),
-            categoriesMatch: false,
             confirmed: false
           }
         ]
@@ -385,34 +386,35 @@ export default class ResponseRouterForm extends React.Component<
         <div className={styles.liveTests}>
           <div className={styles.header}>Live Tests</div>
           <div className={styles.body}>
-            <Select
-              name="Intent"
+            <TembaSelect
+              name="Language"
               value={this.state.testingLang}
               options={this.state.testingLangs.filter(lang =>
                 this.state.activeLocalizations.has(lang.value)
               )}
               onChange={this.onTestingLangChanged}
               placeholder="Language"
-              isSearchable={false}
-              className={styles.languageSelect}
-              styles={small as any}
-            ></Select>
+              style={TembaSelectStyle.small}
+            ></TembaSelect>
             <div className={styles.testLine}>
               <TextInputElement
                 name="arguments"
+                placeholder="Type text for testing"
                 onChange={text => this.setState({ liveTestText: { value: text } })}
                 entry={this.state.liveTestText}
-                placeholder={'Type text for testing'}
               />
             </div>
             <div className={styles.categoriesContainer}>
-              {Object.entries(cases).map(([key, value]) => {
+              {Object.entries(cases).map(([key, value], index) => {
                 // eslint-disable-next-line
                 if (key === '') return;
 
                 return (
-                  // @ts-ignore
-                  <div className={value.matched ? styles.categoryMatched : styles.categoryName}>
+                  <div
+                    // @ts-ignore
+                    className={value.matched ? styles.categoryMatched : styles.categoryName}
+                    key={`category-${index}`}
+                  >
                     <Pill large={true} text={key || 'Other'} />
                   </div>
                 );
@@ -445,6 +447,7 @@ export default class ResponseRouterForm extends React.Component<
                   (test, index: number) =>
                     !test.deleted ? (
                       <tr
+                        key={`test-case-${index}`}
                         className={
                           test.actualCategory === test.confirmedCategory
                             ? styles.testCorrect
@@ -481,7 +484,7 @@ export default class ResponseRouterForm extends React.Component<
                         </td>
                       </tr>
                     ) : (
-                      <></>
+                      <tr key={`test-case-${index}`}></tr>
                     )
                 )}
               </tbody>

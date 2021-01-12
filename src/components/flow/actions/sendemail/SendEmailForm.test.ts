@@ -20,7 +20,7 @@ describe(SendEmailForm.name, () => {
   });
 
   describe('updates', () => {
-    it('should save changes', () => {
+    it('should save changes', done => {
       const component = setup(true);
       const instance: SendEmailForm = component.instance;
       const props: Partial<ActionFormProps> = component.props;
@@ -32,8 +32,11 @@ describe(SendEmailForm.name, () => {
       expect(instance.state).toMatchSnapshot();
 
       instance.handleSave();
-      expect(props.updateAction).toHaveBeenCalled();
-      expect(props.updateAction).toMatchCallSnapshot();
+      setTimeout(() => {
+        expect(props.updateAction).toHaveBeenCalled();
+        expect(props.updateAction).toMatchCallSnapshot();
+        done();
+      }, 10);
     });
 
     it('should validate emails', () => {
@@ -76,6 +79,7 @@ describe(SendEmailForm.name, () => {
       instance.handleSubjectChanged('Bad mojo');
       instance.handleBodyChanged("Don't save me bro");
 
+      // @ts-ignore
       instance.getButtons().secondary.onClick();
       expect(props.onClose).toHaveBeenCalled();
       expect(props.updateAction).not.toHaveBeenCalled();

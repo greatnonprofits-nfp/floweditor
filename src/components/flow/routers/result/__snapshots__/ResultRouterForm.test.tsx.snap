@@ -96,7 +96,7 @@ exports[`ResultRouterForm should render 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Advanced
            
@@ -128,120 +128,20 @@ exports[`ResultRouterForm should render 1`] = `
             When a contact arrives at this point in your flow...
           </p>
           <div>
-            <select
-              data-testid="select"
+            <div
+              class="normal "
             >
-              <option
-                value="send_msg"
-              >
-                Send the contact a message
-              </option>
-              <option
-                value="wait_for_response"
-              >
-                Wait for the contact to respond
-              </option>
-              <option
-                value="send_broadcast"
-              >
-                Send somebody else a message
-              </option>
-              <option
-                value="add_input_labels"
-              >
-                Label the incoming message
-              </option>
-              <option
-                value="add_contact_urn"
-              >
-                Add a URN for the contact
-              </option>
-              <option
-                value="add_contact_groups"
-              >
-                Add the contact to a group
-              </option>
-              <option
-                value="remove_contact_groups"
-              >
-                Remove the contact from a group
-              </option>
-              <option
-                value="set_contact_field"
-              >
-                Update the contact
-              </option>
-              <option
-                value="send_email"
-              >
-                Send an email
-              </option>
-              <option
-                value="set_run_result"
-              >
-                Save a result for this flow
-              </option>
-              <option
-                value="call_webhook"
-              >
-                Call a webhook
-              </option>
-              <option
-                value="call_resthook"
-              >
-                Call Zapier
-              </option>
-              <option
-                value="enter_flow"
-              >
-                Enter another flow
-              </option>
-              <option
-                value="start_session"
-              >
-                Start somebody else in a flow
-              </option>
-              <option
-                value="transfer_airtime"
-              >
-                Send the contact airtime
-              </option>
-              <option
-                value="split_by_intent"
-              >
-                Split by intent
-              </option>
-              <option
-                value="split_by_expression"
-              >
-                Split by a custom expression
-              </option>
-              <option
-                value="split_by_contact_field"
-              >
-                Split by a contact field
-              </option>
-              <option
-                value="split_by_run_result"
-              >
-                Split by a result in the flow
-              </option>
-              <option
-                value="split_by_random"
-              >
-                Split by random chance
-              </option>
-              <option
-                value="split_by_groups"
-              >
-                Split by group membership
-              </option>
-              <option
-                value="split_by_scheme"
-              >
-                Split by URN type
-              </option>
-            </select>
+              <temba-select
+                data-testid="temba_select_type"
+                errors="[]"
+                expressions=""
+                name="type"
+                namekey="description"
+                searchable="true"
+                valuekey="type"
+                values="[{\\"type\\":\\"split_by_run_result\\",\\"aliases\\":[\\"split_by_run_result_delimited\\"],\\"name\\":\\"Split by Flow Result\\",\\"description\\":\\"Split by a result in the flow\\",\\"localizeableKeys\\":[\\"exits\\",\\"cases\\"]}]"
+              />
+            </div>
           </div>
         </div>
         <div
@@ -259,294 +159,107 @@ exports[`ResultRouterForm should render 1`] = `
               class="ele"
             >
               <div
-                class="react-select selection css-2b097c-container"
+                class="small "
               >
-                <div
-                  class=" css-p773gl-control"
-                >
-                  <div
-                    class=" css-c2yhe2"
-                  >
-                    <div
-                      class=" css-1wa3eu0-placeholder"
-                    >
-                      Select Result
-                    </div>
-                    <input
-                      class="css-62g3xt-dummyInput"
-                      id="react-select-2-input"
-                      readonly=""
-                      tabindex="0"
-                      value=""
-                    />
-                  </div>
-                  <div
-                    class=" css-1ywtfjx-IndicatorsContainer"
-                  >
-                    <span
-                      class=" css-1okebmr-indicatorSeparator"
-                    />
-                    <div
-                      aria-hidden="true"
-                      class=" css-tlfecz-indicatorContainer"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="css-6q0nyr-Svg"
-                        focusable="false"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        width="20"
-                      >
-                        <path
-                          d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+                <temba-select
+                  cachekey="0"
+                  data-testid="temba_select_flow_result"
+                  errors="[]"
+                  expressions=""
+                  name="Flow Result"
+                  namekey="name"
+                  placeholder="Select Result"
+                  valuekey="uuid"
+                  values="[]"
+                />
               </div>
             </div>
           </div>
         </div>
         <div
-          class="case_list"
+          class="case_list_container "
+          tabindex="0"
         >
           <div
-            class="kase"
+            class="case_list"
           >
             <div
-              class="ele group"
+              class="kase case_list_case"
             >
               <div
-                class="kase has_any_word"
-                data-draggable="true"
+                class="ele group"
               >
-                <span
-                  class="fe-chevrons-expand dnd_icon"
+                <div
+                  class="kase has_any_word"
                   data-draggable="true"
-                />
-                <div
-                  class="choice select-medium"
                 >
-                  <select
-                    data-testid="select"
-                  >
-                    <option
-                      value="has_any_word"
-                    >
-                      has any of the words
-                    </option>
-                    <option
-                      value="has_all_words"
-                    >
-                      has all of the words
-                    </option>
-                    <option
-                      value="has_phrase"
-                    >
-                      has the phrase
-                    </option>
-                    <option
-                      value="has_only_phrase"
-                    >
-                      has only the phrase
-                    </option>
-                    <option
-                      value="has_beginning"
-                    >
-                      starts with
-                    </option>
-                    <option
-                      value="has_text"
-                    >
-                      has some text
-                    </option>
-                    <option
-                      value="has_number"
-                    >
-                      has a number
-                    </option>
-                    <option
-                      value="has_number_between"
-                    >
-                      has a number between
-                    </option>
-                    <option
-                      value="has_number_lt"
-                    >
-                      has a number below
-                    </option>
-                    <option
-                      value="has_number_lte"
-                    >
-                      has a number at or below
-                    </option>
-                    <option
-                      value="has_number_eq"
-                    >
-                      has a number equal to
-                    </option>
-                    <option
-                      value="has_number_gte"
-                    >
-                      has a number at or above
-                    </option>
-                    <option
-                      value="has_number_gt"
-                    >
-                      has a number above
-                    </option>
-                    <option
-                      value="has_date"
-                    >
-                      has a date
-                    </option>
-                    <option
-                      value="has_date_lt"
-                    >
-                      has a date before
-                    </option>
-                    <option
-                      value="has_date_eq"
-                    >
-                      has a date equal to
-                    </option>
-                    <option
-                      value="has_date_gt"
-                    >
-                      has a date after
-                    </option>
-                    <option
-                      value="has_time"
-                    >
-                      has a time
-                    </option>
-                    <option
-                      value="has_phone"
-                    >
-                      has a phone number
-                    </option>
-                    <option
-                      value="has_email"
-                    >
-                      has an email
-                    </option>
-                    <option
-                      value="has_state"
-                    >
-                      has state
-                    </option>
-                    <option
-                      value="has_district"
-                    >
-                      has district
-                    </option>
-                    <option
-                      value="has_ward"
-                    >
-                      has ward
-                    </option>
-                    <option
-                      value="has_pattern"
-                    >
-                      matches regex
-                    </option>
-                  </select>
-                </div>
-                <div
-                  class="single_operand"
-                >
+                  <span
+                    class="fe-chevrons-expand dnd_icon"
+                    data-draggable="true"
+                  />
                   <div
-                    class="ele"
+                    class="choice"
                   >
                     <div
-                      class="wrapper"
+                      class="small "
                     >
-                      <input
-                        class="textinput"
-                        data-spec="input"
-                        data-testid="input"
-                        maxlength="-1"
-                        name="arguments"
-                        placeholder=""
-                        type="text"
-                        value=""
+                      <temba-select
+                        data-testid="temba_select_operator"
+                        errors="[]"
+                        expressions=""
+                        name="operator"
+                        namekey="verboseName"
+                        valuekey="type"
+                        values="[{\\"type\\":\\"has_any_word\\",\\"verboseName\\":\\"has any of the words\\",\\"operands\\":1,\\"visibility\\":[\\"messaging\\",\\"messaging_offline\\"]}]"
                       />
+                    </div>
+                  </div>
+                  <div
+                    class="single_operand"
+                  >
+                    <div
+                      class="ele"
+                    >
                       <div
-                        class="completion_container hidden"
-                        data-spec="completion-options"
-                        style="top: 0px; left: 0px;"
+                        class="wrapper small"
                       >
-                        <div
-                          class="options_wrapper"
-                        >
-                          <ul
-                            class="option_list"
-                            data-spec="completion-list"
-                          />
-                          <div
-                            class="help"
-                            data-spec="completion-help"
-                          >
-                            Tab to complete, enter to select
-                          </div>
-                        </div>
+                        <input
+                          data-testid="arguments"
+                          name="arguments"
+                          placeholder=""
+                          value=""
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="categorize_as"
-                  data-draggable="true"
-                >
-                  categorize as
-                </div>
-                <div
-                  class="category"
-                >
                   <div
-                    class="ele"
+                    class="categorize_as"
+                    data-draggable="true"
+                  >
+                    categorize as
+                  </div>
+                  <div
+                    class="category"
                   >
                     <div
-                      class="wrapper"
+                      class="ele"
                     >
-                      <input
-                        class="textinput"
-                        data-spec="input"
-                        data-testid="input"
-                        maxlength="36"
-                        name="exitName"
-                        type="text"
-                        value=""
-                      />
                       <div
-                        class="completion_container hidden"
-                        data-spec="completion-options"
-                        style="top: 0px; left: 0px;"
+                        class="wrapper small"
                       >
-                        <div
-                          class="options_wrapper"
-                        >
-                          <ul
-                            class="option_list"
-                            data-spec="completion-list"
-                          />
-                          <div
-                            class="help"
-                            data-spec="completion-help"
-                          >
-                            Tab to complete, enter to select
-                          </div>
-                        </div>
+                        <input
+                          data-testid="Exit Name"
+                          name="Exit Name"
+                          value=""
+                        />
                       </div>
                     </div>
                   </div>
+                  <span
+                    class="fe-x remove_icon"
+                    data-testid="remove-case-b1f332f3-bdd3-4891-aec5-1843a712dbf1"
+                  />
                 </div>
-                <span
-                  class="fe-x remove_icon"
-                  data-testid="remove-case-b1f332f3-bdd3-4891-aec5-1843a712dbf1"
-                />
               </div>
             </div>
           </div>
@@ -557,6 +270,7 @@ exports[`ResultRouterForm should render 1`] = `
           <span
             class="toggle_link"
             data-spec="toggle-link"
+            data-testid="toggle-link"
           >
             Save as..
           </span>
@@ -601,7 +315,7 @@ exports[`ResultRouterForm should show delimit options 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Advanced
            
@@ -636,120 +350,20 @@ exports[`ResultRouterForm should show delimit options 1`] = `
             When a contact arrives at this point in your flow...
           </p>
           <div>
-            <select
-              data-testid="select"
+            <div
+              class="normal "
             >
-              <option
-                value="send_msg"
-              >
-                Send the contact a message
-              </option>
-              <option
-                value="wait_for_response"
-              >
-                Wait for the contact to respond
-              </option>
-              <option
-                value="send_broadcast"
-              >
-                Send somebody else a message
-              </option>
-              <option
-                value="add_input_labels"
-              >
-                Label the incoming message
-              </option>
-              <option
-                value="add_contact_urn"
-              >
-                Add a URN for the contact
-              </option>
-              <option
-                value="add_contact_groups"
-              >
-                Add the contact to a group
-              </option>
-              <option
-                value="remove_contact_groups"
-              >
-                Remove the contact from a group
-              </option>
-              <option
-                value="set_contact_field"
-              >
-                Update the contact
-              </option>
-              <option
-                value="send_email"
-              >
-                Send an email
-              </option>
-              <option
-                value="set_run_result"
-              >
-                Save a result for this flow
-              </option>
-              <option
-                value="call_webhook"
-              >
-                Call a webhook
-              </option>
-              <option
-                value="call_resthook"
-              >
-                Call Zapier
-              </option>
-              <option
-                value="enter_flow"
-              >
-                Enter another flow
-              </option>
-              <option
-                value="start_session"
-              >
-                Start somebody else in a flow
-              </option>
-              <option
-                value="transfer_airtime"
-              >
-                Send the contact airtime
-              </option>
-              <option
-                value="split_by_intent"
-              >
-                Split by intent
-              </option>
-              <option
-                value="split_by_expression"
-              >
-                Split by a custom expression
-              </option>
-              <option
-                value="split_by_contact_field"
-              >
-                Split by a contact field
-              </option>
-              <option
-                value="split_by_run_result"
-              >
-                Split by a result in the flow
-              </option>
-              <option
-                value="split_by_random"
-              >
-                Split by random chance
-              </option>
-              <option
-                value="split_by_groups"
-              >
-                Split by group membership
-              </option>
-              <option
-                value="split_by_scheme"
-              >
-                Split by URN type
-              </option>
-            </select>
+              <temba-select
+                data-testid="temba_select_type"
+                errors="[]"
+                expressions=""
+                name="type"
+                namekey="description"
+                searchable="true"
+                valuekey="type"
+                values="[{\\"type\\":\\"split_by_run_result\\",\\"aliases\\":[\\"split_by_run_result_delimited\\"],\\"name\\":\\"Split by Flow Result\\",\\"description\\":\\"Split by a result in the flow\\",\\"localizeableKeys\\":[\\"exits\\",\\"cases\\"]}]"
+              />
+            </div>
           </div>
         </div>
         <div
@@ -766,110 +380,19 @@ exports[`ResultRouterForm should show delimit options 1`] = `
             <div
               class="ele"
             >
-              <select
-                data-testid="select"
+              <div
+                class="small "
               >
-                <option
-                  value="0"
-                >
-                  first
-                </option>
-                <option
-                  value="1"
-                >
-                  second
-                </option>
-                <option
-                  value="2"
-                >
-                  third
-                </option>
-                <option
-                  value="3"
-                >
-                  fourth
-                </option>
-                <option
-                  value="4"
-                >
-                  fifth
-                </option>
-                <option
-                  value="5"
-                >
-                  sixth
-                </option>
-                <option
-                  value="6"
-                >
-                  seventh
-                </option>
-                <option
-                  value="7"
-                >
-                  eighth
-                </option>
-                <option
-                  value="8"
-                >
-                  ninth
-                </option>
-                <option
-                  value="9"
-                >
-                  tenth
-                </option>
-                <option
-                  value="10"
-                >
-                  11th
-                </option>
-                <option
-                  value="11"
-                >
-                  12th
-                </option>
-                <option
-                  value="12"
-                >
-                  13th
-                </option>
-                <option
-                  value="13"
-                >
-                  14th
-                </option>
-                <option
-                  value="14"
-                >
-                  15th
-                </option>
-                <option
-                  value="15"
-                >
-                  16th
-                </option>
-                <option
-                  value="16"
-                >
-                  17th
-                </option>
-                <option
-                  value="17"
-                >
-                  18th
-                </option>
-                <option
-                  value="18"
-                >
-                  19th
-                </option>
-                <option
-                  value="19"
-                >
-                  20th
-                </option>
-              </select>
+                <temba-select
+                  data-testid="temba_select_field_number"
+                  errors="[]"
+                  expressions=""
+                  name="Field Number"
+                  namekey="name"
+                  valuekey="value"
+                  values="[{\\"value\\":\\"1\\",\\"name\\":\\"second\\"}]"
+                />
+              </div>
             </div>
           </div>
           <div
@@ -884,52 +407,19 @@ exports[`ResultRouterForm should show delimit options 1`] = `
               class="ele"
             >
               <div
-                class="react-select selection css-2b097c-container"
+                class="small "
               >
-                <div
-                  class=" css-p773gl-control"
-                >
-                  <div
-                    class=" css-c2yhe2"
-                  >
-                    <div
-                      class=" css-1wa3eu0-placeholder"
-                    >
-                      Select Result
-                    </div>
-                    <input
-                      class="css-62g3xt-dummyInput"
-                      id="react-select-4-input"
-                      readonly=""
-                      tabindex="0"
-                      value=""
-                    />
-                  </div>
-                  <div
-                    class=" css-1ywtfjx-IndicatorsContainer"
-                  >
-                    <span
-                      class=" css-1okebmr-indicatorSeparator"
-                    />
-                    <div
-                      aria-hidden="true"
-                      class=" css-tlfecz-indicatorContainer"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="css-6q0nyr-Svg"
-                        focusable="false"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        width="20"
-                      >
-                        <path
-                          d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+                <temba-select
+                  cachekey="0"
+                  data-testid="temba_select_flow_result"
+                  errors="[]"
+                  expressions=""
+                  name="Flow Result"
+                  namekey="name"
+                  placeholder="Select Result"
+                  valuekey="uuid"
+                  values="[]"
+                />
               </div>
             </div>
           </div>
@@ -944,266 +434,106 @@ exports[`ResultRouterForm should show delimit options 1`] = `
             <div
               class="ele"
             >
-              <select
-                data-testid="select"
+              <div
+                class="small "
               >
-                <option
-                  value=" "
-                >
-                  spaces
-                </option>
-                <option
-                  value="."
-                >
-                  periods
-                </option>
-                <option
-                  value="+"
-                >
-                  plusses
-                </option>
-              </select>
+                <temba-select
+                  data-testid="temba_select_delimiter"
+                  errors="[]"
+                  expressions=""
+                  name="Delimiter"
+                  namekey="name"
+                  valuekey="value"
+                  values="[{\\"value\\":\\" \\",\\"name\\":\\"spaces\\"}]"
+                />
+              </div>
             </div>
           </div>
         </div>
         <div
-          class="case_list"
+          class="case_list_container "
+          tabindex="0"
         >
           <div
-            class="kase"
+            class="case_list"
           >
             <div
-              class="ele group"
+              class="kase case_list_case"
             >
               <div
-                class="kase has_any_word"
-                data-draggable="true"
+                class="ele group"
               >
-                <span
-                  class="fe-chevrons-expand dnd_icon"
+                <div
+                  class="kase has_any_word"
                   data-draggable="true"
-                />
-                <div
-                  class="choice select-medium"
                 >
-                  <select
-                    data-testid="select"
-                  >
-                    <option
-                      value="has_any_word"
-                    >
-                      has any of the words
-                    </option>
-                    <option
-                      value="has_all_words"
-                    >
-                      has all of the words
-                    </option>
-                    <option
-                      value="has_phrase"
-                    >
-                      has the phrase
-                    </option>
-                    <option
-                      value="has_only_phrase"
-                    >
-                      has only the phrase
-                    </option>
-                    <option
-                      value="has_beginning"
-                    >
-                      starts with
-                    </option>
-                    <option
-                      value="has_text"
-                    >
-                      has some text
-                    </option>
-                    <option
-                      value="has_number"
-                    >
-                      has a number
-                    </option>
-                    <option
-                      value="has_number_between"
-                    >
-                      has a number between
-                    </option>
-                    <option
-                      value="has_number_lt"
-                    >
-                      has a number below
-                    </option>
-                    <option
-                      value="has_number_lte"
-                    >
-                      has a number at or below
-                    </option>
-                    <option
-                      value="has_number_eq"
-                    >
-                      has a number equal to
-                    </option>
-                    <option
-                      value="has_number_gte"
-                    >
-                      has a number at or above
-                    </option>
-                    <option
-                      value="has_number_gt"
-                    >
-                      has a number above
-                    </option>
-                    <option
-                      value="has_date"
-                    >
-                      has a date
-                    </option>
-                    <option
-                      value="has_date_lt"
-                    >
-                      has a date before
-                    </option>
-                    <option
-                      value="has_date_eq"
-                    >
-                      has a date equal to
-                    </option>
-                    <option
-                      value="has_date_gt"
-                    >
-                      has a date after
-                    </option>
-                    <option
-                      value="has_time"
-                    >
-                      has a time
-                    </option>
-                    <option
-                      value="has_phone"
-                    >
-                      has a phone number
-                    </option>
-                    <option
-                      value="has_email"
-                    >
-                      has an email
-                    </option>
-                    <option
-                      value="has_state"
-                    >
-                      has state
-                    </option>
-                    <option
-                      value="has_district"
-                    >
-                      has district
-                    </option>
-                    <option
-                      value="has_ward"
-                    >
-                      has ward
-                    </option>
-                    <option
-                      value="has_pattern"
-                    >
-                      matches regex
-                    </option>
-                  </select>
-                </div>
-                <div
-                  class="single_operand"
-                >
+                  <span
+                    class="fe-chevrons-expand dnd_icon"
+                    data-draggable="true"
+                  />
                   <div
-                    class="ele"
+                    class="choice"
                   >
                     <div
-                      class="wrapper"
+                      class="small "
                     >
-                      <input
-                        class="textinput"
-                        data-spec="input"
-                        data-testid="input"
-                        maxlength="-1"
-                        name="arguments"
-                        placeholder=""
-                        type="text"
-                        value=""
+                      <temba-select
+                        data-testid="temba_select_operator"
+                        errors="[]"
+                        expressions=""
+                        name="operator"
+                        namekey="verboseName"
+                        valuekey="type"
+                        values="[{\\"type\\":\\"has_any_word\\",\\"verboseName\\":\\"has any of the words\\",\\"operands\\":1,\\"visibility\\":[\\"messaging\\",\\"messaging_offline\\"]}]"
                       />
+                    </div>
+                  </div>
+                  <div
+                    class="single_operand"
+                  >
+                    <div
+                      class="ele"
+                    >
                       <div
-                        class="completion_container hidden"
-                        data-spec="completion-options"
-                        style="top: 0px; left: 0px;"
+                        class="wrapper small"
                       >
-                        <div
-                          class="options_wrapper"
-                        >
-                          <ul
-                            class="option_list"
-                            data-spec="completion-list"
-                          />
-                          <div
-                            class="help"
-                            data-spec="completion-help"
-                          >
-                            Tab to complete, enter to select
-                          </div>
-                        </div>
+                        <input
+                          data-testid="arguments"
+                          name="arguments"
+                          placeholder=""
+                          value=""
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="categorize_as"
-                  data-draggable="true"
-                >
-                  categorize as
-                </div>
-                <div
-                  class="category"
-                >
                   <div
-                    class="ele"
+                    class="categorize_as"
+                    data-draggable="true"
+                  >
+                    categorize as
+                  </div>
+                  <div
+                    class="category"
                   >
                     <div
-                      class="wrapper"
+                      class="ele"
                     >
-                      <input
-                        class="textinput"
-                        data-spec="input"
-                        data-testid="input"
-                        maxlength="36"
-                        name="exitName"
-                        type="text"
-                        value=""
-                      />
                       <div
-                        class="completion_container hidden"
-                        data-spec="completion-options"
-                        style="top: 0px; left: 0px;"
+                        class="wrapper small"
                       >
-                        <div
-                          class="options_wrapper"
-                        >
-                          <ul
-                            class="option_list"
-                            data-spec="completion-list"
-                          />
-                          <div
-                            class="help"
-                            data-spec="completion-help"
-                          >
-                            Tab to complete, enter to select
-                          </div>
-                        </div>
+                        <input
+                          data-testid="Exit Name"
+                          name="Exit Name"
+                          value=""
+                        />
                       </div>
                     </div>
                   </div>
+                  <span
+                    class="fe-x remove_icon"
+                    data-testid="remove-case-061fc171-8b79-4636-b892-bd0ea5aa9b42"
+                  />
                 </div>
-                <span
-                  class="fe-x remove_icon"
-                  data-testid="remove-case-061fc171-8b79-4636-b892-bd0ea5aa9b42"
-                />
               </div>
             </div>
           </div>
@@ -1214,6 +544,7 @@ exports[`ResultRouterForm should show delimit options 1`] = `
           <span
             class="toggle_link"
             data-spec="toggle-link"
+            data-testid="toggle-link"
           >
             Save as..
           </span>

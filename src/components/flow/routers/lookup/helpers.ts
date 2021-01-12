@@ -83,7 +83,8 @@ export const stateToNode = (
     type: Types.call_lookup,
     lookup_db: {
       id: state.lookupDb.value.id,
-      text: state.lookupDb.value.name
+      // @ts-ignore
+      text: state.lookupDb.value.name || state.lookupDb.value.text
     },
     result_name: state.resultName.value
   };

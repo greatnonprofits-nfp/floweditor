@@ -50,17 +50,17 @@ export const LookupParameterField = ({
         name="field"
         entry={query.field}
         options={fields}
-        getOptionLabel={item => item.text}
-        getOptionValue={item => item.id}
         onChange={option => updateQuery({ ...query, field: { value: option } })}
+        nameKey={'text'}
+        valueKey={'id'}
       />
       <SelectElement
         entry={query.rule}
         name="rule"
         options={ruleOperators}
         onChange={rule => updateQuery({ ...query, rule: { value: rule } })}
-        getOptionLabel={item => item.verbose_name}
-        getOptionValue={item => item.type}
+        nameKey={'verbose_name'}
+        valueKey={'type'}
       />
       <TextInputElement
         entry={query.value}

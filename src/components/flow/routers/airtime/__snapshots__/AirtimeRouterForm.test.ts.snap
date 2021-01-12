@@ -35,7 +35,7 @@ exports[`AirtimeRouterForm render should render 1`] = `
         "name": "Send Airtime",
         "type": "transfer_airtime",
         "visibility": Array [
-          "message",
+          "messaging",
           "voice",
         ],
       }
@@ -44,6 +44,7 @@ exports[`AirtimeRouterForm render should render 1`] = `
   />
   <div>
     <CurrencyElement
+      currencies={Array []}
       exclude={
         Array [
           Object {
@@ -68,6 +69,7 @@ exports[`AirtimeRouterForm render should render 1`] = `
       }
     />
     <CurrencyElement
+      currencies={Array []}
       exclude={
         Array [
           Object {

@@ -15,7 +15,7 @@ import TitleBar from 'components/titlebar/TitleBar';
 import { fakePropType } from 'config/ConfigProvider';
 import { Types } from 'config/interfaces';
 import { getType, getTypeConfig } from 'config/typeConfigs';
-import { AnyAction, Exit, FlowDefinition, FlowNode, FlowIssue } from 'flowTypes';
+import { AnyAction, Exit, FlowNode, FlowIssue } from 'flowTypes';
 import * as React from 'react';
 import FlipMove from 'react-flip-move';
 import { connect } from 'react-redux';
@@ -47,11 +47,7 @@ export interface NodePassedProps {
   plumberRecalculate: (id: string) => void;
   plumberMakeSource: (id: string) => void;
   plumberRemove: (id: string) => void;
-  plumberConnectExit: (
-    node: FlowNode,
-    exit: Exit,
-    onConnection: (activityId: string, recentMessagesId: string) => void
-  ) => void;
+  plumberConnectExit: (node: FlowNode, exit: Exit) => void;
   plumberUpdateClass: (
     node: FlowNode,
     exit: Exit,
@@ -70,13 +66,11 @@ export interface NodeStoreProps {
   language: Asset;
   languages: AssetMap;
   activeCount: number;
-  containerOffset: { top: number; left: number };
   translating: boolean;
   simulating: boolean;
   debug: DebugState;
   renderNode: RenderNode;
   issues: FlowIssue[];
-  definition: FlowDefinition;
   onAddToNode: OnAddToNode;
   onOpenNodeEditor: OnOpenNodeEditor;
   onNodeCopyClick?: (event?: any) => void;
@@ -90,10 +84,11 @@ export type NodeProps = NodePassedProps & NodeStoreProps;
 
 const cx: any = classNames.bind({ ...shared, ...styles });
 
+const EMPTY: any[] = [];
 /**
  * A single node in the rendered flow
  */
-export class NodeComp extends React.Component<NodeProps> {
+export class NodeComp extends React.PureComponent<NodeProps> {
   public ele: HTMLDivElement;
   private firstAction: any;
   private clicking: boolean;
@@ -125,16 +120,25 @@ export class NodeComp extends React.Component<NodeProps> {
 
   private getGhostListener(): any {
     return (e: MouseEvent) => {
-      // move our ghost node into position
-      const width = this.ele.getBoundingClientRect().width;
-      const left = e.pageX - width / 2 - 15;
-      const top = e.pageY + this.ele.scrollTop - (this.props.containerOffset.top + 20);
-      const style = this.ele.style;
-      style.left = left + 'px';
-      style.top = top + 'px';
+      if (this.ele) {
+        let canvas = this.ele.parentElement;
+        if (this.ele.parentElement.parentElement) {
+          canvas = this.ele.parentElement.parentElement;
+        }
 
-      // Hide ourselves if there's a drop target
-      style.visibility = document.querySelector('.plumb-drop-hover') ? 'hidden' : 'visible';
+        const canvasBounds = canvas.getBoundingClientRect();
+
+        // move our ghost node into position
+        const width = this.ele.getBoundingClientRect().width;
+        const left = e.pageX - width / 2 - 15 - canvasBounds.left;
+        const top = e.pageY - canvasBounds.top - window.scrollY;
+        const style = this.ele.style;
+        style.left = left + 'px';
+        style.top = top + 'px';
+
+        // Hide ourselves if there's a drop target
+        style.visibility = document.querySelector('.plumb-drop-hover') ? 'hidden' : 'visible';
+      }
     };
   }
 
@@ -153,7 +157,9 @@ export class NodeComp extends React.Component<NodeProps> {
     }
   }
 
-  public componentDidUpdate(prevProps: NodeProps): void {
+  public componentDidUpdate(prevProps: any): void {
+    // traceUpdate(this, prevProps);
+
     // when our exits change, we need to recalculate the endpoints
     if (!this.props.ghost) {
       try {
@@ -172,7 +178,7 @@ export class NodeComp extends React.Component<NodeProps> {
   }
 
   /* istanbul ignore next */
-  private handleUUIDClicked(event: React.MouseEvent<HTMLDivElement>): void {
+  private handleUUIDClicked(event: React.MouseEvent<HTMLElement>): void {
     const selection = window.getSelection();
     const range = document.createRange();
     range.selectNodeContents(event.currentTarget);
@@ -457,8 +463,7 @@ const mapStateToProps = (
   {
     flowContext: {
       nodes,
-      definition,
-      metadata,
+      issues,
       assetStore: {
         results: { items: results },
         languages: { items: languages }
@@ -469,7 +474,6 @@ const mapStateToProps = (
       debug,
       ghostNode,
       simulating,
-      containerOffset,
       activity,
       language,
       scrollToAction,
@@ -496,24 +500,22 @@ const mapStateToProps = (
 
   const activeCount = activity.nodes[props.nodeUUID] || 0;
 
-  const issues = metadata
-    ? (metadata.issues || []).filter(issue => issue.node_uuid === props.nodeUUID)
-    : [];
+  // only set our scroll flags if they affect us
+  const scrollNode = scrollToNode && scrollToNode === props.nodeUUID ? scrollToNode : null;
+  const scrollAction = scrollToAction && scrollNode ? scrollToAction : null;
 
   return {
-    issues,
+    issues: (issues || {})[props.nodeUUID] || EMPTY,
     results,
     language,
     languages,
     activeCount,
-    containerOffset,
     translating,
     debug,
-    definition,
     renderNode,
     simulating,
-    scrollToNode,
-    scrollToAction
+    scrollToNode: scrollNode,
+    scrollToAction: scrollAction
   };
 };
 

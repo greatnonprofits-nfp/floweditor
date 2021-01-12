@@ -6,7 +6,7 @@ import { nodeToState, stateToNode, createEmptyCase } from './helpers';
 import { createResultNameInput } from 'components/flow/routers/widgets';
 import TypeList from 'components/nodeeditor/TypeList';
 import * as React from 'react';
-import { FormState, mergeForm, StringEntry, AssetEntry } from 'store/nodeEditor';
+import { FormState, mergeForm, StringEntry, FormEntry } from 'store/nodeEditor';
 import {
   Alphanumeric,
   Required,
@@ -28,7 +28,7 @@ import i18n from 'config/i18n';
 export interface ClassifyRouterFormState extends FormState {
   hiddenCases: CaseProps[];
   resultName: StringEntry;
-  classifier: AssetEntry;
+  classifier: FormEntry;
   cases: CaseProps[];
   operand: StringEntry;
 }
@@ -47,9 +47,14 @@ export default class ClassifyRouterForm extends React.Component<
 
     // we need to resolve our classifier for intent selection
     if (this.state.classifier.value) {
-      fetchAsset(this.props.assetStore.classifiers, this.state.classifier.value.id).then(
+      // TODO: don't use asset as intermediary now that AssetSelector deals in native options
+      fetchAsset(this.props.assetStore.classifiers, this.state.classifier.value.uuid).then(
         (classifier: Asset) => {
-          this.handleUpdate({ classifier });
+          if (classifier) {
+            this.handleUpdate({
+              classifier: { ...this.state.classifier.value, ...classifier.content }
+            });
+          }
         }
       );
     }
@@ -58,18 +63,22 @@ export default class ClassifyRouterForm extends React.Component<
   private handleUpdate(
     keys: {
       resultName?: string;
-      classifier?: Asset;
+      classifier?: any;
     },
     submitting = false
   ): boolean {
     const updates: Partial<ClassifyRouterFormState> = {};
 
     if (keys.hasOwnProperty('resultName')) {
-      updates.resultName = validate('Result Name', keys.resultName, [shouldRequireIf(submitting)]);
+      updates.resultName = validate(i18n.t('forms.result_name', 'Result Name'), keys.resultName, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     if (keys.hasOwnProperty('classifier')) {
-      updates.classifier = validate('Classifier', keys.classifier, [shouldRequireIf(submitting)]);
+      updates.classifier = validate(i18n.t('forms.classifier', 'Classifier'), keys.classifier, [
+        shouldRequireIf(submitting)
+      ]);
     }
 
     const updated = mergeForm(this.state, updates);
@@ -85,7 +94,11 @@ export default class ClassifyRouterForm extends React.Component<
   }
 
   private handleUpdateResultName(value: string): void {
-    const resultName = validate('Result Name', value, [Required, Alphanumeric, StartIsNonNumeric]);
+    const resultName = validate(i18n.t('forms.result_name', 'Result Name'), value, [
+      Required,
+      Alphanumeric,
+      StartIsNonNumeric
+    ]);
     this.setState({
       resultName,
       valid: this.state.valid && !hasErrors(resultName)
@@ -119,7 +132,9 @@ export default class ClassifyRouterForm extends React.Component<
   }
 
   private handleOperandUpdated(value: string): void {
-    this.setState({ operand: validate('Operand', value, [Required]) });
+    this.setState({
+      operand: validate(i18n.t('forms.operand', 'Operand'), value, [Required])
+    });
   }
 
   private getButtons(): ButtonSet {
@@ -148,7 +163,7 @@ export default class ClassifyRouterForm extends React.Component<
               response from the contact use <code>{DEFAULT_OPERAND}</code>.
             </p>
             <TextInputElement
-              name="Operand"
+              name={i18n.t('forms.operand', 'Operand')}
               showLabel={false}
               autocomplete={true}
               onChange={this.handleOperandUpdated}
@@ -186,7 +201,7 @@ export default class ClassifyRouterForm extends React.Component<
         </p>
         <AssetSelector
           key="select_classifier"
-          name="Classifier"
+          name={i18n.t('forms.classifier', 'Classifier')}
           placeholder="Select the classifier to use"
           assets={this.props.assetStore.classifiers}
           onChange={this.handleClassifierUpdated}
