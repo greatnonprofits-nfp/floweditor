@@ -1358,7 +1358,7 @@
 
 "@nyaruka/temba-components@https://github.com/greatnonprofits-nfp/temba-components.git#current-ccl-version":
   version "0.8.11"
-  resolved "https://github.com/greatnonprofits-nfp/temba-components.git#9a1dd97da0d4f6d3be4e45fdd4d6fa54c7bd8c23"
+  resolved "https://github.com/greatnonprofits-nfp/temba-components.git#3bbfca330626286556522ee895bd61a1c4199430"
   dependencies:
     autosize "4.0.2"
     axios "^0.21.1"
