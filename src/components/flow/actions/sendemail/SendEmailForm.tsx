@@ -23,6 +23,8 @@ import styles from './SendEmailForm.module.scss';
 import { renderIssues } from '../helpers';
 import Loading from 'components/loading/Loading';
 import { TembaSelectStyle } from '../../../../temba/TembaSelect';
+import Select from 'react-select';
+import { small } from 'utils/reactselect';
 
 const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
@@ -266,13 +268,12 @@ export default class SendEmailForm extends React.Component<ActionFormProps, Send
         key={index > -1 ? 'url_attachment_' + index : createUUID()}
       >
         <div className={styles.type_choice}>
-          <SelectElement
+          <Select
             name="Type"
-            style={TembaSelectStyle.small}
-            entry={{
-              value: { label: attachment.type }
-            }}
-            options={TYPE_OPTIONS}
+            styles={small as any}
+            className={styles.selected_file}
+            value={{ label: attachment.type }}
+            isDisabled={true}
           />
         </div>
         <div className={styles.remove}>
