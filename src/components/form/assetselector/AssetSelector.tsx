@@ -168,7 +168,14 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
         .then((result: Asset) => {
           this.setState({ isLoading: false });
           this.props.onAssetCreated(result);
-          this.props.onChange([...(this.state.entry.value as any)]);
+          let value = this.state.entry.value;
+          // @ts-ignore
+          // eslint-disable-next-line no-undef
+          if (value != null && typeof value[Symbol.iterator] === 'function') {
+            this.props.onChange([...(this.state.entry.value as any)]);
+          } else {
+            this.props.onChange([this.state.entry.value as any]);
+          }
         })
         .catch(error => {
           let suffix = '';
