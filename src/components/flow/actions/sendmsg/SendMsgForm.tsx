@@ -377,7 +377,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     } else if ((fileType === 'image' && file.size > 512000) || file.size > 20971520) {
       title = 'File Size Exceeded';
       message =
-        'The file size should be less than 500kB for images and less than 20MB for audio and video files. Please choose another file and try again.';
+        'The file size should be less than 500kB for images and less than 20MB for audio, video and PDF files. Please choose another file and try again.';
       isValid = false;
     }
 
