@@ -47,6 +47,8 @@ import variables from 'variables.module.scss';
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
 import { TembaSelectStyle } from 'temba/TembaSelect';
+import Select from 'react-select';
+import { small } from 'utils/reactselect';
 
 const FACEBOOK_ICON = require('static/images/facebook.png');
 const TELEGRAM_ICON = require('static/images/telegram.png');
@@ -290,15 +292,12 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         key={index > -1 ? 'url_attachment_' + index : createUUID()}
       >
         <div className={styles.type_choice}>
-          <SelectElement
-            key={'attachment_type_' + index}
-            name={i18n.t('forms.type', 'Type')}
-            style={TembaSelectStyle.small}
-            entry={{
-              value: { name: attachment.type }
-            }}
-            options={TYPE_OPTIONS}
-            disabled={true}
+          <Select
+            name="Type"
+            styles={small as any}
+            className={styles.selected_file}
+            value={{ label: attachment.type }}
+            isDisabled={true}
           />
         </div>
         <div className={styles.url}>
