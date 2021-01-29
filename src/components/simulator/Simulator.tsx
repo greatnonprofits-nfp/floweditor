@@ -980,7 +980,11 @@ export class Simulator extends React.Component<SimulatorProps, SimulatorState> {
     }
 
     return (
-      <div id="sim_container" className={styles.sim_container}>
+      <div
+        id="sim_container"
+        className={styles.sim_container}
+        onContextMenu={e => e.stopPropagation()}
+      >
         <div>
           <div id="simulator" className={styles.simulator + ' ' + simHidden} key={'sim'}>
             {this.getContextExplorer()}
