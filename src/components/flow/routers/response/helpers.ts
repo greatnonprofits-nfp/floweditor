@@ -53,6 +53,13 @@ export const ALLOWED_AUTO_TESTS = [
 
 export const ALLOWED_TESTS = [...ALLOWED_USER_TESTS, ...ALLOWED_AUTO_TESTS];
 
+const DATE_PATTERNS = {
+  DAY_MONTH_YEAR: /(((3[0-1])|([0-2]?[0-9]))[-.\\/_ ]((1[0-2])|(0?[0-9]))[-.\\/_ ]([0-9]{4}|[0-9]{2}))/,
+  MONTH_DAY_YEAR: /(((1[0-2])|(0?[0-9]))[-.\\/_ ]((3[0-1])|([0-2]?[0-9]))[-.\\/_ ]([0-9]{4}|[0-9]{2}))/,
+  YEAR_MONTH_DAY: /(([0-9]{4})[-]((1[0-2])|(0?[0-9]))[-]((3[0-1])|([0-2]?[0-9])))/,
+  ISO_FORMAT: /(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))/
+};
+
 export interface AutomatedTestCase {
   type: AutomatedTestCaseType;
   testText: string;
@@ -76,24 +83,15 @@ interface ConfigRouter {
 enum Comparators {
   EQUAL,
   LESS_THAN,
-  GREATER_THAN
+  GREATER_THAN,
+  EXIST
 }
 
 const date = (tz?: string, dateString?: string | number, format?: string) => {
   let dateObj;
   if (format) {
     dateObj = dateString
-      ? moment.tz(
-          dateString.toString(),
-          [
-            format,
-            format
-              .split('')
-              .reverse()
-              .join('')
-          ],
-          tz
-        )
+      ? moment.tz(dateString.toString(), [format, 'YYYY-MM-DD'], tz)
       : moment.tz(tz);
   } else {
     dateObj = dateString ? moment.tz(dateString, tz) : moment.tz(tz);
@@ -112,7 +110,14 @@ const testDate = (
   comparator: Comparators,
   timezoneData: TimezoneData
 ) => {
-  let dateRegExp = /.*\b(?<date>([0-9]{1,2})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{4}|[0-9]{2})|([0-9]{4})-([0-9]{2})-([0-9]{2})|\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))\b.*/;
+  let dateRegExp = new RegExp(
+    `.*\\b(?<date>${
+      timezoneData.dateFormat.toUpperCase().replace(new RegExp('[.\\/_]+', 'g'), '-') ===
+      'DD-MM-YYYY'
+        ? DATE_PATTERNS.DAY_MONTH_YEAR.source
+        : DATE_PATTERNS.MONTH_DAY_YEAR.source
+    }|${DATE_PATTERNS.YEAR_MONTH_DAY.source}|${DATE_PATTERNS.ISO_FORMAT.source})\\b.*`
+  );
   let kwargs = /(?<days>-?\d+)/.exec(daysSinceNow);
   let msgDate = dateRegExp.exec(message);
   let daysToTheTesingDate = Number.parseInt(
@@ -122,6 +127,9 @@ const testDate = (
     let actual: any = date(timezoneData.timeZone, msgDate.groups.date, timezoneData.dateFormat);
     if (actual.isValid()) {
       actual = actual.valueOf();
+      if (comparator === Comparators.EXIST) {
+        return true;
+      }
     } else {
       return false;
     }
@@ -165,7 +173,6 @@ export const matchResponseTextWithCategory = (
   let args: string[] = [];
   let emailRegExp = /.*\b(?<email>\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+)\b.*/;
   let phoneRegExp = /.*\b(?<phone>\+?(?:[0-9] ?){6,14}[0-9])\b.*/;
-  let dateRegExp = /.*\b(?<date>([0-9]{1,2})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{4}|[0-9]{2})|([0-9]{4})[-.\\/_]([0-9]{1,2})[-.\\/_]([0-9]{1,2})|\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.(\d{0,9}))?([+-]\d{2}:\d{2}|Z))\b.*/;
   let timeRegExp = /.*\b(?<time>([0-9]{1,2}):([0-9]{2})(:([0-9]{2})(\.(\d+))?)?\W*([aApP][mM])?)\b.*/;
   let numberRegExp = /.*\b(?<number>[$£€]?([\d,][\d,.]*([.,]\d+)?)\D*$)\b.*/;
   let originalText = text;
@@ -220,10 +227,7 @@ export const matchResponseTextWithCategory = (
         } catch (error) {}
         break;
       case 'has_date':
-        var msgDate = dateRegExp.exec(originalText);
-        if (msgDate) {
-          match = !isNaN(Date.parse(msgDate.groups.date));
-        }
+        match = testDate(originalText, '0', Comparators.EXIST, timezoneData);
         break;
       case 'has_date_eq':
         match = testDate(originalText, item.kase.arguments[0], Comparators.EQUAL, timezoneData);
