@@ -339,7 +339,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: CallLookupComp,
     aliases: [Types.split_by_lookup],
-    visibility: VISIBILITY_MESSAGING
+    visibility: [FlowTypes.MESSAGING]
   },
   {
     type: Types.call_giftcard,
@@ -350,7 +350,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: GiftcardComp,
     aliases: [Types.split_by_giftcard],
-    visibility: VISIBILITY_MESSAGING
+    visibility: [FlowTypes.MESSAGING]
   },
   {
     type: Types.call_shorten_url,
@@ -361,7 +361,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: ShortenUrlComp,
     aliases: [Types.split_by_shorten_url],
-    visibility: VISIBILITY_MESSAGING
+    visibility: [FlowTypes.MESSAGING]
   },
   {
     type: Types.call_resthook,
