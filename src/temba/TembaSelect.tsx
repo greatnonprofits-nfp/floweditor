@@ -107,7 +107,7 @@ export default class TembaSelect extends React.Component<TembaSelectProps, Temba
     // add the option to create groups abitrarily
     if (this.props.createPrefix) {
       (this.selectbox as any).createArbitraryOption = (input: string, options: any[]) => {
-        if (input.indexOf('@') === -1) {
+        if (input.indexOf('@') === -1 || !this.props.expressions) {
           var existing = options.find(function(option: any) {
             const name = select.getName(option);
             return !!(name.toLowerCase().trim() === input.toLowerCase().trim());
