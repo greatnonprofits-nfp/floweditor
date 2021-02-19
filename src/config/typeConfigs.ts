@@ -361,7 +361,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: ShortenUrlComp,
     aliases: [Types.split_by_shorten_url],
-    visibility: [FlowTypes.MESSAGING]
+    visibility: []
   },
   {
     type: Types.call_resthook,
