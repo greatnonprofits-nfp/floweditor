@@ -1238,10 +1238,10 @@
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.15.2.tgz#218cd7276ab4f9ab57cc3d2efa2697e6a579f25d"
   integrity sha512-7l/AX41m609L/EXI9EKH3Vs3v0iA8tKlIOGtw+kgcoanI7p+e4I4GYLqW3UXWiTnjSFymKSmTTPKYrivzbxxqA==
 
-"@greatnonprofits-nfp/temba-components@0.8.11":
-  version "0.8.11"
-  resolved "https://registry.yarnpkg.com/@greatnonprofits-nfp/temba-components/-/temba-components-0.8.11.tgz#d498abd6ca7057e7ac740c23e62e16750263a186"
-  integrity sha512-YbUknQMSsm4oSgoSWhTkDuJH2XKTFqzj/LRxtW0Mo3EzFwbmN8roZwol7zkInpxfpQ5r8+vcuiQ1nRCJMZKr6g==
+"@greatnonprofits-nfp/temba-components@0.8.12":
+  version "0.8.12"
+  resolved "https://registry.yarnpkg.com/@greatnonprofits-nfp/temba-components/-/temba-components-0.8.12.tgz#30f7a2a7007ee99a91442697f323be0510740c31"
+  integrity sha512-9oQDjGpCO1sVx9WNa974WuaqsLFPEd3XnOkeGquuxQ7AE8LEwq/otvUhLDgZ273WJAHA6tCFNfiV/DnbWl4V9Q==
   dependencies:
     autosize "4.0.2"
     axios "^0.21.1"
