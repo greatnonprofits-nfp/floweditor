@@ -1,4 +1,5 @@
 import {
+  FlowTypes,
   Operator,
   OperatorMap,
   Operators,
@@ -65,7 +66,7 @@ export const operatorConfigList: Operator[] = [
     verboseName: i18n.t('operators.has_image', 'has an image'),
     operands: 0,
     categoryName: i18n.t('operators.has_image_category', 'Has an image'),
-    visibility: VISIBILITY_MESSAGING
+    visibility: [FlowTypes.MESSAGING]
   },
   {
     type: Operators.has_number,

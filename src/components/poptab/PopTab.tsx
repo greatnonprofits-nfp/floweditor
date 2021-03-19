@@ -76,7 +76,7 @@ export class PopTab extends React.Component<PopTabProps, PopTabState> {
           style={{
             borderColor: this.props.color,
             right: this.props.visible ? 15 + this.state.width : 0,
-            top: -100
+            top: `calc(-${this.props.top} + 25vh)`
           }}
         >
           <div className={styles.header} style={{ background: this.props.color }}>
