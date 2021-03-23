@@ -4,6 +4,7 @@ exports[`Simulator renders 1`] = `
 <div
   className="sim_container"
   id="sim_container"
+  onContextMenu={[Function]}
 >
   <div>
     <div

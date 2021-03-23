@@ -65,6 +65,7 @@ exports[`Root render should apply translating style if passed a truthy translati
         assetStore={null}
         createNewRevision={[MockFunction]}
         loadFlowDefinition={[MockFunction]}
+        mutable={true}
         onToggled={[Function]}
         popped={null}
       />
@@ -109,6 +110,7 @@ exports[`Root render should render flow if passed a definition, language 1`] = `
         assetStore={null}
         createNewRevision={[MockFunction]}
         loadFlowDefinition={[MockFunction]}
+        mutable={true}
         onToggled={[Function]}
         popped={null}
       />
@@ -152,6 +154,7 @@ exports[`Root render should render self, children with required props 1`] = `
         assetStore={null}
         createNewRevision={[MockFunction]}
         loadFlowDefinition={[MockFunction]}
+        mutable={true}
         onToggled={[Function]}
         popped={null}
       />

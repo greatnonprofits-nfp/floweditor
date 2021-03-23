@@ -36,7 +36,7 @@ exports[`IssuesTab renders 1`] = `
         </div>
         <div
           class="popped"
-          style="border-color: tomato; right: 0px; top: -100px;"
+          style="border-color: tomato; right: 0px;"
         >
           <div
             class="header"
@@ -102,7 +102,7 @@ exports[`IssuesTab renders missing dependencies 1`] = `
         </div>
         <div
           class="popped"
-          style="border-color: tomato; right: 0px; top: -100px;"
+          style="border-color: tomato; right: 0px;"
         >
           <div
             class="header"

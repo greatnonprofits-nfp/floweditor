@@ -221,7 +221,6 @@ Array [
     "type": "call_lookup",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   Object {
@@ -239,7 +238,6 @@ Array [
     "type": "call_giftcard",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   Object {
@@ -255,10 +253,7 @@ Array [
     ],
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
+    "visibility": Array [],
   },
   Object {
     "aliases": Array [
@@ -530,7 +525,6 @@ Object {
     "type": "call_giftcard",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   "call_lookup": Object {
@@ -548,7 +542,6 @@ Object {
     "type": "call_lookup",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   "call_resthook": Object {
@@ -583,10 +576,7 @@ Object {
     ],
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
+    "visibility": Array [],
   },
   "call_webhook": Object {
     "aliases": Array [
@@ -853,7 +843,6 @@ Object {
     "type": "call_giftcard",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   "split_by_groups": Object {
@@ -900,7 +889,6 @@ Object {
     "type": "call_lookup",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   "split_by_random": Object {
@@ -983,10 +971,7 @@ Object {
     ],
     "name": "Shorten Trackable Link",
     "type": "call_shorten_url",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
+    "visibility": Array [],
   },
   "split_by_subflow": Object {
     "aliases": Array [
