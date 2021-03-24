@@ -90,7 +90,7 @@ exports[`SendMsgForm render should render 1`] = `
           <p>
             Send attachment: 
             <br />
-            Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
+            Add up to 3 attachments to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
           </p>
           <div
             className="url_attachment"
@@ -175,7 +175,7 @@ exports[`SendMsgForm render should render 1`] = `
                 ]
               }
               placeholder="Receive Attachment"
-              styles="small"
+              style="small"
             />
           </div>
         </React.Fragment>,

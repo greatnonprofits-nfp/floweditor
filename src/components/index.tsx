@@ -216,12 +216,14 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
 
   public handleOpenIssue(issueDetail: IssueDetail): void {
     this.handleLanguageSetting(issueDetail);
-    this.props.onOpenNodeEditor({
-      originalNode: issueDetail.renderObjects.renderNode,
-      originalAction: issueDetail.renderObjects.renderAction
-        ? (issueDetail.renderObjects.renderAction.action as AnyAction)
-        : null
-    });
+    if (this.context.config.mutable) {
+      this.props.onOpenNodeEditor({
+        originalNode: issueDetail.renderObjects.renderNode,
+        originalAction: issueDetail.renderObjects.renderAction
+          ? (issueDetail.renderObjects.renderAction.action as AnyAction)
+          : null
+      });
+    }
   }
 
   private handleScrollToNode(node_uuid: string, action_uuid: string): void {
@@ -303,6 +305,7 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
               assetStore={this.props.assetStore}
               onToggled={this.handleTabPopped}
               popped={this.props.popped}
+              mutable={this.context.config.mutable}
             />
 
             {renderIf(Object.keys(this.props.issues).length > 0)(
@@ -317,7 +320,12 @@ export class FlowEditor extends React.Component<FlowEditorStoreProps> {
               />
             )}
 
-            {renderIf(this.props.definition && this.props.translating && !this.props.fetchingFlow)(
+            {renderIf(
+              this.props.definition &&
+                this.props.translating &&
+                !this.props.fetchingFlow &&
+                this.context.config.mutable
+            )(
               <TranslatorTab
                 language={this.props.language}
                 languages={this.props.languages ? this.props.languages.items : {}}

@@ -40,6 +40,7 @@ export interface RevisionExplorerProps {
   onToggled: (visible: boolean, tab: PopTabType) => void;
   utc?: boolean;
   popped: string;
+  mutable: boolean;
 }
 
 export interface RevisionExplorerState {
@@ -169,7 +170,7 @@ export class RevisionExplorer extends React.Component<
                       {renderIf(revision.current)(
                         <div className={styles.button + ' ' + styles.current}>current</div>
                       )}
-                      {renderIf(isSelected && !revision.current)(
+                      {renderIf(isSelected && !revision.current && this.props.mutable)(
                         <div onClick={this.onRevertClicked(asset)} className={styles.button}>
                           revert
                         </div>

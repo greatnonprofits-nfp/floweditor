@@ -465,11 +465,13 @@ export class Flow extends React.PureComponent<FlowStoreProps, FlowStoreState> {
   // TODO: this should be a callback from the canvas
   private handleDoubleClick(position: FlowPosition): void {
     const { left, top } = position;
-    this.props.updateSticky(createUUID(), {
-      position: snapToGrid(left - 90 + NODE_PADDING, top - 40),
-      title: STICKY_TITLE,
-      body: STICKY_BODY
-    });
+    if (this.context.config.mutable) {
+      this.props.updateSticky(createUUID(), {
+        position: snapToGrid(left - 90 + NODE_PADDING, top - 40),
+        title: STICKY_TITLE,
+        body: STICKY_BODY
+      });
+    }
   }
 
   private getEmptyFlow(): JSX.Element {

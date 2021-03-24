@@ -341,10 +341,8 @@ exports[`ResponseRouterForm should render 1`] = `
             <div
               className="body"
             >
-              <Unknown
-                className="languageSelect"
-                isSearchable={false}
-                name="Intent"
+              <TembaSelect
+                name="Language"
                 onChange={[Function]}
                 options={
                   Array [
@@ -355,17 +353,7 @@ exports[`ResponseRouterForm should render 1`] = `
                   ]
                 }
                 placeholder="Language"
-                styles={
-                  Object {
-                    "control": [Function],
-                    "indicatorsContainer": [Function],
-                    "input": [Function],
-                    "menuList": [Function],
-                    "option": [Function],
-                    "singleValue": [Function],
-                    "valueContainer": [Function],
-                  }
-                }
+                style="small"
                 value={
                   Object {
                     "label": "English",
