@@ -44,6 +44,7 @@ import SubflowRouterForm from 'components/flow/routers/subflow/SubflowRouterForm
 import WaitRouterForm from 'components/flow/routers/wait/WaitRouterForm';
 import WebhookRouterForm from 'components/flow/routers/webhook/WebhookRouterForm';
 import LookupRouterForm from 'components/flow/routers/lookup/LookupRouterForm';
+import VoiceCallStatusForm from 'components/flow/routers/voicecallstatus/VoiceCallStatusForm';
 import {
   FeatureFilter,
   FlowTypes,
@@ -67,6 +68,7 @@ import { GiftCardRouterForm } from 'components/flow/routers/giftcard';
 import { GiftcardComp } from 'components/flow/actions/giftcard';
 import ShortenUrlComp from 'components/flow/actions/shortenurl/ShortenUrl';
 import ShortenUrlForm from 'components/flow/routers/shortenurl/ShortenUrlForm';
+import VoiceCallStatusAction from 'components/flow/actions/voicecallstatus/VoiceCallStatus';
 
 const dedupeTypeConfigs = (typeConfigs: Type[]) => {
   const map: any = {};
@@ -418,6 +420,17 @@ export const typeConfigList: Type[] = [
     aliases: [Types.split_by_airtime],
     visibility: VISIBILITY_ONLINE,
     filter: FeatureFilter.HAS_AIRTIME
+  },
+  {
+    type: Types.voicecall_status,
+    name: i18n.t('actions.voicecall_status.name', 'Voice Call Status'),
+    description: i18n.t('actions.voicecall_status.description', 'Voice Call Status'),
+    form: VoiceCallStatusForm,
+    localization: RouterLocalizationForm,
+    localizeableKeys: ['exits'],
+    component: VoiceCallStatusAction,
+    aliases: [Types.split_by_voicecall_status],
+    visibility: VISIBILITY_VOICE
   },
 
   /** Routers */
