@@ -640,5 +640,6 @@ export enum TransferAirtimeExitNames {
 
 export enum VoiceCallStatusExitNames {
   Answer = 'Answer',
-  NoAnswer = 'No Answer'
+  NoAnswer = 'No Answer',
+  Failure = 'Failure'
 }

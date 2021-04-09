@@ -474,6 +474,10 @@ export const createVoiceCallStatusNode = (
       {
         uuid: createUUID(),
         destination_uuid: null
+      },
+      {
+        uuid: createUUID(),
+        destination_uuid: null
       }
     );
 
@@ -487,6 +491,11 @@ export const createVoiceCallStatusNode = (
         uuid: createUUID(),
         name: VoiceCallStatusExitNames.NoAnswer,
         exit_uuid: exits[1].uuid
+      },
+      {
+        uuid: createUUID(),
+        name: VoiceCallStatusExitNames.Failure,
+        exit_uuid: exits[2].uuid
       }
     ];
 
@@ -496,6 +505,12 @@ export const createVoiceCallStatusNode = (
         type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
         arguments: [VoiceCallStatusExitNames.Answer],
         category_uuid: categories[0].uuid
+      },
+      {
+        uuid: createUUID(),
+        type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
+        arguments: [VoiceCallStatusExitNames.NoAnswer],
+        category_uuid: categories[1].uuid
       }
     ];
   }
