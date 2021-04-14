@@ -492,6 +492,11 @@ export interface TrackableLinkAction extends Action {
   result_name: string;
 }
 
+export interface VoiceCallStatusAction extends Action {
+  type: Types.voicecall_status;
+  result_name: string;
+}
+
 export interface StartFlow extends Action {
   flow: Flow;
 }
@@ -571,7 +576,8 @@ export type AnyAction =
   | CallGiftcard
   | StartFlow
   | StartSession
-  | TrackableLinkAction;
+  | TrackableLinkAction
+  | VoiceCallStatusAction;
 
 export enum ContactProperties {
   UUID = 'uuid',
@@ -630,4 +636,10 @@ export enum WebhookExitNames {
 export enum TransferAirtimeExitNames {
   Success = 'Success',
   Failure = 'Failed'
+}
+
+export enum VoiceCallStatusExitNames {
+  Answer = 'Answer',
+  NoAnswer = 'No Answer',
+  Failure = 'Failure'
 }

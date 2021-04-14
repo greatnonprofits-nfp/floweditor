@@ -48,7 +48,6 @@ export const stateToNode = (
   settings: NodeEditorSettings,
   state: ShortenUrlFormState
 ): RenderNode => {
-  console.log(state.shortenUrl);
   const action: TrackableLinkAction = {
     result_name: state.resultName.value,
     shorten_url: {

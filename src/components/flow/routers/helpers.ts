@@ -19,7 +19,9 @@ import {
   CallClassifier,
   OpenTicket,
   CallGiftcard,
-  TrackableLinkAction
+  TrackableLinkAction,
+  VoiceCallStatusAction,
+  VoiceCallStatusExitNames
 } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
 import { createUUID, snakify } from 'utils';
@@ -441,4 +443,92 @@ export const createSplitOnActionResultNode = (
   };
 
   return createRenderNode(originalNode.node.uuid, router, exits, splitType, [action]);
+};
+
+export const createVoiceCallStatusNode = (
+  action: VoiceCallStatusAction,
+  originalNode: RenderNode,
+  useCategoryTest: boolean
+): RenderNode => {
+  const exits: Exit[] = [];
+  let cases: Case[] = [];
+  let categories: Category[] = [];
+
+  // see if we are editing an existing router so we reuse exits
+  if (
+    originalNode &&
+    originalNode.node.actions.length === 1 &&
+    originalNode.node.actions[0].type === action.type
+  ) {
+    const previousRouter = getSwitchRouter(originalNode.node);
+    originalNode.node.exits.forEach((exit: any) => exits.push(exit));
+    previousRouter.cases.forEach(kase => cases.push(kase));
+    originalNode.node.router.categories.forEach(category => categories.push(category));
+  } else {
+    // Otherwise, let's create some new ones
+    exits.push(
+      {
+        uuid: createUUID(),
+        destination_uuid: null
+      },
+      {
+        uuid: createUUID(),
+        destination_uuid: null
+      },
+      {
+        uuid: createUUID(),
+        destination_uuid: null
+      }
+    );
+
+    categories = [
+      {
+        uuid: createUUID(),
+        name: VoiceCallStatusExitNames.Answer,
+        exit_uuid: exits[0].uuid
+      },
+      {
+        uuid: createUUID(),
+        name: VoiceCallStatusExitNames.NoAnswer,
+        exit_uuid: exits[1].uuid
+      },
+      {
+        uuid: createUUID(),
+        name: VoiceCallStatusExitNames.Failure,
+        exit_uuid: exits[2].uuid
+      }
+    ];
+
+    cases = [
+      {
+        uuid: createUUID(),
+        type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
+        arguments: [VoiceCallStatusExitNames.Answer],
+        category_uuid: categories[0].uuid
+      },
+      {
+        uuid: createUUID(),
+        type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
+        arguments: [VoiceCallStatusExitNames.NoAnswer],
+        category_uuid: categories[1].uuid
+      }
+    ];
+  }
+
+  let operand = '@results.' + snakify(action.result_name);
+  if (!useCategoryTest) {
+    operand += '.category';
+  }
+
+  const router: SwitchRouter = {
+    type: RouterTypes.switch,
+    operand: operand,
+    cases,
+    categories,
+    default_category_uuid: categories[categories.length - 1].uuid
+  };
+
+  return createRenderNode(originalNode.node.uuid, router, exits, Types.split_by_voicecall_status, [
+    action
+  ]);
 };

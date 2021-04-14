@@ -53,6 +53,7 @@ export enum Types {
   split_by_giftcard = 'split_by_giftcard',
   split_by_lookup = 'split_by_lookup',
   split_by_shorten_url = 'split_by_shorten_url',
+  split_by_voicecall_status = 'split_by_voicecall_status',
   wait_for_response = 'wait_for_response',
   wait_for_menu = 'wait_for_menu',
   wait_for_digits = 'wait_for_digits',
@@ -62,7 +63,8 @@ export enum Types {
   wait_for_image = 'wait_for_image',
   missing = 'missing',
   say_msg = 'say_msg',
-  play_audio = 'play_audio'
+  play_audio = 'play_audio',
+  voicecall_status = 'voicecall_status'
 }
 
 export enum Operators {
