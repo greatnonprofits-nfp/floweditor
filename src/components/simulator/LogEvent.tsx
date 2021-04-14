@@ -8,6 +8,8 @@ import * as React from 'react';
 import { createUUID, getURNPath } from 'utils';
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
+import { RefObject } from 'react';
+import { ContextMenu } from '../contextmenu/ContextMenu';
 
 const MAP_THUMB = require('static/images/map.jpg');
 
@@ -488,8 +490,40 @@ export default class LogEvent extends React.Component<EventProps, LogEventState>
     return null;
   }
 
+  private getContextMenu(menuRef: RefObject<any>, targetRef: RefObject<any>): JSX.Element {
+    let menuItems = [
+      {
+        label: 'Copy',
+        onClick: (event: MouseEvent) => {
+          let textToCopy = targetRef.current.innerText;
+          navigator.clipboard
+            .writeText(textToCopy)
+            .then(() => console.log(`'${textToCopy}' Copied!`));
+        }
+      }
+    ];
+    return <ContextMenu ref={menuRef} items={menuItems} />;
+  }
+
   public render(): JSX.Element {
-    return <div className={styles.evt}>{this.renderLogEvent()}</div>;
+    const contextMenuRef = React.createRef<any>();
+    const logElementRef = React.createRef<any>();
+    return (
+      <>
+        <div
+          ref={logElementRef}
+          className={styles.evt}
+          onContextMenu={e => {
+            contextMenuRef.current.show(e);
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {this.renderLogEvent()}
+        </div>
+        {this.getContextMenu(contextMenuRef, logElementRef)}
+      </>
+    );
   }
 
   /**
