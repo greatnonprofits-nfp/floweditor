@@ -757,7 +757,10 @@ export const fetchFlowActivity = (
           updates.activity = activity;
         }
 
-        dispatch(mergeEditorState(updates));
+        if (!window.getSelection().toString()) {
+          // do re-rendering with new data only if there no text selected or highlighted
+          dispatch(mergeEditorState(updates));
+        }
 
         if (activityTimeout) {
           window.clearTimeout(activityTimeout);
