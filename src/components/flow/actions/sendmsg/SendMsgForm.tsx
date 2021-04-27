@@ -36,7 +36,7 @@ import {
   FormEntry
 } from 'store/nodeEditor';
 import { MaxOfTenItems, Required, shouldRequireIf, validate } from 'store/validators';
-import { createUUID, range } from 'utils';
+import { createUUID, range, renderIf } from 'utils';
 
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
@@ -498,23 +498,27 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
           type="file"
           onChange={e => this.handleUploadFile(e.target.files)}
         />
-        <span className={styles.span_separator}></span>
-        <p>
-          Receive attachment: <br />
-          Select a type of attachment to receive from a user as an answer choice. <br />
-          Note: only available for channels with file upload capabilities.
-        </p>
-        <div className={styles.type_choice}>
-          <SelectElement
-            style={TembaSelectStyle.small}
-            name="ReceiveAttachment"
-            entry={this.state.receiveAttachment}
-            onChange={this.handleReceiveAttachmentUpdate}
-            options={RECEIVE_ATTACHMENT_OPTIONS}
-            placeholder="Receive Attachment"
-            clearable={true}
-          />
-        </div>
+        {renderIf(this.context.config.flowType === FlowTypes.MESSAGING)(
+          <>
+            <span className={styles.span_separator}></span>
+            <p>
+              Receive attachment: <br />
+              Select a type of attachment to receive from a user as an answer choice. <br />
+              Note: only available for channels with file upload capabilities.
+            </p>
+            <div className={styles.type_choice}>
+              <SelectElement
+                style={TembaSelectStyle.small}
+                name="ReceiveAttachment"
+                entry={this.state.receiveAttachment}
+                onChange={this.handleReceiveAttachmentUpdate}
+                options={RECEIVE_ATTACHMENT_OPTIONS}
+                placeholder="Receive Attachment"
+                clearable={true}
+              />
+            </div>
+          </>
+        )}
       </>
     );
   }
@@ -890,7 +894,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
             onChange={this.handleQuickRepliesUpdate}
           />
 
-          {this.context.config.flowType === FlowTypes.MESSAGING ? (
+          {renderIf(this.context.config.flowType === FlowTypes.MESSAGING)(
             <>
               <p>
                 {/* eslint-disable-next-line */}
@@ -920,8 +924,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
               </p>
               {this.state.viewShareableButtons ? this.renderSharingButtonsBox() : null}
             </>
-          ) : (
-            <></>
           )}
         </>
       ),
