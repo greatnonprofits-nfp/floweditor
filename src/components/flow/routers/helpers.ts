@@ -511,6 +511,12 @@ export const createVoiceCallStatusNode = (
         type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
         arguments: [VoiceCallStatusExitNames.NoAnswer],
         category_uuid: categories[1].uuid
+      },
+      {
+        uuid: createUUID(),
+        type: useCategoryTest ? Operators.has_category : Operators.has_only_text,
+        arguments: [VoiceCallStatusExitNames.Failure],
+        category_uuid: categories[2].uuid
       }
     ];
   }
