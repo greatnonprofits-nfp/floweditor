@@ -341,7 +341,7 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: CallLookupComp,
     aliases: [Types.split_by_lookup],
-    visibility: [FlowTypes.MESSAGING]
+    visibility: VISIBILITY_ONLINE
   },
   {
     type: Types.call_giftcard,
