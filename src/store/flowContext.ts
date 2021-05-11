@@ -97,6 +97,7 @@ export interface Asset {
   references?: Reference[];
   isNew?: boolean;
   content?: any;
+  has_ivr_machine_detection?: boolean;
 }
 
 export const REMOVE_VALUE_ASSET = {

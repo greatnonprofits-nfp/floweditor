@@ -2,7 +2,8 @@ const environment = {
   date_format: 'YYYY-MM-DD',
   time_format: 'hh:mm',
   timezone: 'Africa/Kigali',
-  languages: ['eng', 'spa', 'fra']
+  languages: ['eng', 'spa', 'fra'],
+  has_ivr_machine_detection: true
 };
 const { getOpts } = require('./utils');
 
