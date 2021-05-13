@@ -430,7 +430,8 @@ export const typeConfigList: Type[] = [
     localizeableKeys: ['exits'],
     component: VoiceCallStatusComp,
     aliases: [Types.split_by_voicecall_status],
-    visibility: VISIBILITY_VOICE
+    visibility: VISIBILITY_VOICE,
+    filter: FeatureFilter.HAS_MACHINE_DETECTION
   },
 
   /** Routers */
