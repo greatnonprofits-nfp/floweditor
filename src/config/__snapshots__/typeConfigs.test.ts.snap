@@ -68,6 +68,15 @@ Array [
     ],
   },
   Object {
+    "description": "Wait for forwarded call to someone else",
+    "form": [Function],
+    "name": "Wait for Forwarded Call",
+    "type": "wait_for_dial",
+    "visibility": Array [
+      "voice",
+    ],
+  },
+  Object {
     "component": [Function],
     "description": "Send the contact a message",
     "form": [Function],
@@ -116,6 +125,11 @@ Array [
     "form": [Function],
     "name": "Add Labels",
     "type": "add_input_labels",
+    "visibility": Array [
+      "messaging",
+      "messaging_offline",
+      "voice",
+    ],
   },
   Object {
     "component": [Function],
@@ -164,6 +178,7 @@ Array [
     "type": "send_email",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -199,6 +214,7 @@ Array [
     "type": "call_webhook",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -218,6 +234,7 @@ Array [
     "type": "call_resthook",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -247,6 +264,7 @@ Array [
     "type": "start_session",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -266,6 +284,7 @@ Array [
     "type": "open_ticket",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -285,6 +304,7 @@ Array [
     "type": "transfer_airtime",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -343,6 +363,7 @@ Array [
     "type": "split_by_intent",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -437,6 +458,11 @@ Object {
     "form": [Function],
     "name": "Add Labels",
     "type": "add_input_labels",
+    "visibility": Array [
+      "messaging",
+      "messaging_offline",
+      "voice",
+    ],
   },
   "call_classifier": Object {
     "aliases": Array [
@@ -454,6 +480,7 @@ Object {
     "type": "split_by_intent",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -473,6 +500,7 @@ Object {
     "type": "call_resthook",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -491,6 +519,7 @@ Object {
     "type": "call_webhook",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -533,6 +562,7 @@ Object {
     "type": "open_ticket",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -592,6 +622,7 @@ Object {
     "type": "send_email",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -697,6 +728,7 @@ Object {
     "type": "transfer_airtime",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -748,6 +780,7 @@ Object {
     "type": "split_by_intent",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -777,6 +810,7 @@ Object {
     "type": "call_resthook",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -848,6 +882,7 @@ Object {
     "type": "open_ticket",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -866,6 +901,7 @@ Object {
     "type": "call_webhook",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -881,6 +917,7 @@ Object {
     "type": "start_session",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -918,6 +955,7 @@ Object {
     "type": "transfer_airtime",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -932,6 +970,15 @@ Object {
     "type": "wait_for_audio",
     "visibility": Array [
       "messaging_offline",
+      "voice",
+    ],
+  },
+  "wait_for_dial": Object {
+    "description": "Wait for forwarded call to someone else",
+    "form": [Function],
+    "name": "Wait for Forwarded Call",
+    "type": "wait_for_dial",
+    "visibility": Array [
       "voice",
     ],
   },

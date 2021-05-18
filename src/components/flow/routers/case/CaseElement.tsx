@@ -331,15 +331,17 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
                 style={TextInputStyle.small}
                 onChange={this.handleMinChanged}
                 entry={this.state.min}
+                autocomplete={true}
               />
               <span className={styles.divider} data-draggable={true}>
-                and
+                {i18n.t('forms.and', 'and')}
               </span>
               <TextInputElement
                 name={i18n.t('forms.arguments', 'arguments')}
                 style={TextInputStyle.small}
                 onChange={this.handleMaxChanged}
                 entry={this.state.max}
+                autocomplete={true}
               />
             </>
           );
@@ -432,6 +434,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
       } else {
         return (
           <TextInputElement
+            data-test-id="case-arguments"
             name={i18n.t('forms.arguments', 'arguments')}
             onChange={this.handleArgumentChanged}
             entry={this.state.argument}
@@ -478,7 +481,7 @@ export default class CaseElement extends React.Component<CaseElementProps, CaseE
             {this.renderArguments()}
           </div>
           <div className={styles.categorize_as} data-draggable={true}>
-            categorize as
+            {i18n.t('forms.categorize_as', 'categorize as')}
           </div>
           <div className={styles.category}>
             <TextInputElement

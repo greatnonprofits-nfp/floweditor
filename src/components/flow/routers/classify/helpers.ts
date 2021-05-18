@@ -28,7 +28,7 @@ export const getOriginalAction = (settings: NodeEditorSettings): CallClassifier 
 
 export const nodeToState = (settings: NodeEditorSettings): ClassifyRouterFormState => {
   // TODO: work out an incremental result name
-  const resultName: StringEntry = { value: 'Result' };
+  let resultName: StringEntry = { value: 'Result' };
   let initialCases: CaseProps[] = [];
 
   let operand = DEFAULT_OPERAND;
@@ -51,6 +51,7 @@ export const nodeToState = (settings: NodeEditorSettings): ClassifyRouterFormSta
       );
     }
 
+    resultName = { value: router.result_name || 'Result' };
     const action = getOriginalAction(settings) as CallClassifier;
     classifier = { value: action.classifier };
     operand = action.input;
@@ -172,19 +173,4 @@ export const stateToNode = (
     Types.split_by_intent,
     [newAction]
   );
-};
-
-export const createEmptyCase = (): CaseProps => {
-  const uuid = createUUID();
-  return {
-    uuid,
-    kase: {
-      uuid,
-      type: Operators.has_top_intent,
-      arguments: ['', ''],
-      category_uuid: null
-    },
-    categoryName: '',
-    valid: true
-  };
 };
