@@ -6,37 +6,21 @@ Array [
     "operands": 1,
     "type": "has_any_word",
     "verboseName": "has any of the words",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
     "type": "has_all_words",
     "verboseName": "has all of the words",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
     "type": "has_phrase",
     "verboseName": "has the phrase",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
     "type": "has_only_phrase",
     "verboseName": "has only the phrase",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
@@ -48,10 +32,6 @@ Array [
     "operands": 0,
     "type": "has_text",
     "verboseName": "has some text",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "categoryName": "Has an image",
@@ -104,47 +84,27 @@ Array [
     "operands": 0,
     "type": "has_date",
     "verboseName": "has a date",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
     "type": "has_date_lt",
     "verboseName": "has a date before",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
     "type": "has_date_eq",
     "verboseName": "has a date equal to",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
     "type": "has_date_gt",
     "verboseName": "has a date after",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "categoryName": "Has Time",
     "operands": 0,
     "type": "has_time",
     "verboseName": "has a time",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "operands": 1,
@@ -173,10 +133,6 @@ Array [
     "operands": 0,
     "type": "has_email",
     "verboseName": "has an email",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   Object {
     "categoryName": "Has State",
@@ -228,19 +184,11 @@ Object {
     "operands": 1,
     "type": "has_all_words",
     "verboseName": "has all of the words",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_any_word": Object {
     "operands": 1,
     "type": "has_any_word",
     "verboseName": "has any of the words",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_beginning": Object {
     "operands": 1,
@@ -260,37 +208,21 @@ Object {
     "operands": 0,
     "type": "has_date",
     "verboseName": "has a date",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_date_eq": Object {
     "operands": 1,
     "type": "has_date_eq",
     "verboseName": "has a date equal to",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_date_gt": Object {
     "operands": 1,
     "type": "has_date_gt",
     "verboseName": "has a date after",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_date_lt": Object {
     "operands": 1,
     "type": "has_date_lt",
     "verboseName": "has a date before",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_district": Object {
     "categoryName": "Has District",
@@ -303,10 +235,6 @@ Object {
     "operands": 0,
     "type": "has_email",
     "verboseName": "has an email",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_error": Object {
     "categoryName": "Has Error",
@@ -341,6 +269,7 @@ Object {
     "verboseName": "has intent",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -384,10 +313,6 @@ Object {
     "operands": 1,
     "type": "has_only_phrase",
     "verboseName": "has only the phrase",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_pattern": Object {
     "operands": 1,
@@ -404,10 +329,6 @@ Object {
     "operands": 1,
     "type": "has_phrase",
     "verboseName": "has the phrase",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_state": Object {
     "categoryName": "Has State",
@@ -420,20 +341,12 @@ Object {
     "operands": 0,
     "type": "has_text",
     "verboseName": "has some text",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_time": Object {
     "categoryName": "Has Time",
     "operands": 0,
     "type": "has_time",
     "verboseName": "has a time",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "has_top_intent": Object {
     "operands": 2,
@@ -441,6 +354,7 @@ Object {
     "verboseName": "has top intent",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },

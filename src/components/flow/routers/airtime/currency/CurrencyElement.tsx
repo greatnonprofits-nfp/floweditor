@@ -17,8 +17,7 @@ export interface AirtimeTransfer {
 }
 
 export interface CurrencyElementProps {
-  assets?: Assets;
-  currencies: any[];
+  currencies: Assets;
   transfer: AirtimeTransferEntry;
   index: number;
   exclude: AirtimeTransferEntry[];
@@ -79,7 +78,7 @@ export default class CurrencyElement extends React.Component<CurrencyElementProp
             name={i18n.t('forms.value', 'value')}
             onChange={this.handleAmountChanged}
             entry={{ value: amount }}
-            style={TextInputStyle.small}
+            style={TextInputStyle.medium}
           />
         </div>
       ) : null;
@@ -113,7 +112,6 @@ export default class CurrencyElement extends React.Component<CurrencyElementProp
         <div className={styles.transfer}>
           <div className={styles.currency}>
             <AssetSelector
-              assets={this.props.assets}
               style={TembaSelectStyle.small}
               name={i18n.t('forms.currency', 'Currency')}
               shouldExclude={shouldExclude}
@@ -121,7 +119,7 @@ export default class CurrencyElement extends React.Component<CurrencyElementProp
               nameKey="id"
               valueKey="id"
               onChange={this.handleCurrencyChanged}
-              additionalOptions={this.props.currencies}
+              assets={this.props.currencies}
               placeholder={i18n.t('forms.currency', 'Select a Currency')}
             />
           </div>

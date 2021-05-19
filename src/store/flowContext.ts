@@ -12,6 +12,7 @@ import ActionTypes, {
 import Constants from 'store/constants';
 import { Type } from 'config/interfaces';
 import { TembaStore } from 'temba-components';
+import i18n from 'config/i18n';
 
 // tslint:disable:no-shadowed-variable
 export interface RenderNodeMap {
@@ -67,10 +68,10 @@ export enum AssetType {
   Global = 'global',
   GiftCard = 'giftcard',
   Group = 'group',
-  GroupNameMatch = 'group_match',
   Label = 'label',
   Lookup = 'lookup',
   Language = 'language',
+  NameMatch = 'name_match',
   Remove = 'remove',
   Resthook = 'resthook',
   Result = 'result',
@@ -102,7 +103,7 @@ export interface Asset {
 
 export const REMOVE_VALUE_ASSET = {
   id: AssetType.Remove,
-  name: 'Remove Value',
+  name: i18n.t('forms.remove_value', 'Remove Value'),
   type: AssetType.Remove
 };
 
@@ -154,8 +155,7 @@ export const initialState: FlowContext = {
     dependencies: [],
     results: [],
     waiting_exit_uuids: [],
-    parent_refs: [],
-    issues: []
+    parent_refs: []
   },
   contactFields: {},
   nodes: {},

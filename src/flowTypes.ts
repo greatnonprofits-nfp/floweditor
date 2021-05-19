@@ -112,7 +112,6 @@ export interface FlowMetadata {
   waiting_exit_uuids: string[];
   results: Result[];
   parent_refs: string[];
-  issues: FlowIssue[];
 }
 
 export enum FlowIssueType {
@@ -138,6 +137,7 @@ export interface FlowIssue {
 
 export interface FlowDetails {
   definition: FlowDefinition;
+  issues: FlowIssue[];
   metadata: FlowMetadata;
 }
 
@@ -215,7 +215,8 @@ export interface SwitchRouter extends Router {
 }
 
 export enum WaitTypes {
-  msg = 'msg'
+  msg = 'msg',
+  dial = 'dial'
 }
 
 export enum HintTypes {
@@ -240,6 +241,7 @@ export interface Wait {
   type: WaitTypes;
   timeout?: Timeout;
   hint?: Hint;
+  phone?: string;
 }
 
 export interface Group {
@@ -269,6 +271,7 @@ export interface Field {
 export interface Label {
   uuid: string;
   name: string;
+  name_match?: string;
 }
 
 export interface Flow {
@@ -636,6 +639,20 @@ export enum WebhookExitNames {
 export enum TransferAirtimeExitNames {
   Success = 'Success',
   Failure = 'Failed'
+}
+
+export enum DialCategoryNames {
+  Answered = 'Answered',
+  NoAnswer = 'No Answer',
+  Busy = 'Busy',
+  Failure = 'Failed'
+}
+
+export enum DialStatus {
+  answered = 'answered',
+  noAnswer = 'no_answer',
+  busy = 'busy',
+  failure = 'failed'
 }
 
 export enum VoiceCallStatusExitNames {

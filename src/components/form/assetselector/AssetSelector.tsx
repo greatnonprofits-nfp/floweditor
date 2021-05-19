@@ -234,7 +234,9 @@ export default class AssetSelector extends React.Component<AssetSelectorProps, A
           cacheKey={this.lastCreation + ''}
           options={this.options}
           sortFunction={this.props.sortFunction || sortByName}
-          queryParam={this.props.assets.type === AssetType.Contact ? 'search' : null}
+          queryParam={
+            this.props.assets && this.props.assets.type === AssetType.Contact ? 'search' : null
+          }
         />
       </FormElement>
     );

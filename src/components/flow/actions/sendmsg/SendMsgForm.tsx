@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { react as bindCallbacks } from 'auto-bind';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
 import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import {
   initializeForm as stateToForm,
   stateToAction,
-  TOPIC_OPTIONS,
-  RECEIVE_ATTACHMENT_OPTIONS
+  TOPIC_OPTIONS
 } from 'components/flow/actions/sendmsg/helpers';
 import TaggingElement from 'components/form/select/tags/TaggingElement';
 import { ActionFormProps } from 'components/flow/props';
@@ -17,10 +16,9 @@ import { hasUseableTranslation } from 'components/form/assetselector/helpers';
 import CheckboxElement from 'components/form/checkbox/CheckboxElement';
 import MultiChoiceInput from 'components/form/multichoice/MultiChoice';
 import SelectElement, { SelectOption } from 'components/form/select/SelectElement';
-import TextInputElement, { TextInputStyle } from 'components/form/textinput/TextInputElement';
+import TextInputElement from 'components/form/textinput/TextInputElement';
 import HelpIcon from 'components/helpicon/HelpIcon';
 import TypeList from 'components/nodeeditor/TypeList';
-import Pill from 'components/pill/Pill';
 import { fakePropType } from 'config/ConfigProvider';
 import { fetchAsset, getCookie } from 'external';
 import { Template, TemplateTranslation } from 'flowTypes';
@@ -41,14 +39,15 @@ import { createUUID, range, renderIf } from 'utils';
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
 import { FeatureFilter, FlowTypes } from 'config/interfaces';
+import Pill from 'components/pill/Pill';
 
 import variables from 'variables.module.scss';
 
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
-import { TembaSelectStyle } from 'temba/TembaSelect';
-import Select from 'react-select';
-import { small } from 'utils/reactselect';
+import { Attachment, renderAttachments } from './attachments';
+import Select from 'react-select/base';
+import { small } from '../../../../utils/reactselect';
 
 const FACEBOOK_ICON = require('static/images/facebook.png');
 const TELEGRAM_ICON = require('static/images/telegram.png');
@@ -58,29 +57,7 @@ const PINTEREST_ICON = require('static/images/pinterest.png');
 const TWITTER_ICON = require('static/images/twitter.png');
 const DOWNLOAD_ICON = require('static/images/download.png');
 const EMAIL_ICON = require('static/images/email.png');
-
-const MAX_ATTACHMENTS = 3;
-
 const HASHTAG_PATTERN = /(?:\s|^)#[A-Za-z0-9\\.\\_]+(?:\s|$)/;
-
-const TYPE_OPTIONS: SelectOption[] = [
-  { value: 'image', name: i18n.t('forms.image_url', 'Image URL') },
-  { value: 'audio', name: i18n.t('forms.audio_url', 'Audio URL') },
-  { value: 'video', name: i18n.t('forms.video_url', 'Video URL') },
-  { value: 'application', name: i18n.t('forms.pdf_url', 'PDF Document URL') }
-];
-
-const NEW_TYPE_OPTIONS = TYPE_OPTIONS.concat([{ value: 'upload', name: 'Upload Attachment' }]);
-
-const getAttachmentTypeOption = (type: string): SelectOption => {
-  return TYPE_OPTIONS.find((option: SelectOption) => option.value === type);
-};
-
-export interface Attachment {
-  type: string;
-  url: string;
-  uploaded?: boolean;
-}
 
 export interface SendMsgFormState extends FormState {
   message: StringEntry;
@@ -267,14 +244,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     }
   }
 
-  public handleAttachmentRemoved(index: number): void {
-    // we found a match, merge us in
-    const updated: any = mutate(this.state.attachments, {
-      $splice: [[index, 1]]
-    });
-    this.setState({ attachments: updated });
-  }
-
   private getButtons(): ButtonSet {
     return {
       primary: { name: i18n.t('buttons.ok', 'Ok'), onClick: this.handleSave },
@@ -393,140 +362,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     return isValid;
   }
 
-  private renderAttachment(index: number, attachment: Attachment): JSX.Element {
-    let attachments: any = this.state.attachments;
-    return (
-      <div
-        className={styles.url_attachment}
-        key={index > -1 ? 'url_attachment_' + index : createUUID()}
-      >
-        <div className={styles.type_choice}>
-          <SelectElement
-            key={'attachment_type_' + index}
-            style={TembaSelectStyle.small}
-            name={i18n.t('forms.type_options', 'Type Options')}
-            placeholder="Send Attachment"
-            entry={{
-              value: index > -1 ? getAttachmentTypeOption(attachment.type) : null
-            }}
-            onChange={(option: any) => {
-              if (option.value === 'upload') {
-                window.setTimeout(() => {
-                  this.filePicker.click();
-                }, 200);
-              } else {
-                if (index === -1) {
-                  attachments = mutate(attachments, {
-                    $push: [{ type: option.value, url: '' }]
-                  });
-                } else {
-                  attachments = mutate(attachments, {
-                    [index]: {
-                      $set: { type: option.value, url: attachment.url }
-                    }
-                  });
-                }
-                this.setState({ attachments });
-              }
-            }}
-            options={index > -1 ? TYPE_OPTIONS : NEW_TYPE_OPTIONS}
-          />
-        </div>
-        {index > -1 ? (
-          <>
-            <div className={styles.url}>
-              <TextInputElement
-                placeholder="URL"
-                name={i18n.t('forms.url', 'URL')}
-                style={TextInputStyle.small}
-                onChange={(value: string) => {
-                  attachments = mutate(attachments, {
-                    [index]: { $set: { type: attachment.type, url: value } }
-                  });
-                  this.setState({ attachments });
-                }}
-                entry={{ value: attachment.url }}
-                autocomplete={true}
-              />
-            </div>
-            <div className={styles.remove}>
-              <Pill
-                icon="fe-x"
-                text=" Remove"
-                large={true}
-                onClick={() => {
-                  this.handleAttachmentRemoved(index);
-                }}
-              />
-            </div>
-          </>
-        ) : null}
-      </div>
-    );
-  }
-
-  private renderAttachments(): JSX.Element {
-    const attachments = this.state.attachments.map((attachment, index: number) =>
-      attachment.uploaded
-        ? this.renderUpload(index, attachment)
-        : this.renderAttachment(index, attachment)
-    );
-
-    const emptyOption =
-      this.state.attachments.length < MAX_ATTACHMENTS
-        ? this.renderAttachment(-1, { url: '', type: '' })
-        : null;
-    return (
-      <>
-        <p>
-          Send attachment: <br />
-          {i18n.t(
-            'forms.send_msg_summary',
-            'Add up to 3 attachments to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
-            { count: MAX_ATTACHMENTS }
-          )}
-        </p>
-        {attachments}
-        {emptyOption}
-        <input
-          style={{
-            display: 'none'
-          }}
-          ref={ele => {
-            this.filePicker = ele;
-          }}
-          type="file"
-          onChange={e => this.handleUploadFile(e.target.files)}
-        />
-        {renderIf(this.context.config.flowType === FlowTypes.MESSAGING)(
-          <>
-            <span className={styles.span_separator}></span>
-            <p>
-              Receive attachment: <br />
-              Select a type of attachment to receive from a user as an answer choice. <br />
-              Note: only available for channels with file upload capabilities.
-            </p>
-            <div className={styles.type_choice}>
-              <SelectElement
-                style={TembaSelectStyle.small}
-                name="ReceiveAttachment"
-                entry={this.state.receiveAttachment}
-                onChange={this.handleReceiveAttachmentUpdate}
-                options={RECEIVE_ATTACHMENT_OPTIONS}
-                placeholder="Receive Attachment"
-                clearable={true}
-              />
-            </div>
-          </>
-        )}
-      </>
-    );
-  }
-
-  private handleReceiveAttachmentUpdate(option: SelectOption) {
-    this.setState({ receiveAttachment: { value: option } });
-  }
-
   private handleTemplateChanged(selected: any[]): void {
     const template = selected ? selected[0] : null;
 
@@ -541,7 +376,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
       const templateVariables =
         this.state.templateVariables.length === 0 ||
-        (this.state.template.value && this.state.template.value.id !== template.id)
+        (this.state.template.value && this.state.template.value.uuid !== template.uuid)
           ? range(0, templateTranslation.variable_count).map(() => {
               return {
                 value: ''
@@ -640,6 +475,37 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
         ) : null}
       </>
     );
+  }
+
+  private handleAttachmentUploaded(response: AxiosResponse) {
+    const attachments: any = mutate(this.state.attachments, {
+      $push: [{ type: response.data.type, url: response.data.url, uploaded: true }]
+    });
+    this.setState({ attachments });
+  }
+
+  private handleAttachmentChanged(index: number, type: string, url: string) {
+    let attachments: any = this.state.attachments;
+    if (index === -1) {
+      attachments = mutate(attachments, {
+        $push: [{ type, url }]
+      });
+    } else {
+      attachments = mutate(attachments, {
+        [index]: {
+          $set: { type, url }
+        }
+      });
+    }
+
+    this.setState({ attachments });
+  }
+
+  private handleAttachmentRemoved(index: number) {
+    const attachments: any = mutate(this.state.attachments, {
+      $splice: [[index, 1]]
+    });
+    this.setState({ attachments });
   }
 
   private handleAddQuickReply(newQuickReply: string): boolean {
@@ -874,7 +740,7 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     const typeConfig = this.props.typeConfig;
 
     const quickReplies: Tab = {
-      name: 'Quick Replies',
+      name: i18n.t('forms.quick_replies', 'Quick Replies'),
       body: (
         <>
           <p>
@@ -932,21 +798,27 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     };
 
     const attachments: Tab = {
-      name: 'Attachments',
-      body: this.renderAttachments(),
+      name: i18n.t('forms.attachments', 'Attachments'),
+      body: renderAttachments(
+        this.context.config.endpoints.attachments,
+        this.state.attachments,
+        this.handleAttachmentUploaded,
+        this.handleAttachmentChanged,
+        this.handleAttachmentRemoved
+      ),
       checked: this.state.attachments.length > 0
     };
 
     const advanced: Tab = {
-      name: 'Advanced',
+      name: i18n.t('forms.advanced', 'Advanced'),
       body: (
         <CheckboxElement
           name={i18n.t('forms.all_destinations', 'All Destinations')}
-          title="All Destinations"
+          title={i18n.t('forms.all_destinations', 'All Destinations')}
           labelClassName={styles.checkbox}
           checked={this.state.sendAll}
           description={i18n.t(
-            'forms.all_destinations',
+            'forms.all_destinations_description',
             "Send a message to all destinations known for this contact. If you aren't sure what this means, leave it unchecked."
           )}
           onChange={this.handleSendAllUpdate}

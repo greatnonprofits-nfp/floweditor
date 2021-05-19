@@ -145,10 +145,6 @@ Object {
     "operands": 1,
     "type": "has_any_word",
     "verboseName": "has any of the words",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "state": Object {
     "validationFailures": Array [],
@@ -241,10 +237,6 @@ Object {
     "operands": 1,
     "type": "has_any_word",
     "verboseName": "has any of the words",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "state": Object {
     "validationFailures": Array [],
@@ -334,10 +326,6 @@ Object {
     "operands": 0,
     "type": "has_text",
     "verboseName": "has some text",
-    "visibility": Array [
-      "messaging",
-      "messaging_offline",
-    ],
   },
   "state": Object {
     "validationFailures": Array [],

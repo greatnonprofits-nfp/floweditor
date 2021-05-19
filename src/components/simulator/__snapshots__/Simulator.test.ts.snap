@@ -129,9 +129,7 @@ exports[`Simulator renders 1`] = `
     <div
       className="simulator_tab_text"
     >
-      Run in
-      <br />
-      Simulator
+      Run in Simulator
     </div>
   </div>
 </div>

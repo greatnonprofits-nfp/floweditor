@@ -30,6 +30,7 @@ import TransferAirtimeComp from 'components/flow/actions/transferairtime/Transfe
 import UpdateContactComp from 'components/flow/actions/updatecontact/UpdateContact';
 import UpdateContactForm from 'components/flow/actions/updatecontact/UpdateContactForm';
 import AirtimeRouterForm from 'components/flow/routers/airtime/AirtimeRouterForm';
+import DialRouterForm from 'components/flow/routers/dial/DialRouterForm';
 import DigitsRouterForm from 'components/flow/routers/digits/DigitsRouterForm';
 import ExpressionRouterForm from 'components/flow/routers/expression/ExpressionRouterForm';
 import FieldRouterForm from 'components/flow/routers/field/FieldRouterForm';
@@ -52,8 +53,9 @@ import {
   VISIBILITY_HIDDEN,
   VISIBILITY_ONLINE,
   VISIBILITY_SURVEYOR,
-  VISIBILITY_MESSAGING,
-  VISIBILITY_VOICE
+  VISIBILITY_VOICE,
+  VISIBILITY_INTERACTIVE,
+  VISIBILITY_MESSAGING_INTERACTIVE
 } from 'config/interfaces';
 import { HintTypes, RouterTypes, FlowEditorConfig, SendMsg } from 'flowTypes';
 import { RenderNode } from 'store/flowContext';
@@ -218,6 +220,17 @@ export const typeConfigList: Type[] = [
   },
 
   {
+    type: Types.wait_for_dial,
+    name: i18n.t('actions.wait_for_dial.name', 'Wait for Forwarded Call'),
+    description: i18n.t(
+      'actions.wait_for_dial.description',
+      'Wait for forwarded call to someone else'
+    ),
+    form: DialRouterForm,
+    visibility: VISIBILITY_VOICE
+  },
+
+  {
     type: Types.send_msg,
     name: i18n.t('actions.send_msg.name', 'Send Message'),
     description: i18n.t('actions.send_msg.description', 'Send the contact a message'),
@@ -239,7 +252,7 @@ export const typeConfigList: Type[] = [
     localization: RouterLocalizationForm,
     localizeableKeys: ['categories', 'cases'],
     aliases: [RouterTypes.switch],
-    visibility: VISIBILITY_MESSAGING
+    visibility: VISIBILITY_MESSAGING_INTERACTIVE
   },
 
   {
@@ -257,7 +270,8 @@ export const typeConfigList: Type[] = [
     name: i18n.t('actions.add_input.name', 'Add Labels'),
     description: i18n.t('actions.add_input.description', 'Label the incoming message'),
     form: AddLabelsForm,
-    component: AddLabelsComp
+    component: AddLabelsComp,
+    visibility: VISIBILITY_INTERACTIVE
   },
   {
     type: Types.add_contact_urn,
