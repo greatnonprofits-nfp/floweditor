@@ -52,6 +52,11 @@
     padding: $action_padding;
   }
 
+  &.voicecall_status {
+    width: $node_min_width;
+    padding: $action_padding;
+  }
+
   &.call_classifier {
     padding: $action_padding;
     width: inherit;
