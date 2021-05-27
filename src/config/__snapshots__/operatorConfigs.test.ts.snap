@@ -40,7 +40,6 @@ Array [
     "verboseName": "has an image",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   Object {
@@ -260,7 +259,6 @@ Object {
     "verboseName": "has an image",
     "visibility": Array [
       "messaging",
-      "messaging_offline",
     ],
   },
   "has_intent": Object {

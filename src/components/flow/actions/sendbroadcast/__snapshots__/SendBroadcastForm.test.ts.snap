@@ -44,6 +44,7 @@ exports[`SendBroadcastForm render should render an empty form with no action 2`]
         "type": "send_broadcast",
         "visibility": Array [
           "messaging",
+          "messaging_background",
           "voice",
         ],
       }
@@ -119,6 +120,7 @@ exports[`SendBroadcastForm render should render self, children with base props 1
         "type": "send_broadcast",
         "visibility": Array [
           "messaging",
+          "messaging_background",
           "voice",
         ],
       }

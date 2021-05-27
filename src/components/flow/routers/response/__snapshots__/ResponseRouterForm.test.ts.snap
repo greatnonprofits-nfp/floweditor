@@ -38,24 +38,12 @@ exports[`ResponseRouterForm initializes case config 1`] = `
             <div
               className="body"
             >
-              <Unknown
-                className="languageSelect"
-                isSearchable={false}
-                name="Intent"
+              <TembaSelect
+                name="Language"
                 onChange={[Function]}
                 options={Array []}
                 placeholder="Language"
-                styles={
-                  Object {
-                    "control": [Function],
-                    "indicatorsContainer": [Function],
-                    "input": [Function],
-                    "menuList": [Function],
-                    "option": [Function],
-                    "singleValue": [Function],
-                    "valueContainer": [Function],
-                  }
-                }
+                style="small"
                 value={
                   Object {
                     "label": "English",
@@ -805,8 +793,8 @@ Object {
   ],
   "timeout": 180,
   "timezoneData": Object {
-    "dateFormat": null,
-    "timeZone": null,
+    "dateFormat": "YYYY-MM-DD",
+    "timeZone": "Europe/Kiev",
   },
   "valid": true,
 }
@@ -989,8 +977,8 @@ Object {
   ],
   "timeout": 0,
   "timezoneData": Object {
-    "dateFormat": null,
-    "timeZone": null,
+    "dateFormat": "YYYY-MM-DD",
+    "timeZone": "Europe/Kiev",
   },
   "valid": true,
 }

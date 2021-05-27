@@ -20,7 +20,7 @@ exports[`SendEmailForm render should render 1`] = `
       Object {
         "body": <React.Fragment>
           <p>
-            Add up to 3 attachments to each message. Each attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
+            Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
           </p>
           <p>
             Warning: The combined size of all attachments should not exceed 25MB. If you need to send larger files, we suggest sending links to those files in the body of the email.

@@ -120,6 +120,7 @@ Array [
     "type": "send_broadcast",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -237,6 +238,8 @@ Array [
     "type": "call_lookup",
     "visibility": Array [
       "messaging",
+      "messaging_background",
+      "voice",
     ],
   },
   Object {
@@ -358,6 +361,24 @@ Array [
     "visibility": Array [
       "messaging",
       "messaging_background",
+      "voice",
+    ],
+  },
+  Object {
+    "aliases": Array [
+      "split_by_voicecall_status",
+    ],
+    "component": [Function],
+    "description": "Voice Call Status",
+    "filter": "machine_detection",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Voice Call Status",
+    "type": "voicecall_status",
+    "visibility": Array [
       "voice",
     ],
   },
@@ -569,6 +590,8 @@ Object {
     "type": "call_lookup",
     "visibility": Array [
       "messaging",
+      "messaging_background",
+      "voice",
     ],
   },
   "call_resthook": Object {
@@ -712,6 +735,7 @@ Object {
     "type": "send_broadcast",
     "visibility": Array [
       "messaging",
+      "messaging_background",
       "voice",
     ],
   },
@@ -922,6 +946,8 @@ Object {
     "type": "call_lookup",
     "visibility": Array [
       "messaging",
+      "messaging_background",
+      "voice",
     ],
   },
   "split_by_random": Object {
@@ -1041,6 +1067,24 @@ Object {
       "voice",
     ],
   },
+  "split_by_voicecall_status": Object {
+    "aliases": Array [
+      "split_by_voicecall_status",
+    ],
+    "component": [Function],
+    "description": "Voice Call Status",
+    "filter": "machine_detection",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Voice Call Status",
+    "type": "voicecall_status",
+    "visibility": Array [
+      "voice",
+    ],
+  },
   "split_by_webhook": Object {
     "aliases": Array [
       "split_by_webhook",
@@ -1111,6 +1155,24 @@ Object {
     "visibility": Array [
       "messaging",
       "messaging_background",
+      "voice",
+    ],
+  },
+  "voicecall_status": Object {
+    "aliases": Array [
+      "split_by_voicecall_status",
+    ],
+    "component": [Function],
+    "description": "Voice Call Status",
+    "filter": "machine_detection",
+    "form": [Function],
+    "localization": [Function],
+    "localizeableKeys": Array [
+      "exits",
+    ],
+    "name": "Voice Call Status",
+    "type": "voicecall_status",
+    "visibility": Array [
       "voice",
     ],
   },

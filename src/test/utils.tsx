@@ -48,7 +48,20 @@ export const EMPTY_TEST_ASSETS = {
   flows: { items: {}, type: AssetType.Flow },
   recipients: { items: {}, type: AssetType.Contact || AssetType.Group || AssetType.URN },
   ticketers: { items: {}, type: AssetType.Ticketer },
-  environment: { items: {}, type: AssetType.Environment }
+  environment: {
+    items: {
+      environment: {
+        id: 'environment',
+        name: '',
+        type: AssetType.Environment,
+        date_format: 'YYYY-MM-DD',
+        languages: ['eng', 'spa', 'fra'],
+        time_format: 'hh:mm',
+        timezone: 'Europe/Kiev'
+      }
+    },
+    type: AssetType.Environment
+  }
 };
 
 const initial = initialState;

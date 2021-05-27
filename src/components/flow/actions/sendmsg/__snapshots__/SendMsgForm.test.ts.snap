@@ -88,8 +88,6 @@ exports[`SendMsgForm render should render 1`] = `
       Object {
         "body": <React.Fragment>
           <p>
-            Send attachment: 
-            <br />
             Add up to 3 attachments to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.
           </p>
           <div
@@ -130,7 +128,7 @@ exports[`SendMsgForm render should render 1`] = `
                     },
                   ]
                 }
-                placeholder="Send Attachment"
+                placeholder="Add Attachment"
                 style="small"
               />
             </div>
@@ -144,40 +142,6 @@ exports[`SendMsgForm render should render 1`] = `
             }
             type="file"
           />
-          <span
-            className="span_separator"
-          />
-          <p>
-            Receive attachment: 
-            <br />
-            Select a type of attachment to receive from a user as an answer choice. 
-            <br />
-            Note: only available for channels with file upload capabilities.
-          </p>
-          <div
-            className="type_choice"
-          >
-            <SelectElement
-              clearable={true}
-              entry={
-                Object {
-                  "value": undefined,
-                }
-              }
-              name="ReceiveAttachment"
-              onChange={[Function]}
-              options={
-                Array [
-                  Object {
-                    "name": "Image",
-                    "value": "image",
-                  },
-                ]
-              }
-              placeholder="Receive Attachment"
-              style="small"
-            />
-          </div>
         </React.Fragment>,
         "checked": false,
         "name": "Attachments",

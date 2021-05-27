@@ -282,7 +282,7 @@ exports[`ClassifyRouterForm should render: default render 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Classifier Input
            
@@ -554,7 +554,7 @@ exports[`ClassifyRouterForm updates the result name: updated result name 1`] = `
         class="tabs"
       >
         <div
-          class="tab "
+          class="tab  "
         >
           Classifier Input
            
