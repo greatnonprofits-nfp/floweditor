@@ -196,6 +196,17 @@ export default class MsgLocalizationForm extends React.Component<
     this.setState({ attachments });
   }
 
+  private handleAttachmentError(title: string, message: string) {
+    // @ts-ignore
+    this.props.mergeEditorState({
+      modalMessage: {
+        title: title,
+        body: message
+      },
+      saving: false
+    });
+  }
+
   public render(): JSX.Element {
     const typeConfig = determineTypeConfig(this.props.nodeSettings);
     const tabs: Tab[] = [];
@@ -255,7 +266,8 @@ export default class MsgLocalizationForm extends React.Component<
           this.state.attachments,
           this.handleAttachmentUploaded,
           this.handleAttachmentChanged,
-          this.handleAttachmentRemoved
+          this.handleAttachmentRemoved,
+          this.handleAttachmentError
         ),
         checked: this.state.attachments.length > 0
       });

@@ -37,10 +37,46 @@ const getAttachmentTypeOption = (type: string): SelectOption => {
   return TYPE_OPTIONS.find((option: SelectOption) => option.value === type);
 };
 
+const isAttachmentsValid = (
+  files: FileList,
+  onAttachmentInvalid: (title: string, message: string) => void
+) => {
+  let title = '';
+  let message = '';
+  let isValid = true;
+  const file = files[0];
+  const fileType = file.type.split('/')[0];
+  const fileEncoding = file.name.split('.').pop();
+
+  if (file.type !== 'application/pdf' && !['audio', 'video', 'image'].includes(fileType)) {
+    title = 'Invalid Attachment';
+    message = 'Attachments must be either PDF, video, audio, or an image.';
+    isValid = false;
+  } else if (
+    fileType === 'audio' &&
+    !['mp3', 'm4a', 'x-m4a', 'wav', 'ogg', 'oga'].includes(fileEncoding)
+  ) {
+    title = 'Invalid Format';
+    message = 'Audio attachments must be encoded as mp3, m4a, wav, ogg or oga files.';
+    isValid = false;
+  } else if ((fileType === 'image' && file.size > 512000) || file.size > 20971520) {
+    title = 'File Size Exceeded';
+    message =
+      'The file size should be less than 500kB for images and less than 20MB for audio, video and PDF files. Please choose another file and try again.';
+    isValid = false;
+  }
+
+  if (!isValid) {
+    onAttachmentInvalid(title, message);
+  }
+  return isValid;
+};
+
 export const handleUploadFile = (
   endpoint: string,
   files: FileList,
-  onSuccess: (response: AxiosResponse) => void
+  onSuccess: (response: AxiosResponse) => void,
+  onError: (title: string, message: string) => void
 ): void => {
   // if we have a csrf in our cookie, pass it along as a header
   const csrf = getCookie('csrftoken');
@@ -48,6 +84,10 @@ export const handleUploadFile = (
 
   // mark us as ajax
   headers['X-Requested-With'] = 'XMLHttpRequest';
+
+  if (!isAttachmentsValid(files, onError)) {
+    return null;
+  }
 
   const data = new FormData();
   data.append('file', files[0]);
@@ -57,54 +97,6 @@ export const handleUploadFile = (
     .catch(error => {
       console.log(error);
     });
-};
-
-export const renderAttachments = (
-  endpoint: string,
-  attachments: Attachment[],
-  onUploaded: (response: AxiosResponse) => void,
-  onAttachmentChanged: (index: number, value: string, url: string) => void,
-  onAttachmentRemoved: (index: number) => void
-): JSX.Element => {
-  const renderedAttachments = attachments.map((attachment, index: number) =>
-    attachment.uploaded
-      ? renderUpload(index, attachment, onAttachmentRemoved)
-      : renderAttachment(index, attachment, onAttachmentChanged, onAttachmentRemoved)
-  );
-
-  const emptyOption =
-    attachments.length < MAX_ATTACHMENTS
-      ? renderAttachment(
-          -1,
-          { url: '', type: '' },
-
-          onAttachmentChanged,
-          onAttachmentRemoved
-        )
-      : null;
-  return (
-    <>
-      <p>
-        {i18n.t(
-          'forms.send_msg_summary',
-          'Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
-          { count: MAX_ATTACHMENTS }
-        )}
-      </p>
-      {renderedAttachments}
-      {emptyOption}
-      <input
-        style={{
-          display: 'none'
-        }}
-        ref={ele => {
-          filePicker = ele;
-        }}
-        type="file"
-        onChange={e => handleUploadFile(endpoint, e.target.files, onUploaded)}
-      />
-    </>
-  );
 };
 
 export const renderUpload = (
@@ -214,5 +206,54 @@ export const renderAttachment = (
         </>
       ) : null}
     </div>
+  );
+};
+
+export const renderAttachments = (
+  endpoint: string,
+  attachments: Attachment[],
+  onUploaded: (response: AxiosResponse) => void,
+  onAttachmentChanged: (index: number, value: string, url: string) => void,
+  onAttachmentRemoved: (index: number) => void,
+  onAttachmentError: (title: string, message: string) => void
+): JSX.Element => {
+  const renderedAttachments = attachments.map((attachment, index: number) =>
+    attachment.uploaded
+      ? renderUpload(index, attachment, onAttachmentRemoved)
+      : renderAttachment(index, attachment, onAttachmentChanged, onAttachmentRemoved)
+  );
+
+  const emptyOption =
+    attachments.length < MAX_ATTACHMENTS
+      ? renderAttachment(
+          -1,
+          { url: '', type: '' },
+
+          onAttachmentChanged,
+          onAttachmentRemoved
+        )
+      : null;
+  return (
+    <>
+      <p>
+        {i18n.t(
+          'forms.send_msg_summary',
+          'Add an attachment to each message. The attachment can be a file you upload or a dynamic URL using expressions and variables from your Flow.',
+          { count: MAX_ATTACHMENTS }
+        )}
+      </p>
+      {renderedAttachments}
+      {emptyOption}
+      <input
+        style={{
+          display: 'none'
+        }}
+        ref={ele => {
+          filePicker = ele;
+        }}
+        type="file"
+        onChange={e => handleUploadFile(endpoint, e.target.files, onUploaded, onAttachmentError)}
+      />
+    </>
   );
 };
