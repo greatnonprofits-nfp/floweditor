@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { react as bindCallbacks } from 'auto-bind';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import Dialog, { ButtonSet, Tab } from 'components/dialog/Dialog';
 import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import {
   initializeForm as stateToForm,
   stateToAction,
+  RECEIVE_ATTACHMENT_OPTIONS,
   TOPIC_OPTIONS
 } from 'components/flow/actions/sendmsg/helpers';
 import TaggingElement from 'components/form/select/tags/TaggingElement';
@@ -20,7 +21,7 @@ import TextInputElement from 'components/form/textinput/TextInputElement';
 import HelpIcon from 'components/helpicon/HelpIcon';
 import TypeList from 'components/nodeeditor/TypeList';
 import { fakePropType } from 'config/ConfigProvider';
-import { fetchAsset, getCookie } from 'external';
+import { fetchAsset } from 'external';
 import { Template, TemplateTranslation } from 'flowTypes';
 import mutate from 'immutability-helper';
 import * as React from 'react';
@@ -34,20 +35,18 @@ import {
   FormEntry
 } from 'store/nodeEditor';
 import { MaxOfTenItems, Required, shouldRequireIf, validate } from 'store/validators';
-import { createUUID, range, renderIf } from 'utils';
+import { range, renderIf } from 'utils';
 
 import styles from './SendMsgForm.module.scss';
 import { hasFeature } from 'config/typeConfigs';
 import { FeatureFilter, FlowTypes } from 'config/interfaces';
-import Pill from 'components/pill/Pill';
 
 import variables from 'variables.module.scss';
 
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
 import { Attachment, renderAttachments } from './attachments';
-import Select from 'react-select/base';
-import { small } from '../../../../utils/reactselect';
+import { TembaSelectStyle } from '../../../../temba/TembaSelect';
 
 const FACEBOOK_ICON = require('static/images/facebook.png');
 const TELEGRAM_ICON = require('static/images/telegram.png');
@@ -84,8 +83,6 @@ export interface SendMsgFormState extends FormState {
 }
 
 export default class SendMsgForm extends React.Component<ActionFormProps, SendMsgFormState> {
-  private filePicker: any;
-
   constructor(props: ActionFormProps, context: any) {
     super(props);
     this.context = context;
@@ -254,114 +251,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     };
   }
 
-  private renderUpload(index: number, attachment: Attachment): JSX.Element {
-    return (
-      <div
-        className={styles.url_attachment}
-        key={index > -1 ? 'url_attachment_' + index : createUUID()}
-      >
-        <div className={styles.type_choice}>
-          <Select
-            name="Type"
-            styles={small as any}
-            className={styles.selected_file}
-            value={{ label: attachment.type }}
-            isDisabled={true}
-          />
-        </div>
-        <div className={styles.url}>
-          <span className={styles.upload}>
-            <Pill
-              icon="fe-download"
-              text="Download"
-              large={true}
-              onClick={() => {
-                window.open(attachment.url, '_blank');
-              }}
-            />
-            <div className={styles.remove_upload}>
-              <Pill
-                icon="fe-x"
-                text="Remove"
-                large={true}
-                onClick={() => {
-                  this.handleAttachmentRemoved(index);
-                }}
-              />
-            </div>
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  private handleUploadFile(files: FileList): void {
-    let attachments: any = this.state.attachments;
-
-    // if we have a csrf in our cookie, pass it along as a header
-    const csrf = getCookie('csrftoken');
-    const headers: any = csrf ? { 'X-CSRFToken': csrf } : {};
-
-    // mark us as ajax
-    headers['X-Requested-With'] = 'XMLHttpRequest';
-
-    if (!this.isAttachmentsValid(files)) {
-      return null;
-    }
-
-    const data = new FormData();
-    data.append('file', files[0]);
-    axios
-      .post(this.context.config.endpoints.attachments, data, { headers })
-      .then(response => {
-        attachments = mutate(attachments, {
-          $push: [{ type: response.data.type, url: response.data.url, uploaded: true }]
-        });
-        this.setState({ attachments });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-
-  private isAttachmentsValid(files: FileList) {
-    let title = '';
-    let message = '';
-    let isValid = true;
-    const file = files[0];
-    const fileType = file.type.split('/')[0];
-    const fileEncoding = file.name.split('.').pop();
-
-    if (file.type !== 'application/pdf' && !['audio', 'video', 'image'].includes(fileType)) {
-      title = 'Invalid Attachment';
-      message = 'Attachments must be either PDF, video, audio, or an image.';
-      isValid = false;
-    } else if (
-      fileType === 'audio' &&
-      !['mp3', 'm4a', 'x-m4a', 'wav', 'ogg', 'oga'].includes(fileEncoding)
-    ) {
-      title = 'Invalid Format';
-      message = 'Audio attachments must be encoded as mp3, m4a, wav, ogg or oga files.';
-      isValid = false;
-    } else if ((fileType === 'image' && file.size > 512000) || file.size > 20971520) {
-      title = 'File Size Exceeded';
-      message =
-        'The file size should be less than 500kB for images and less than 20MB for audio, video and PDF files. Please choose another file and try again.';
-      isValid = false;
-    }
-
-    if (!isValid) {
-      this.props.mergeEditorState({
-        modalMessage: {
-          title: title,
-          body: message
-        },
-        saving: false
-      });
-    }
-    return isValid;
-  }
-
   private handleTemplateChanged(selected: any[]): void {
     const template = selected ? selected[0] : null;
 
@@ -508,38 +397,14 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     this.setState({ attachments });
   }
 
-  private handleAddQuickReply(newQuickReply: string): boolean {
-    const newReplies = [...this.state.quickReplies.value];
-    if (newReplies.length >= 10) {
-      return false;
-    }
-
-    // we don't allow two quick replies with the same name
-    const isNew = !newReplies.find(
-      (reply: string) => reply.toLowerCase() === newQuickReply.toLowerCase()
-    );
-
-    if (isNew) {
-      newReplies.push(newQuickReply);
-      this.setState({
-        quickReplies: { value: newReplies }
-      });
-      return true;
-    }
-
-    return false;
-  }
-
-  private handleRemoveQuickReply(toRemove: string): void {
-    this.setState({
-      quickReplies: {
-        value: this.state.quickReplies.value.filter((reply: string) => reply !== toRemove)
-      }
+  private handleAttachmentError(title: string, message: string) {
+    this.props.mergeEditorState({
+      modalMessage: {
+        title: title,
+        body: message
+      },
+      saving: false
     });
-  }
-
-  private handleQuickReplyEntry(quickReplyEntry: StringEntry): void {
-    this.setState({ quickReplyEntry });
   }
 
   private handleEmailSharingItem(checked: boolean): boolean {
@@ -736,6 +601,36 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     );
   }
 
+  private renderReceiveAttachment(): JSX.Element {
+    if (this.context.config.flowType === FlowTypes.MESSAGING) {
+      return (
+        <>
+          <span className={styles.span_separator}></span>
+          <p>
+            Receive attachment: <br />
+            Select a type of attachment to receive from a user as an answer choice. <br />
+            Note: only available for channels with file upload capabilities.
+          </p>
+          <div className={styles.type_choice}>
+            <SelectElement
+              style={TembaSelectStyle.small}
+              name="ReceiveAttachment"
+              entry={this.state.receiveAttachment}
+              onChange={this.handleReceiveAttachmentUpdate}
+              options={RECEIVE_ATTACHMENT_OPTIONS}
+              placeholder="Receive Attachment"
+              clearable={true}
+            />
+          </div>
+        </>
+      );
+    }
+  }
+
+  private handleReceiveAttachmentUpdate(option: SelectOption) {
+    this.setState({ receiveAttachment: { value: option } });
+  }
+
   public render(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
@@ -799,12 +694,18 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
     const attachments: Tab = {
       name: i18n.t('forms.attachments', 'Attachments'),
-      body: renderAttachments(
-        this.context.config.endpoints.attachments,
-        this.state.attachments,
-        this.handleAttachmentUploaded,
-        this.handleAttachmentChanged,
-        this.handleAttachmentRemoved
+      body: (
+        <>
+          {renderAttachments(
+            this.context.config.endpoints.attachments,
+            this.state.attachments,
+            this.handleAttachmentUploaded,
+            this.handleAttachmentChanged,
+            this.handleAttachmentRemoved,
+            this.handleAttachmentError
+          )}
+          {this.renderReceiveAttachment()}
+        </>
       ),
       checked: this.state.attachments.length > 0
     };
