@@ -405,40 +405,6 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     });
   }
 
-  private handleAddQuickReply(newQuickReply: string): boolean {
-    const newReplies = [...this.state.quickReplies.value];
-    if (newReplies.length >= 10) {
-      return false;
-    }
-
-    // we don't allow two quick replies with the same name
-    const isNew = !newReplies.find(
-      (reply: string) => reply.toLowerCase() === newQuickReply.toLowerCase()
-    );
-
-    if (isNew) {
-      newReplies.push(newQuickReply);
-      this.setState({
-        quickReplies: { value: newReplies }
-      });
-      return true;
-    }
-
-    return false;
-  }
-
-  private handleRemoveQuickReply(toRemove: string): void {
-    this.setState({
-      quickReplies: {
-        value: this.state.quickReplies.value.filter((reply: string) => reply !== toRemove)
-      }
-    });
-  }
-
-  private handleQuickReplyEntry(quickReplyEntry: StringEntry): void {
-    this.setState({ quickReplyEntry });
-  }
-
   private handleEmailSharingItem(checked: boolean): boolean {
     return this.handleUpdate({ emailSharing: checked });
   }
