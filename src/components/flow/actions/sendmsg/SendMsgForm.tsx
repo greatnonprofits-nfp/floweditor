@@ -7,6 +7,7 @@ import { hasErrors, renderIssues } from 'components/flow/actions/helpers';
 import {
   initializeForm as stateToForm,
   stateToAction,
+  RECEIVE_ATTACHMENT_OPTIONS,
   TOPIC_OPTIONS
 } from 'components/flow/actions/sendmsg/helpers';
 import TaggingElement from 'components/form/select/tags/TaggingElement';
@@ -45,6 +46,7 @@ import variables from 'variables.module.scss';
 import i18n from 'config/i18n';
 import { Trans } from 'react-i18next';
 import { Attachment, renderAttachments } from './attachments';
+import { TembaSelectStyle } from '../../../../temba/TembaSelect';
 
 const FACEBOOK_ICON = require('static/images/facebook.png');
 const TELEGRAM_ICON = require('static/images/telegram.png');
@@ -599,6 +601,36 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
     );
   }
 
+  private renderReceiveAttachment(): JSX.Element {
+    if (this.context.config.flowType === FlowTypes.MESSAGING) {
+      return (
+        <>
+          <span className={styles.span_separator}></span>
+          <p>
+            Receive attachment: <br />
+            Select a type of attachment to receive from a user as an answer choice. <br />
+            Note: only available for channels with file upload capabilities.
+          </p>
+          <div className={styles.type_choice}>
+            <SelectElement
+              style={TembaSelectStyle.small}
+              name="ReceiveAttachment"
+              entry={this.state.receiveAttachment}
+              onChange={this.handleReceiveAttachmentUpdate}
+              options={RECEIVE_ATTACHMENT_OPTIONS}
+              placeholder="Receive Attachment"
+              clearable={true}
+            />
+          </div>
+        </>
+      );
+    }
+  }
+
+  private handleReceiveAttachmentUpdate(option: SelectOption) {
+    this.setState({ receiveAttachment: { value: option } });
+  }
+
   public render(): JSX.Element {
     const typeConfig = this.props.typeConfig;
 
@@ -662,13 +694,18 @@ export default class SendMsgForm extends React.Component<ActionFormProps, SendMs
 
     const attachments: Tab = {
       name: i18n.t('forms.attachments', 'Attachments'),
-      body: renderAttachments(
-        this.context.config.endpoints.attachments,
-        this.state.attachments,
-        this.handleAttachmentUploaded,
-        this.handleAttachmentChanged,
-        this.handleAttachmentRemoved,
-        this.handleAttachmentError
+      body: (
+        <>
+          {renderAttachments(
+            this.context.config.endpoints.attachments,
+            this.state.attachments,
+            this.handleAttachmentUploaded,
+            this.handleAttachmentChanged,
+            this.handleAttachmentRemoved,
+            this.handleAttachmentError
+          )}
+          {this.renderReceiveAttachment()}
+        </>
       ),
       checked: this.state.attachments.length > 0
     };
